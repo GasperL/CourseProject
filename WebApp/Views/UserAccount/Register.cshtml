@@ -21,16 +21,12 @@
                     <input asp-for="PasswordConfirm" type="password" id="password-confirm-input" class="form-control" placeholder="Confirm password">
                     <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
                 </div>
-                <div class="mb-3">
-                    <label for="age-input" class="form-label">Age</label>
-                    <input asp-for="Age" type="text" id="age-input" class="form-control" placeholder="Age">
-                    <span asp-validation-for="Age" class="text-danger"></span>
-                </div>
             </fieldset>
             <input type="submit" value="Save" class="btn btn-primary" />
         </form>
     </div>
 </div>
+
 @section Scripts
 {
     @{
