@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccess.Entities
 {
@@ -6,6 +7,7 @@ namespace DataAccess.Entities
     {
         public Guid Id { get; set; }
 
+        [Column(TypeName = "decimal(18,4)")]
         public decimal Discount { get; set; }
     }
 }

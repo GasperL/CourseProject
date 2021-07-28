@@ -28,14 +28,14 @@ namespace DataAccess
                 .HasForeignKey(x => x.OrderId);
             
             builder.Entity<Order>()
-                .HasOne(x => x.ProductOrder)
-                .WithMany()
-                .HasForeignKey(x => x.ProductOrderId);
+                .HasMany(x => x.ProductOrders)
+                .WithOne()
+                .HasForeignKey(x => x.ProductId);
             
             builder.Entity<ProductOrder>()
-                .HasMany(x => x.Products)
-                .WithOne()
-                .HasForeignKey(x => x.Id);
+                .HasOne(x => x.Product)
+                .WithMany()
+                .HasForeignKey(x => x.ProductId);
             
             builder.Entity<ProductOrder>()
                 .HasOne(x => x.UserDiscount)
@@ -56,7 +56,6 @@ namespace DataAccess
                 .HasOne(x => x.BonusPoints)
                 .WithMany()
                 .HasForeignKey(x => x.BonusPointsId);
-
 
             builder.Entity<Product>()
                 .HasOne(x => x.Category)
