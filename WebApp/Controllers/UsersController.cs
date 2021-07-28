@@ -24,7 +24,6 @@ namespace WebApp.Controllers
             var users = _userManager.Users.ToArray();
             return View(users.Select(x => new UserViewModel
             {
-                Age = x.Age,
                 Id = x.Id,
                 Email = x.Email,
             }).ToArray());
@@ -46,7 +45,6 @@ namespace WebApp.Controllers
 
             return View("UserDetails", new UserViewModel
             {
-                Age = user.Age,
                 Email = user.Email,
                 Id = user.Id,
             });
@@ -63,7 +61,6 @@ namespace WebApp.Controllers
 
             return View(new UserViewModel
             {
-                Age = user.Age,
                 Email = user.Email,
                 Id = user.Id,
             });
@@ -83,7 +80,6 @@ namespace WebApp.Controllers
                 return BadRequest();
             }
 
-            userToUpdate.Age = userViewModel.Age.Value;
             userToUpdate.Email = userViewModel.Email;
             userToUpdate.UserName = userViewModel.Email;
             await _userManager.UpdateAsync(userToUpdate);
@@ -107,7 +103,6 @@ namespace WebApp.Controllers
 
             var user = new User
             {
-                Age = model.Age.Value,
                 Email = model.Email,
                 UserName = model.Email
             };

@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System;
+using Microsoft.AspNetCore.Identity;
 
 namespace DataAccess.Entities
 {
     public class User : IdentityUser
     {
-        public int Age { get; set; }
+        public Guid OrderId { get; set; }
+
+        public Order Order { get; set; }
     }
 }

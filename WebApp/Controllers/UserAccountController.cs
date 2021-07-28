@@ -69,7 +69,6 @@ namespace WebApp.Controllers
             {
                 Email = model.Email,
                 UserName = model.Email,
-                Age = model.Age
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
