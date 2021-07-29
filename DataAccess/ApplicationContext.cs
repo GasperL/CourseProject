@@ -14,6 +14,10 @@ namespace DataAccess
         
         public DbSet<UserDiscount> UserDiscount { get; set; }
         
+        public DbSet<Category> Categories { get; set; }
+       
+        public DbSet<ProductGroup> ProductGroups { get; set; }
+        
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         { }
