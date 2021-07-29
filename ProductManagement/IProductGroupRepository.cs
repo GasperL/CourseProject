@@ -6,7 +6,7 @@ namespace ProductManagement
 {
     public interface IProductGroupRepository
     {
-        Task<Group> Add(Group group);
+        Task Add(Group group);
 
         Task Delete(Group id);
 

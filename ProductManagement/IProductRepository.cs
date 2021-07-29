@@ -4,18 +4,18 @@ using DataAccess.Entities;
 
 namespace ProductManagement
 {
-    public interface IProductRepository
+    public interface IProductRepository<T>
     {
-        Task Add(Product product);
+        Task Add(T entity);
 
-        Task Delete(Guid id);
+        Task Delete(Guid entityId);
 
         Task<Product[]> GetAllAvailableProducts();
 
         Task<Product[]> GetAllUnavailableProducts();
 
-        Task<Product[]> GetAllProducts();
+        Task<Product[]> GetAll();
 
-        Task<Product> GetProductById(Guid id);
+        Task<Product> GetProductById(Guid entityId);
     }
 }

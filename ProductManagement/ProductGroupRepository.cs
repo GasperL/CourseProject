@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DataAccess;
 using DataAccess.Entities;
+using System.Linq;
 
 namespace ProductManagement
 {
@@ -15,9 +16,14 @@ namespace ProductManagement
             _context = context;
         }
 
-        public Task<Group> Add(Group group)
+        public async Task Add(ProductGroup group)
         {
-            throw new NotImplementedException();
+            if (_context.ProductGroup.All(x => x.Id != group.Id))
+            {
+                await _context.AddAsync(group);
+                
+            }
+
         }
 
         public Task Delete(Group id)

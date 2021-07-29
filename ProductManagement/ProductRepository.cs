@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using DataAccess;
@@ -7,7 +6,7 @@ using DataAccess.Entities;
 
 namespace ProductManagement
 {
-    public class ProductRepository : IProductRepository
+    public class ProductRepository<T> : IProductRepository<T>
     {
         private readonly ApplicationContext _context;
 
