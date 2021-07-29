@@ -6,7 +6,7 @@ namespace DataAccess
 {
     public class ApplicationContext : IdentityDbContext<User>
     {
-        public DbSet<Product> Product { get; set; }
+        public DbSet<Manufacturer> Manufacturers { get; set; }
         
         public DbSet<Order> Order { get; set; }
         
