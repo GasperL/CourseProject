@@ -10,7 +10,7 @@ namespace DataAccess.Entities
 
         public Guid ProductOrderId { get; set; }
 
-        public ICollection<ProductOrder> ProductOrders { get; set; }
+        public ICollection<ProductOrder> ProductOrder { get; set; }
 
         [Column(TypeName = "decimal(18,4)")]
         public decimal TotalPrice { get; set; }

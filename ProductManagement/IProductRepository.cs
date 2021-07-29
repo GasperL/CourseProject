@@ -6,16 +6,16 @@ namespace ProductManagement
 {
     public interface IProductRepository
     {
-        Task<Product> Add();
+        Task Add(Product product);
 
         Task Delete(Guid id);
 
-        Task GetAllAvailableProducts();
+        Task<Product[]> GetAllAvailableProducts();
 
-        Task GetAllUnavailableProducts();
+        Task<Product[]> GetAllUnavailableProducts();
 
-        Task GetAllProducts();
+        Task<Product[]> GetAllProducts();
 
-        Task GetProductById();
+        Task<Product> GetProductById(Guid id);
     }
 }

@@ -6,17 +6,21 @@ namespace DataAccess
 {
     public class ApplicationContext : IdentityDbContext<User>
     {
-        public DbSet<Manufacturer> Manufacturers { get; set; }
-        
         public DbSet<Order> Order { get; set; }
         
         public DbSet<ProductOrder> ProductOrder { get; set; }
         
-        public DbSet<UserDiscount> UserDiscount { get; set; }
+        public DbSet<Provider> Provider { get; set; }
         
-        public DbSet<Category> Categories { get; set; }
+        public DbSet<Manufacturer> Manufacturer { get; set; }
+        
+        public DbSet<UserDiscount> UserDiscount { get; set; }
        
-        public DbSet<ProductGroup> ProductGroups { get; set; }
+        public DbSet<Product> Product { get; set; }
+        
+        public DbSet<ProductGroup> ProductGroup { get; set; }
+        
+        public DbSet<ProductCategory> ProductCategory { get; set; }
         
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
@@ -32,7 +36,7 @@ namespace DataAccess
                 .HasForeignKey(x => x.OrderId);
             
             builder.Entity<Order>()
-                .HasMany(x => x.ProductOrders)
+                .HasMany(x => x.ProductOrder)
                 .WithOne()
                 .HasForeignKey(x => x.ProductId);
             
@@ -62,9 +66,9 @@ namespace DataAccess
                 .HasForeignKey(x => x.BonusPointsId);
 
             builder.Entity<Product>()
-                .HasOne(x => x.Category)
+                .HasOne(x => x.ProductCategory)
                 .WithMany()
-                .HasForeignKey(x => x.CategoryId);
+                .HasForeignKey(x => x.ProductCategoryId);
             
             builder.Entity<Product>()
                 .HasOne(x => x.ProductGroup)

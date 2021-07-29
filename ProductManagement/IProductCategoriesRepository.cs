@@ -5,7 +5,7 @@ namespace ProductManagement
 {
     public interface IProductCategoriesRepository
     {
-        Task<Category> Add();
+        Task<ProductCategory> Add();
 
         Task Delete();
 

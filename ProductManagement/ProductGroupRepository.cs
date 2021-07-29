@@ -1,28 +1,38 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using DataAccess;
+using DataAccess.Entities;
 
 namespace ProductManagement
 {
     public class ProductGroupRepository : IProductGroupRepository
     {
-        public Task<Group> Add()
+        private readonly ApplicationContext _context;
+
+        public ProductGroupRepository(ApplicationContext context)
         {
-            throw new System.NotImplementedException();
+            _context = context;
         }
 
-        public Task Delete()
+        public Task<Group> Add(Group group)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
+        }
+
+        public Task Delete(Group id)
+        {
+            throw new NotImplementedException();
         }
 
         public Task GetAll()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public Task GetById()
+        public Task GetById(Guid id)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

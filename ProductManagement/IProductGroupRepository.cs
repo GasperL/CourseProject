@@ -1,16 +1,17 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ProductManagement
 {
     public interface IProductGroupRepository
     {
-        Task<Group> Add();
+        Task<Group> Add(Group group);
 
-        Task Delete();
+        Task Delete(Group id);
 
         Task GetAll();
 
-        Task GetById();
+        Task GetById(Guid id);
     }
 }

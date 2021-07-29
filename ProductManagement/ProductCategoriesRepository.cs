@@ -5,7 +5,7 @@ namespace ProductManagement
 {
     public class ProductCategoriesRepository : IProductCategoriesRepository
     {
-        public Task<Category> Add()
+        public Task<ProductCategory> Add()
         {
             throw new System.NotImplementedException();
         }

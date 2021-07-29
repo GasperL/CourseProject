@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DataAccess.Entities
 {
-    public class Category
+    public class ProductCategory
     {
         public Guid Id { get; set; }
         
