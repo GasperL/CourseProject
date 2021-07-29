@@ -6,13 +6,17 @@ namespace DataAccess
 {
     public class ApplicationContext : IdentityDbContext<User>
     {
-        public DbSet<Product> Product { get; set; }
+        public DbSet<Manufacturer> Manufacturers { get; set; }
         
         public DbSet<Order> Order { get; set; }
         
         public DbSet<ProductOrder> ProductOrder { get; set; }
         
         public DbSet<UserDiscount> UserDiscount { get; set; }
+        
+        public DbSet<Category> Categories { get; set; }
+       
+        public DbSet<ProductGroup> ProductGroups { get; set; }
         
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
