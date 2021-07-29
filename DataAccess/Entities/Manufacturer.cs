@@ -1,12 +1,9 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace DataAccess.Entities
 {
-    public class Manufacturer
+    public class Manufacturer : BaseEntity
     {
-        public Guid Id { get; set; }
-
         [MaxLength(20)]
         public string Name { get; set; }
     }

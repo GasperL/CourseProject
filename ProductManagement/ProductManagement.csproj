@@ -8,4 +8,11 @@
       <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="IProductCategoriesRepository.cs" />
+      <Compile Remove="IProductGroupRepository.cs" />
+      <Compile Remove="ProductCategoriesRepository.cs" />
+      <Compile Remove="ProductGroupRepository.cs" />
+    </ItemGroup>
+
 </Project>

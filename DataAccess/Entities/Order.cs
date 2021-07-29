@@ -4,10 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccess.Entities
 {
-    public class Order
+    public class Order : BaseEntity
     {
-        public Guid Id { get; set; }
-
         public Guid ProductOrderId { get; set; }
 
         public ICollection<ProductOrder> ProductOrder { get; set; }
