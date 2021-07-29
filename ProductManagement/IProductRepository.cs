@@ -10,8 +10,12 @@ namespace ProductManagement
 
         Task Delete(Guid id);
 
-        Task GetAll();
+        Task GetAllAvailableProducts();
 
-        Task GetById(Guid id);
+        Task GetAllUnavailableProducts();
+
+        Task GetAllProducts();
+
+        Task GetProductById();
     }
 }

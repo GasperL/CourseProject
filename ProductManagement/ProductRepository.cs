@@ -16,12 +16,22 @@ namespace ProductManagement
             throw new NotImplementedException();
         }
 
-        public Task GetAll()
+        public Task GetAllAvailableProducts()
         {
             throw new NotImplementedException();
         }
 
-        public Task GetById(Guid id)
+        public Task GetAllUnavailableProducts()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task GetAllProducts()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task GetProductById()
         {
             throw new NotImplementedException();
         }
