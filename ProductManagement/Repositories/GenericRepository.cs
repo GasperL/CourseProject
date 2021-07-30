@@ -12,7 +12,7 @@ namespace ProductManagement.Repositories
         private readonly DbContext _context;
         private readonly DbSet<TEntity> _dbSet;
 
-        protected GenericRepository(
+        public GenericRepository(
             DbContext context, 
             DbSet<TEntity> dbSet)
         {
