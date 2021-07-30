@@ -1,11 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using DataAccess;
 using DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace ProductManagement
+namespace ProductManagement.Repositories
 {
     public class ProductRepository : GenericRepository<Product>, IProductRepository
     {

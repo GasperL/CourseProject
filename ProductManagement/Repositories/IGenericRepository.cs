@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using DataAccess.Entities;
 
-namespace ProductManagement
+namespace ProductManagement.Repositories
 {
     public interface IGenericRepository<TEntity>
         where TEntity : BaseEntity

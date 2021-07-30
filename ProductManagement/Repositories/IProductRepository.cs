@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using DataAccess.Entities;
 
-namespace ProductManagement
+namespace ProductManagement.Repositories
 {
-    public interface IProductRepository
+    public interface IProductRepository : IGenericRepository<Product>
     {
         Task<Product[]> GetAllAvailableProducts();
 

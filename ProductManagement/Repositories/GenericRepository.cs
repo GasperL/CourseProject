@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace ProductManagement
+namespace ProductManagement.Repositories
 {
     public class GenericRepository<TEntity>  : IGenericRepository<TEntity>
         where TEntity : BaseEntity
