@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20210728135232_Entites")]
-    partial class Entites
+    [Migration("20210729153422_Entities")]
+    partial class Entities
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,21 +33,6 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("BonusPoints");
-                });
-
-            modelBuilder.Entity("DataAccess.Entities.Category", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Manufacturer", b =>
@@ -105,9 +90,6 @@ namespace DataAccess.Migrations
                     b.Property<bool>("Accessibility")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<decimal>("Discount")
                         .HasColumnType("decimal(18,4)");
 
@@ -117,6 +99,9 @@ namespace DataAccess.Migrations
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,4)");
+
+                    b.Property<Guid>("ProductCategoryId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ProductGroupId")
                         .HasColumnType("uniqueidentifier");
@@ -137,13 +122,28 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("ProductCategoryId");
 
                     b.HasIndex("ProductGroupId");
 
                     b.HasIndex("ProviderId");
 
                     b.ToTable("Product");
+                });
+
+            modelBuilder.Entity("DataAccess.Entities.ProductCategory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProductCategory");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.ProductGroup", b =>
@@ -447,9 +447,9 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Entities.Product", b =>
                 {
-                    b.HasOne("DataAccess.Entities.Category", "Category")
+                    b.HasOne("DataAccess.Entities.ProductCategory", "ProductCategory")
                         .WithMany()
-                        .HasForeignKey("CategoryId")
+                        .HasForeignKey("ProductCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -465,7 +465,7 @@ namespace DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Category");
+                    b.Navigation("ProductCategory");
 
                     b.Navigation("ProductGroup");
 
@@ -475,7 +475,7 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("DataAccess.Entities.ProductOrder", b =>
                 {
                     b.HasOne("DataAccess.Entities.Order", null)
-                        .WithMany("ProductOrders")
+                        .WithMany("ProductOrder")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -597,7 +597,7 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Entities.Order", b =>
                 {
-                    b.Navigation("ProductOrders");
+                    b.Navigation("ProductOrder");
                 });
 #pragma warning restore 612, 618
         }

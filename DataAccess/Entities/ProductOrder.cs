@@ -5,10 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccess.Entities
 {
-    public class ProductOrder
+    public class ProductOrder : BaseEntity
     {
-        public Guid Id { get; set; }
-        
         public Guid ProductId { get; set; }
         
         public Product Product { get; set; }

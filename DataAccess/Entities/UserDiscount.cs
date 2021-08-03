@@ -2,10 +2,8 @@
 
 namespace DataAccess.Entities
 {
-    public class UserDiscount
+    public class UserDiscount : BaseEntity
     {
-        public Guid Id { get; set; }
-
         public string UserId { get; set; }
 
         public User User { get; set; }

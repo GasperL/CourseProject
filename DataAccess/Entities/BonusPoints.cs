@@ -2,10 +2,8 @@
 
 namespace DataAccess.Entities
 {
-    public class BonusPoints
+    public class BonusPoints : BaseEntity
     {
-        public Guid Id { get; set; }
-
         public int Amount { get; set; }
     }
 }

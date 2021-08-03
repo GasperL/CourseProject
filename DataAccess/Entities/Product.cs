@@ -5,13 +5,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccess.Entities
 {
-    public class Product
+    public class Product : BaseEntity
     {
-        public Guid Id { get; set; }
+        public Guid ProductCategoryId { get; set; }
         
-        public Guid CategoryId { get; set; }
-        
-        public Category Category { get; set; }
+        public ProductCategory ProductCategory { get; set; }
 
         public Guid ProductGroupId { get; set; }
         
