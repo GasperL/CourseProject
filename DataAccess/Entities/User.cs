@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 
 namespace DataAccess.Entities
 {
     public class User : IdentityUser
     {
-        public Guid OrderId { get; set; }
+        public ICollection<UserOrder> Orders { get; set; }
 
-        public Order Order { get; set; }
+        public Guid UserOrderId { get; set; }
+
+        public int BonusPoints { get; set; }
     }
 }

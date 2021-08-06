@@ -9,4 +9,15 @@
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.8" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Entities\BonusPoints.cs" />
+      <Compile Remove="Entities\PersonalDiscount.cs" />
+      <Compile Remove="Entities\UserDiscount.cs" />
+      <Compile Remove="Entities\UserOrderHistory.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Infrastructure" />
+    </ItemGroup>
+
 </Project>

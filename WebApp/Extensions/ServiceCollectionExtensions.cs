@@ -1,5 +1,9 @@
 using DataAccess;
 using DataAccess.Entities;
+using DataAccess.Entities.Common.Repositories.GenericRepository;
+using DataAccess.Entities.Common.Repositories.ProductRepository;
+using DataAccess.Entities.Common.Repositories.UserRepository;
+using DataAccess.Infrastructure.UnitOfWork;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -19,9 +23,17 @@ namespace WebApp.Extensions
             }
         }
 
+        public static void RegisterDependencies(this IServiceCollection services, IConfiguration configuration)
+        {   
+            services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
+        }
+
         public static void RegisterEntityFramework(this IServiceCollection services, IConfiguration configuration)
         {
-            string connection = configuration.GetConnectionString("DefaultConnection");
+            services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+            var connection = configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(connection));
             services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicationContext>();
         }

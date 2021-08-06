@@ -6,12 +6,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Core\Core.csproj" />
       <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
-      <ProjectReference Include="..\ProductManagement\ProductManagement.csproj" />
+      <ProjectReference Include="..\Not\Not.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.8" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.8" Condition="'$(Configuration)' == 'Debug'" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.8">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -22,6 +23,11 @@
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Models\UserAccount\Login.cshtml" />
       <_ContentIncludedByDefault Remove="Models\UserAccount\Register.cshtml" />
+      <_ContentIncludedByDefault Remove="Models\Profile\Index.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Models\Products" />
     </ItemGroup>
 
 </Project>

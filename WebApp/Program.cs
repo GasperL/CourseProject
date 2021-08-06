@@ -2,7 +2,6 @@ using System.Reflection.Metadata;
 using DataAccess.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using ProductManagement.Repositories;
 
 namespace WebApp
 {
