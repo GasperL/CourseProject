@@ -1,31 +1,36 @@
 ﻿@model WebApp.Models.Users.LoginViewModel
 
-<div class="container">
-    <div class="row">
-        <form method="post" asp-action="Login">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <fieldset>
-                <legend>Login:</legend>
-                <div class="mb-3">
-                    <label for="email-input" class="form-label">Email:</label>
-                    <input asp-for="Email" type="text" id="email-input" class="form-control" placeholder="Name">
-                    <span asp-validation-for="Email" class="text-danger"></span>
+<div class="row no-gutter">
+    <div class="col-md-6 bg-light align-items-center">
+        <div class="login d-flex  py-4">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-10 col-xl-7 mx-auto">
+                        <h3 class="display-4">Страница входа</h3>
+                        <p class="text-muted mb-4">Для того что бы войти введите логин и пароль</p>
+                        <form method="post" asp-action="Login">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group mb-3">
+                                <input id="inputEmail" asp-for="Email" type="text" placeholder="Email address" required="" autofocus="" class="form-control rounded-pill border-0 shadow-sm px-4">
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group mb-3">
+                                <input  id="inputPassword" asp-for="Password" type="password" placeholder="Password" required="" class="form-control rounded-pill border-0 shadow-sm px-4 text-primary">
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            <div class="custom-control custom-checkbox mb-3">
+                                <input id="customCheck1" asp-for="RememberMe" type="checkbox" checked class="custom-control-input">
+                                <label for="customCheck1" class="custom-control-label">Запомнить меня </label>
+                            </div>
+                            <input type="submit" value="Войти" class="btn btn-primary" />
+                        </form>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="password-input" class="form-label">Password:</label>
-                    <input asp-for="Password" type="password" id="password-input" class="form-control" placeholder="password">
-                    <span asp-validation-for="Password" class="text-danger"></span>
-                </div>
-                <div class="checkbox mb-3">
-                    <label>
-                        <input asp-for="RememberMe" type="checkbox"> Remember me
-                    </label>
-                </div>
-            </fieldset>
-            <input type="submit" value="Save" class="btn btn-primary" />
-        </form>
+            </div>
+        </div>
     </div>
 </div>
+
 @section Scripts
 {
     @{

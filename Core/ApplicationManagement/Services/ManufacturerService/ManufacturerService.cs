@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Core.Common.Options;
 using Core.Common.ViewModels;
 using DataAccess.Infrastructure.UnitOfWork;
@@ -16,12 +18,20 @@ namespace Core.ApplicationManagement.Services.ManufacturerService
 
         public async Task Create(CreatingManufacturerOptions options)
         {
-            
+            throw new InvalidCastException();
         }
 
-        public Task<ManufacturerViewModel[]> GetAll()
+        public async Task<ManufacturerViewModel[]> GetAll()
         {
-            throw new System.NotImplementedException();
+            var manufacturers = await _unitOfWork.Manufacturers.GetAll();
+
+            var manufacturerViewModels = manufacturers.Select(x => new ManufacturerViewModel
+            {
+                Id = x.Id,
+                Name = x.Name
+            }).ToArray();
+
+            return manufacturerViewModels;
         }
     }
 }

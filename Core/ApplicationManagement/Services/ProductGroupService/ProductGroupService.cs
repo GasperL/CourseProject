@@ -10,9 +10,9 @@ namespace Core.ApplicationManagement.Services.ProductGroupService
 {
     public class ProductGroupService : IProductGroupService
     {
-        private readonly UnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ProductGroupService(UnitOfWork unitOfWork)
+        public ProductGroupService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }

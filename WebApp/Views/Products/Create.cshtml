@@ -1,18 +1,24 @@
-﻿@model dynamic
+﻿@model Core.Common.ViewModels.ProductViewModel
 
-@{
-    Layout = null;
-}
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title>title</title>
-</head>
-<body>
-<div>
-      
+<div class="container">
+    <div class="row">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <fieldset>
+            <div class="mb-3">
+                <label for="currency-char-code" class="form-label">Currency:</label>
+                <select id="currency-char-code" class="form-control" asp-items="@Model.SelectCategory">
+                    <option>Please select one</option>
+                </select>
+            </div>
+        </fieldset>
+        <input type="submit" value="Save" class="btn btn-primary"/>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
 </div>
-</body>
-</html>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

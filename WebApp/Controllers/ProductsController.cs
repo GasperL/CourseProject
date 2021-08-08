@@ -1,9 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Core.ApplicationManagement.Services.CategoryService;
 using Core.ApplicationManagement.Services.ProductGroupService;
 using Core.ApplicationManagement.Services.ProductService;
 using Core.Common.Options;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 
 namespace WebApp.Controllers
@@ -30,23 +32,24 @@ namespace WebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await _product.GetAll());
+            var model = await _product.GetAllProducts();
+            return View(model);
         }
         
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var categories = await _category.GetAll();
-            var groups = await _group.GetAll();
+            var product = await _product.GetViewModel();
             
-            
-            return View();
+            return View(product);
         }
         
         [HttpPost]
         public IActionResult CreateProduct(CreatingProductOptions options)
         {
-            return null();
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            return Ok();
         }
     }
 }

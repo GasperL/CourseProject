@@ -1,3 +1,7 @@
+using Core.ApplicationManagement.Services.CategoryService;
+using Core.ApplicationManagement.Services.ManufacturerService;
+using Core.ApplicationManagement.Services.ProductGroupService;
+using Core.ApplicationManagement.Services.ProductService;
 using DataAccess;
 using DataAccess.Entities;
 using DataAccess.Entities.Common.Repositories.GenericRepository;
@@ -25,12 +29,16 @@ namespace WebApp.Extensions
 
         public static void RegisterDependencies(this IServiceCollection services, IConfiguration configuration)
         {   
-            services.AddTransient<IProductRepository, ProductRepository>();
-            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<IProductGroupService, ProductGroupService>();
+            services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<IManufacturerService, ManufacturerService>();
         }
 
         public static void RegisterEntityFramework(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             var connection = configuration.GetConnectionString("DefaultConnection");

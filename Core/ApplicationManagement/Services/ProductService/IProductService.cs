@@ -8,10 +8,12 @@ namespace Core.ApplicationManagement.Services.ProductService
     {
         Task Create(CreatingProductOptions options);
         
-        Task<ProductViewModel[]> GetAllAvailableProducts();
+        // Task<ProductViewModel[]> GetAllAvailableProducts();
+        //
+        // Task<ProductViewModel[]> GetAllUnavailableProducts();
 
-        Task<ProductViewModel[]> GetAllUnavailableProducts();
+        Task<ProductViewModel[]> GetAllProducts();
 
-        Task<ProductViewModel[]> GetAll();
+        Task<ProductViewModel> GetViewModel();
     }
 }
