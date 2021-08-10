@@ -14,5 +14,8 @@ namespace DataAccess.Entities
         public decimal Discount { get; set; }
 
         public int BonusPoints { get; set; }
+
+        [NotMapped]
+        public ProductGroup SelectProductGroup { get; set; }
     }
 }

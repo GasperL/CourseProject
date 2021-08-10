@@ -14,8 +14,6 @@ namespace DataAccess.Infrastructure.UnitOfWork
 
         public IGenericRepository<Category> Categories { get; }
         
-        public IGenericRepository<Provider> Providers { get; }
-        
         public IGenericRepository<Manufacturer> Manufacturers { get; }
 
         public IGenericRepository<ProductGroup> ProductGroups { get; }
@@ -28,7 +26,6 @@ namespace DataAccess.Infrastructure.UnitOfWork
             IUserRepository users,
             IGenericRepository<Category> category, 
             IGenericRepository<ProductGroup> productGroups, 
-            IGenericRepository<Provider> providers, 
             IGenericRepository<Manufacturer> manufacturers)
         {
             _context = context;
@@ -36,7 +33,6 @@ namespace DataAccess.Infrastructure.UnitOfWork
             Users = users;
             Categories = category;
             ProductGroups = productGroups;
-            Providers = providers;
             Manufacturers = manufacturers;
         }
 

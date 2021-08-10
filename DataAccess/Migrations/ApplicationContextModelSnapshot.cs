@@ -51,6 +51,35 @@ namespace DataAccess.Migrations
                     b.ToTable("Manufacturer");
                 });
 
+            modelBuilder.Entity("DataAccess.Entities.OrderHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsOrderSuccessful")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("ProviderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("UserOrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProviderId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserOrderId");
+
+                    b.ToTable("OrderHistory");
+                });
+
             modelBuilder.Entity("DataAccess.Entities.OrderItem", b =>
                 {
                     b.Property<Guid>("Id")
@@ -164,7 +193,15 @@ namespace DataAccess.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("RoleId1")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("RoleId1");
 
                     b.ToTable("Provider");
                 });
@@ -205,6 +242,9 @@ namespace DataAccess.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<Guid>("OrderHistoryId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
@@ -224,9 +264,6 @@ namespace DataAccess.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<Guid>("UserOrderId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -245,9 +282,6 @@ namespace DataAccess.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("decimal(18,4)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -390,6 +424,31 @@ namespace DataAccess.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("DataAccess.Entities.OrderHistory", b =>
+                {
+                    b.HasOne("DataAccess.Entities.Provider", "Provider")
+                        .WithMany()
+                        .HasForeignKey("ProviderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataAccess.Entities.User", "User")
+                        .WithMany("OrderHistories")
+                        .HasForeignKey("UserId");
+
+                    b.HasOne("DataAccess.Entities.UserOrder", "UserOrder")
+                        .WithMany()
+                        .HasForeignKey("UserOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Provider");
+
+                    b.Navigation("User");
+
+                    b.Navigation("UserOrder");
+                });
+
             modelBuilder.Entity("DataAccess.Entities.OrderItem", b =>
                 {
                     b.HasOne("DataAccess.Entities.Product", "Product")
@@ -444,10 +503,19 @@ namespace DataAccess.Migrations
                     b.Navigation("Provider");
                 });
 
+            modelBuilder.Entity("DataAccess.Entities.Provider", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId1");
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("DataAccess.Entities.UserOrder", b =>
                 {
                     b.HasOne("DataAccess.Entities.User", "User")
-                        .WithMany("Orders")
+                        .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
@@ -506,7 +574,7 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Entities.User", b =>
                 {
-                    b.Navigation("Orders");
+                    b.Navigation("OrderHistories");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.UserOrder", b =>

@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
-using Core.Common.Options;
 using Core.Common.ViewModels;
+using CreateProductViewModel = Core.Common.CreateViewModels.CreateProductViewModel;
 
 namespace Core.ApplicationManagement.Services.ProductService
 {
     public interface IProductService
     {
-        Task Create(CreatingProductOptions options);
+        Task Add(CreateProductViewModel viewModel);
         
         // Task<ProductViewModel[]> GetAllAvailableProducts();
         //
@@ -14,6 +14,6 @@ namespace Core.ApplicationManagement.Services.ProductService
 
         Task<ProductViewModel[]> GetAllProducts();
 
-        Task<ProductViewModel> GetViewModel();
+        Task<CreateProductViewModel> CreateProductViewModel();
     }
 }

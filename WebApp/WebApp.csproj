@@ -25,8 +25,4 @@
       <_ContentIncludedByDefault Remove="Models\Profile\Index.cshtml" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Models\Products" />
-    </ItemGroup>
-
 </Project>

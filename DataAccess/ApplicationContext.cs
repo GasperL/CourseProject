@@ -33,7 +33,7 @@ namespace DataAccess
             base.OnModelCreating(builder);
         
             builder.Entity<User>()
-                .HasMany(x => x.Orders)
+                .HasMany(x => x.OrderHistories)
                 .WithOne(x => x.User)
                 .HasForeignKey(x => x.UserId);
             
@@ -46,6 +46,21 @@ namespace DataAccess
                 .HasOne(x => x.Product)
                 .WithMany()
                 .HasForeignKey(x => x.ProductId);
+
+            builder.Entity<OrderHistory>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.OrderHistories)
+                .HasForeignKey(x => x.UserId);
+            
+            builder.Entity<OrderHistory>()
+                .HasOne(x => x.Provider)
+                .WithMany()
+                .HasForeignKey(x => x.ProviderId);
+            
+            builder.Entity<OrderHistory>()
+                .HasOne(x => x.UserOrder)
+                .WithMany()
+                .HasForeignKey(x => x.UserOrderId);
             
             builder.Entity<Product>()
                 .HasOne(x => x.Category)

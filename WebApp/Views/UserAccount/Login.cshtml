@@ -1,16 +1,13 @@
 ﻿@model WebApp.Models.Users.LoginViewModel
 
-<div class="row no-gutter">
-    <div class="col-md-6 bg-light align-items-center">
-        <div class="login d-flex  py-4">
-            <div class="container">
+    <div class="col-md-6 bg-light rounded-3 mx-auto">
+            <div class="container py-4">
                 <div class="row">
-                    <div class="col-lg-10 col-xl-7 mx-auto">
-                        <h3 class="display-4">Страница входа</h3>
-                        <p class="text-muted mb-4">Для того что бы войти введите логин и пароль</p>
+                    <div class="col-xl-6 mx-auto">
+                        <h3 class="display-4 text-center">Войти</h3>
                         <form method="post" asp-action="Login">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <div class="form-group mb-3">
+                            <div class="form-group py-3 mb-3">
                                 <input id="inputEmail" asp-for="Email" type="text" placeholder="Email address" required="" autofocus="" class="form-control rounded-pill border-0 shadow-sm px-4">
                                 <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
@@ -28,8 +25,6 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
 @section Scripts
 {

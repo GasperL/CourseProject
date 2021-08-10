@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Core.Common.Options;
+using Core.Common.CreateViewModels;
 using Core.Common.ViewModels;
 using DataAccess.Entities;
 using DataAccess.Infrastructure.UnitOfWork;
@@ -17,7 +17,7 @@ namespace Core.ApplicationManagement.Services.ProductGroupService
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Create(CreatingProductGroupOptions options)
+        public async Task Create(CreateProductGroupViewModel options)
         {
             var id = Guid.NewGuid();
             

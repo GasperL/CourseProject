@@ -24,9 +24,9 @@ namespace DataAccess.Entities.Common.Repositories.UserRepository
             return _roleManager.Roles.ToArrayAsync();
         }
 
-        public Task<IdentityResult> CreateRole(string roleName)
+        public async Task<IdentityResult> CreateRole(string roleName)
         {
-            return _roleManager.CreateAsync(new IdentityRole(roleName));
+            return await _roleManager.CreateAsync(new IdentityRole(roleName));
         }
 
         public Task<IdentityRole> FindRoleById(string roleId)
@@ -69,9 +69,9 @@ namespace DataAccess.Entities.Common.Repositories.UserRepository
             return _userManager.UpdateAsync(user);
         }
 
-        public Task<IdentityResult> Create(User user, string password)
+        public async Task<IdentityResult> Create(User user, string password)
         {
-            return _userManager.CreateAsync(user, password);
+            return await _userManager.CreateAsync(user, password);
         }
     }
 }

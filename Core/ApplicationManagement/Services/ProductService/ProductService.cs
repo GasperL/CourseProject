@@ -1,64 +1,53 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Core.ApplicationManagement.Services.CategoryService;
 using Core.ApplicationManagement.Services.ManufacturerService;
 using Core.ApplicationManagement.Services.ProductGroupService;
-using Core.Common.Options;
 using Core.Common.ViewModels;
 using DataAccess.Entities;
 using DataAccess.Entities.Common.Repositories.UserRepository;
 using DataAccess.Infrastructure.UnitOfWork;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using CreateProductViewModel = Core.Common.CreateViewModels.CreateProductViewModel;
 
 namespace Core.ApplicationManagement.Services.ProductService
 {
     public class ProductService : IProductService
     {
-        private readonly IProductGroupService _group;
-        private readonly ICategoryService _category;
-        private readonly IManufacturerService _manufacturer;
         private readonly IUnitOfWork _unitOfWork;
 
-        public ProductService(
-            IUnitOfWork unitOfWork, 
-            ICategoryService category, 
-            IProductGroupService group, 
-            IManufacturerService manufacturer)
+        public ProductService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _category = category;
-            _group = group;
-            _manufacturer = manufacturer;
         }
 
-        public async Task Create(CreatingProductOptions options)
+        public async Task Add(CreateProductViewModel viewModel)
         {
-            var id = Guid.NewGuid(); 
-                
+            var id = Guid.NewGuid();
             await _unitOfWork.Products.Add(new Product
             {
                 Id = id,
-                Category = options.Category,
-                CategoryId = options.Category.Id,
+                CategoryId = viewModel.CategoryId,
+                ProductGroupId = viewModel.ProductGroupId,
+                ManufacturerId = viewModel.ManufacturerId,
+                Price = viewModel.Price,
                 IsAvailable = false,
-                Manufacturer = options.Manufacturer,
-                ManufacturerId = options.Manufacturer.Id,
-                Price = options.Price,
-                ProductGroup = options.Group,
-                ProductGroupId = options.Group.Id,
-                ProductName = options.ProductName,
-                Amount = options.Amount
+                ProductName = viewModel.ProductName,
+                Amount = viewModel.Amount
             });
+            
+            await _unitOfWork.Commit();
         }
 
-        public async Task<ProductViewModel> GetViewModel()
+        public async Task<CreateProductViewModel> CreateProductViewModel()
         {
             var selectGroups = await GetSelectingGroup();
             var selectManufacturer = await GetSelectingManufacturer();
             var selectCategory = await GetSelectingCategory();
-
-            return new ProductViewModel
+            
+            return new CreateProductViewModel
             {
                 SelectCategory = selectCategory,
                 SelectManufacturer = selectManufacturer,
@@ -130,47 +119,41 @@ namespace Core.ApplicationManagement.Services.ProductService
         //     return productModels;
         // }
         
-        private async Task<SelectList> GetSelectingCategory()
+        private async Task<SelectListItem[]> GetSelectingCategory()
         {
             var categories = await _unitOfWork.Categories.GetAll();
 
-            var categoriesName = categories
-                .Select(x => x.Name);
-
-            var categoriesValue = categories
-                .Select(x => x.Id);
-
-            var selectList = new SelectList (categoriesName, categoriesValue);
+            var selectList = categories.Select(x => new SelectListItem
+            {
+                Value = x.Id.ToString(),
+                Text = x.Name
+            }).ToArray();
 
             return selectList;
         }
         
-        private async Task<SelectList> GetSelectingManufacturer()
+        private async Task<SelectListItem[]> GetSelectingManufacturer()
         {
             var manufacturers = await _unitOfWork.Manufacturers.GetAll();
 
-            var manufacturerNames = manufacturers
-                .Select(x => x.Name);
-
-            var manufacturerValues = manufacturers
-                .Select(x => x.Id);
-
-            var selectList = new SelectList (manufacturerNames, manufacturerValues);
+            var selectList = manufacturers.Select(x => new SelectListItem
+            {
+                Value = x.Id.ToString(),
+                Text = x.Name
+            }).ToArray();
 
             return selectList;
         }
 
-        private async Task<SelectList> GetSelectingGroup()
+        private async Task<SelectListItem[]> GetSelectingGroup()
         {
-            var productGroups = await _unitOfWork.ProductGroups.GetAll();
+            var groups = await _unitOfWork.ProductGroups.GetAll();
 
-            var groupNames = productGroups
-                .Select(x => x.Name);
-
-            var groupsValues = productGroups
-                .Select(x => x.Id);
-
-            var selectList = new SelectList (groupNames, groupsValues);
+            var selectList = groups.Select(x => new SelectListItem
+            {
+                Value = x.Id.ToString(),
+                Text = x.Name
+            }).ToArray();
 
             return selectList;
         }

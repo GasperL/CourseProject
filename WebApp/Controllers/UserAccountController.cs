@@ -31,7 +31,12 @@ namespace WebApp.Controllers
                 return View(model);
             }
 
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+            var result = await _signInManager.PasswordSignInAsync(
+                model.Email, 
+                model.Password, 
+                model.RememberMe, 
+                false);
+           
             if (result.Succeeded)
             {
                 if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))

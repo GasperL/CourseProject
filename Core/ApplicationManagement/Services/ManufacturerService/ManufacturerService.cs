@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Core.Common.Options;
+using Core.Common.CreateViewModels;
 using Core.Common.ViewModels;
+using DataAccess.Entities;
 using DataAccess.Infrastructure.UnitOfWork;
 
 namespace Core.ApplicationManagement.Services.ManufacturerService
@@ -16,9 +17,15 @@ namespace Core.ApplicationManagement.Services.ManufacturerService
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Create(CreatingManufacturerOptions options)
+        public async Task Create(CreateManufacturerViewModel viewModel)
         {
-            throw new InvalidCastException();
+            var id = Guid.NewGuid();
+            
+            await _unitOfWork.Manufacturers.Add(new Manufacturer
+            {
+                Id = id,
+                Name = viewModel.Name
+            });
         }
 
         public async Task<ManufacturerViewModel[]> GetAll()

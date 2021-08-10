@@ -5,24 +5,19 @@
         <form method="post" asp-action="Create" asp-controller="Users">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <fieldset>
-                <legend>Create user:</legend>
+                <legend>Регистрация</legend>
                 <div class="mb-3">
-                    <label for="email-input" class="form-label">Name</label>
+                    <label for="email-input" class="form-label">Имя</label>
                     <input asp-for="Email" type="email" id="email-input" class="form-control" placeholder="Email">
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
-                    <label for="password-input" class="form-label">Password</label>
+                    <label for="password-input" class="form-label">Пароль</label>
                     <input asp-for="Password" type="password" id="password-input" class="form-control" placeholder="Password">
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
-                <div class="mb-3">
-                    <label for="age-input" class="form-label">Age</label>
-                    <input asp-for="Age" type="text" id="age-input" class="form-control" placeholder="Age">
-                    <span asp-validation-for="Age" class="text-danger"></span>
-                </div>
             </fieldset>
-            <input type="submit" value="Save" class="btn btn-primary" />
+            <a type="submit" value="зарегистрироваться" class="btn btn-primary"> </a>
             <a asp-action="Index" class="btn btn-secondary">Back to List</a>
         </form>
     </div>

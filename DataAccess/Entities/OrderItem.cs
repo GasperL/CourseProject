@@ -24,7 +24,7 @@ namespace DataAccess.Entities
         [Column(TypeName = "decimal(18,4)")]
         [Required]
         public decimal Price { get; set; }
-
+    
         [Column(TypeName = "decimal(18,4)")]
         public decimal Discount { get; set; }
     }

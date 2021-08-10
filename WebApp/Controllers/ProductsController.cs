@@ -1,32 +1,25 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Core.ApplicationManagement.Services.CategoryService;
-using Core.ApplicationManagement.Services.ProductGroupService;
+﻿using System.Threading.Tasks;
 using Core.ApplicationManagement.Services.ProductService;
-using Core.Common.Options;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using CreateProductViewModel = Core.Common.CreateViewModels.CreateProductViewModel;
 
 namespace WebApp.Controllers
 {
+    // [Authorize(Roles = WebApplicationConstants.Roles.Provider)]
+    // [Authorize(Roles = WebApplicationConstants.Roles.Administrator)]
     public class ProductsController : Controller
     {
         private readonly IProductService _product;
-        private readonly ICategoryService _category;
-        private readonly IProductGroupService _group;
         private readonly ILogger<HomeController> _logger;
 
         public ProductsController(
-            IProductService product, 
-            ILogger<HomeController> logger, 
-            ICategoryService category, 
-            IProductGroupService @group)
+            IProductService product,
+            ILogger<HomeController> logger
+        )
         {
             _product = product;
             _logger = logger;
-            _category = category;
-            _group = @group;
         }
 
         [HttpGet]
@@ -35,21 +28,30 @@ namespace WebApp.Controllers
             var model = await _product.GetAllProducts();
             return View(model);
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var product = await _product.GetViewModel();
+            // var userId =  User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            //
+            // if (!User.IsInRole(WebApplicationConstants.Roles.Provider) || userId == null)
+            // {
+            //     RedirectToAction("Index", "Home");
+            // }
+            
+            var product = await _product.CreateProductViewModel();
             
             return View(product);
         }
-        
+
         [HttpPost]
-        public IActionResult CreateProduct(CreatingProductOptions options)
+        public async Task<IActionResult> NewProduct(CreateProductViewModel viewModel)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
+            
+            await _product.Add(viewModel);
 
-            return Ok();
+            return RedirectToAction("Index");
         }
     }
 }

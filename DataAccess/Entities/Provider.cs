@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace DataAccess.Entities
 {
-    public class Provider : BaseEntity
+    public class Provider : User
     {
         [MaxLength(20)]
         [Required]

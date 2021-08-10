@@ -1,8 +1,7 @@
-using System.Linq;
 using System.Threading.Tasks;
+using Core.ApplicationManagement.Services.UserService;
 using DataAccess.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.Models.Users;
 
@@ -11,23 +10,18 @@ namespace WebApp.Controllers
     [Authorize]
     public class UsersController : Controller
     {
-        private readonly UserManager<User> _userManager;
-
-        public UsersController(UserManager<User> userManager)
+        private readonly IUserService _userService;
+        public UsersController(IUserService userService)
         {
-            _userManager = userManager;
+            _userService = userService;
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var users = _userManager.Users.ToArray();
-            return View(users.Select(x => new UserViewModel
-            {
-                Id = x.Id,
-                Email = x.Email,
-            }).ToArray());
+            return View(await _userService.GetAllUserModels());
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Details(string id)
@@ -37,33 +31,27 @@ namespace WebApp.Controllers
                 return BadRequest();
             }
 
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
+            var userModel = await _userService.GetUserModel(id);
+            
+            if (userModel == null)
             {
                 return BadRequest();
             }
 
-            return View("UserDetails", new UserViewModel
-            {
-                Email = user.Email,
-                Id = user.Id,
-            });
+            return View("UserDetails", userModel);
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
+            var userModel = await _userService.GetUserModel(id);
+            
+            if (userModel == null)
             {
                 return BadRequest();
             }
 
-            return View(new UserViewModel
-            {
-                Email = user.Email,
-                Id = user.Id,
-            });
+            return View(userModel);
         }
 
         [HttpPost]
@@ -74,15 +62,16 @@ namespace WebApp.Controllers
                 return BadRequest();
             }
 
-            var userToUpdate = await _userManager.FindByIdAsync(userViewModel.Id);
+            var userToUpdate = await _userService.GetUserModel(userViewModel.Id);
+            
             if (userToUpdate == null)
             {
                 return BadRequest();
             }
 
             userToUpdate.Email = userViewModel.Email;
-            userToUpdate.UserName = userViewModel.Email;
-            await _userManager.UpdateAsync(userToUpdate);
+            
+            await _userService.UpdateAsync(userToUpdate);
 
             return RedirectToAction("Index");
         }
@@ -101,13 +90,8 @@ namespace WebApp.Controllers
                 return BadRequest();
             }
 
-            var user = new User
-            {
-                Email = model.Email,
-                UserName = model.Email
-            };
-
-            IdentityResult result = await _userManager.CreateAsync(user, model.Password);
+            var result = await _userService.Create(model);
+            
             if (result.Succeeded)
             {
                 return RedirectToAction("Index");
@@ -116,9 +100,8 @@ namespace WebApp.Controllers
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, $"(${error.Code}) ${error.Description})");
-
             }
-
+            
             return View(model);
         }
     }

@@ -1,18 +1,68 @@
-﻿@model Core.Common.ViewModels.ProductViewModel
+﻿@model Core.Common.CreateViewModels.CreateProductViewModel
 
 <div class="container">
     <div class="row">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <fieldset>
-            <div class="mb-3">
-                <label for="currency-char-code" class="form-label">Currency:</label>
-                <select id="currency-char-code" class="form-control" asp-items="@Model.SelectCategory">
-                    <option>Please select one</option>
-                </select>
+        <div class="col-md-5 bg-light rounded mx-auto">
+            <div class="container">
+                <div class="row-cols-1 py-3">
+                    <h1 class="text-center">Добавление товара</h1>
+                </div>
             </div>
-        </fieldset>
-        <input type="submit" value="Save" class="btn btn-primary"/>
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            <form method="post" asp-action="NewProduct">
+                <input type="hidden" asp-for="ProviderId">
+                <div asp-validation-summary="ModelOnly" class="text-danger "></div>
+                <div class="col-sm-9 mx-auto">
+                    <div class="container">
+                        <fieldset>
+                            <div class="mb-3">
+                                <label for="input-product-name" class="form-label">Имя товара:</label>
+                                <input asp-for="ProductName" type="text" value="@Model.ProductName" id="input-product-name" class="form-control" placeholder="Имя товара">
+                                <span asp-validation-for="ProductName" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label for="select-category" class="form-label">Категория: </label>
+                                <select id="select-category" class="form-control" asp-for="CategoryId" asp-items="@Model.SelectCategory">
+                                    <option>Выберите из cписка</option>
+                                </select>
+                                <span asp-validation-for="CategoryId" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label for="select-manufacturer" class="form-label">Производитель: </label>
+                                <select id="select-manufacturer" class="form-control" asp-for="ManufacturerId" asp-items="@Model.SelectManufacturer">
+                                    <option>Выберите из cписка</option>
+                                </select>
+                                <span asp-validation-for="ManufacturerId" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label for="select-product-group" class="form-label">Группа продуктов:</label>
+                                <select id="select-product-group" class="form-control" asp-for="ProductGroupId" asp-items="@Model.SelectProductGroups">
+                                    <option>Выберите из cписка</option>
+                                </select>
+                                <span asp-validation-for="ProductGroupId" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label for="input-product-amount" class="form-label">Количество:</label>
+                                <input asp-for="Amount" type="text" value="@Model.Amount" id="input-product-amount" class="form-control" placeholder="Количество">
+                                <span asp-validation-for="Amount" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label for="input-product-price" class="form-label">Цена:</label>
+                                <input asp-for="Price" type="text" value="@Model.Price" id="input-product-price" class="form-control" placeholder="Цена">
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+                            <div class="container my-1">
+                                <div class="row-cols-1 py-2">
+                                    <input type="submit" value="Добавить" class="btn btn-primary"/>
+                                </div>
+                                <div class="row-cols-1 py-2">
+                                    <a asp-action="Index" class="btn btn-secondary">Вернутся назад</a>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 

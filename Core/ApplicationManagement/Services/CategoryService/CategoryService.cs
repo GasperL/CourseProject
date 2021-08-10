@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Core.Common.Options;
+using Core.Common.CreateViewModels;
 using Core.Common.ViewModels;
 using DataAccess.Entities;
 using DataAccess.Infrastructure.UnitOfWork;
@@ -17,13 +17,13 @@ namespace Core.ApplicationManagement.Services.CategoryService
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Create(CreatingCategoryOptions options)
+        public async Task Create(CreateCategoryViewModel viewModel)
         {
             var id = Guid.NewGuid();
             await _unitOfWork.Categories.Add(new Category
             {
                 Id = id,
-                Name = options.Name
+                Name = viewModel.Name
             });
         }
 

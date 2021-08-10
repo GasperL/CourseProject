@@ -14,8 +14,6 @@ namespace DataAccess.Infrastructure.UnitOfWork
         
         IGenericRepository<Category> Categories { get; }
         
-        IGenericRepository<Provider> Providers { get; }
-        
         IGenericRepository<Manufacturer> Manufacturers { get; }
         
         IGenericRepository<ProductGroup> ProductGroups { get; }

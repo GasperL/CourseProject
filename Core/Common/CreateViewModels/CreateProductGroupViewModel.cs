@@ -1,11 +1,7 @@
-﻿using System;
-
-namespace Core.Common.Options
+﻿namespace Core.Common.CreateViewModels
 {
-    public class CreatingProductGroupOptions
+    public class CreateProductGroupViewModel
     {
-        public Guid Id { get; set; }
-
         public string Name { get; set; }
         
         public decimal Discount { get; set; }
