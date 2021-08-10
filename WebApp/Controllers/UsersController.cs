@@ -1,9 +1,10 @@
 using System.Threading.Tasks;
 using Core.ApplicationManagement.Services.UserService;
+using Core.Common.CreateViewModels;
+using Core.Common.ViewModels.Users;
 using DataAccess.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.Models.Users;
 
 namespace WebApp.Controllers
 {

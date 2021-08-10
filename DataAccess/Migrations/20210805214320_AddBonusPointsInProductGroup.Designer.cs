@@ -76,14 +76,14 @@ namespace DataAccess.Migrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("OrderHistoryId")
+                    b.Property<Guid>("UserOrderId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("OrderHistoryId");
+                    b.HasIndex("UserOrderId");
 
                     b.ToTable("OrderItems");
                 });
@@ -226,7 +226,7 @@ namespace DataAccess.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<Guid>("OrderHistoryId")
+                    b.Property<Guid>("UserOrderId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -402,7 +402,7 @@ namespace DataAccess.Migrations
 
                     b.HasOne("DataAccess.Entities.UserOrder", "UserOrder")
                         .WithMany("OrderItems")
-                        .HasForeignKey("OrderHistoryId")
+                        .HasForeignKey("UserOrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -449,7 +449,7 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("DataAccess.Entities.UserOrder", b =>
                 {
                     b.HasOne("DataAccess.Entities.User", "User")
-                        .WithMany("OrderHistories")
+                        .WithMany("UserOrders")
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
@@ -508,7 +508,7 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Entities.User", b =>
                 {
-                    b.Navigation("OrderHistories");
+                    b.Navigation("UserOrders");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.UserOrder", b =>

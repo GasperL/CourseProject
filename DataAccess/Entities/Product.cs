@@ -17,7 +17,7 @@ namespace DataAccess.Entities
         public ProductGroup ProductGroup { get; set; }
         
         [Required]
-        public Guid ProviderId { get; set; }
+        public string ProviderId { get; set; }
         
         public Provider Provider { get; set; }
         

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WebApp.Models.Users
+namespace Core.Common.ViewModels.Users
 {
     public class LoginViewModel
     {

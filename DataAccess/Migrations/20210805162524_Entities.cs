@@ -341,7 +341,7 @@ namespace DataAccess.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_UserOrderId",
                 table: "OrderItems",
-                column: "OrderHistoryId");
+                column: "UserOrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Product_CategoryId",

@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
+using Core.Common.ViewModels.Users;
 using DataAccess.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.Models.Users;
 
 namespace WebApp.Controllers
 {
@@ -77,6 +77,7 @@ namespace WebApp.Controllers
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
+            
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, false);

@@ -10,8 +10,6 @@ namespace DataAccess.Entities
         [Required]
         public string Name { get; set; }
 
-        public IdentityRole Role { get; set; }
-        
         public Guid RoleId { get; set; }
     }
 }

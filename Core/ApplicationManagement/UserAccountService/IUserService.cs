@@ -3,7 +3,7 @@ using Core.Common.CreateViewModels;
 using Core.Common.ViewModels.Users;
 using Microsoft.AspNetCore.Identity;
 
-namespace Core.ApplicationManagement.Services.UserService
+namespace Core.ApplicationManagement.UserAccountService
 {
     public interface IUserService
     {

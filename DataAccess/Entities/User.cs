@@ -6,9 +6,9 @@ namespace DataAccess.Entities
 {
     public class User : IdentityUser
     {
-        public ICollection<OrderHistory> OrderHistories { get; set; }
+        public ICollection<UserOrder> UserOrders { get; set; }
 
-        public Guid OrderHistoryId { get; set; }
+        public Guid UserOrderId { get; set; }
 
         public int BonusPoints { get; set; }
     }

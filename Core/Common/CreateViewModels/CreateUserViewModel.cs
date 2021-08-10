@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApp.Models.Users
+namespace Core.Common.CreateViewModels
 {
     public class CreateUserViewModel
     {
@@ -9,5 +9,11 @@ namespace WebApp.Models.Users
 
         [Required]
         public string Password { get; set; }
+    }
+
+    public enum UserType
+    {
+        User,
+        Provider,
     }
 }

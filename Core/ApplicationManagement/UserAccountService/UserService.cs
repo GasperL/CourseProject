@@ -5,9 +5,10 @@ using Core.Common.ViewModels.Users;
 using DataAccess.Entities;
 using DataAccess.Infrastructure.UnitOfWork;
 using Microsoft.AspNetCore.Identity;
-namespace Core.ApplicationManagement.Services.UserService
+
+namespace Core.ApplicationManagement.UserAccountService
 {
-    public class UserService : IUserService
+    public class UserService : Services.UserService.IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
 
