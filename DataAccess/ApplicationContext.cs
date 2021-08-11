@@ -21,12 +21,11 @@ namespace DataAccess
         public DbSet<ProductGroup> ProductGroup { get; set; }
 
         public DbSet<Category> ProductCategory { get; set; }
-
+        
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
         }
-
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -35,7 +34,7 @@ namespace DataAccess
             builder.Entity<User>()
                 .HasMany(x => x.UserOrders)
                 .WithOne(x => x.User)
-                .HasForeignKey(x => x.User);
+                .HasForeignKey(x => x.UserId);
             
             builder.Entity<UserOrder>()
                 .HasMany(x => x.OrderItems)
@@ -66,6 +65,16 @@ namespace DataAccess
                 .HasOne(x => x.Manufacturer)
                 .WithMany()
                 .HasForeignKey(x => x.ManufacturerId);
+
+            builder.Entity<ProviderRequest>()
+                .HasOne(x => x.User)
+                .WithMany()
+                .HasForeignKey(x => x.UserId);
+
+            builder.Entity<ApprovedProvider>()
+                .HasOne(x => x.Provider)
+                .WithMany()
+                .HasForeignKey(x => x.ProviderId);
         }
     }
 }

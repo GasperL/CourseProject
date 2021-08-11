@@ -55,12 +55,12 @@
                 @if (User.Identity.IsAuthenticated)
                 {
                     <a type="button" class="btn btn-outline-light me-2" asp-controller="Profile" asp-action="Index">Профиль</a>
-                    <a type="button" class="btn btn-warning me-2" asp-controller="UserAccount" asp-action="Logout">Logout</a>
+                    <a type="button" class="btn btn-warning me-2" asp-controller="Account" asp-action="Logout">Logout</a>
                 }
                 else
                 {
-                    <a type="button" class="btn btn-outline-light me-2" asp-controller="UserAccount" asp-action="Login">Login</a>
-                    <a type="button" class="btn btn-warning" asp-controller="UserAccount" asp-action="Register">Sign-up</a>
+                    <a type="button" class="btn btn-outline-light me-2" asp-controller="Account" asp-action="Login">Login</a>
+                    <a type="button" class="btn btn-warning" asp-controller="Account" asp-action="Register">Sign-up</a>
                 }
             </div>
         </div>

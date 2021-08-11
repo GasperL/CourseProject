@@ -1,12 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using System.Threading.Tasks;
+using Core.ApplicationManagement.Services.UserService;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers
 {
     public class ProfileController : Controller
     {
-        public IActionResult Index()
+
+        private readonly IUserAccountService _userAccountService;
+
+        public ProfileController(IUserAccountService userAccountService)
         {
-            return View();
+            _userAccountService = userAccountService;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var userId =  User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = await _userAccountService.GetUserModel(userId);
+            
+            return View(user);
         }
     }
 }

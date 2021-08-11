@@ -1,18 +1,16 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Core.Common.CreateViewModels;
 using Core.Common.ViewModels.Users;
 using DataAccess.Entities;
 using DataAccess.Infrastructure.UnitOfWork;
 using Microsoft.AspNetCore.Identity;
-
-namespace Core.ApplicationManagement.UserAccountService
+namespace Core.ApplicationManagement.Services.UserService
 {
-    public class UserService : Services.UserService.IUserService
+    public class UserAccountService : IUserAccountService
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public UserService(IUnitOfWork unitOfWork)
+        public UserAccountService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -38,6 +36,7 @@ namespace Core.ApplicationManagement.UserAccountService
             {
                 Email = user.Email,
                 Id = user.Id,
+                UserName = user.UserName
             };
 
             return model;
@@ -56,14 +55,34 @@ namespace Core.ApplicationManagement.UserAccountService
             await _unitOfWork.Commit();
         }
         
-        public Task<IdentityResult> Create(CreateUserViewModel model)
+        public async Task<(IdentityResult, User)> Create(RegisterViewModel model)
         {
             var user = new User
             {
                 Email = model.Email,
+                UserName = model.UserName
             };
                 
-            return _unitOfWork.Users.Create(user, model.Password);
+            var result = await _unitOfWork.Users.Create(user, model.Password);
+
+            return (result, user);
+        }
+
+        public async Task<SignInResult> SignIn(LoginViewModel model)
+        {
+
+            var result = await _unitOfWork.Users.SignIn(
+                model.Username, 
+                model.Password, 
+                model.RememberMe, 
+                false);
+
+            return result;
+        }
+        
+        public async Task SignOut()
+        {
+            await _unitOfWork.Users.SignOut();
         }
     }
 }

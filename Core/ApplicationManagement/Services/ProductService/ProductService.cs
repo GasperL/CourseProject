@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using Core.ApplicationManagement.Services.CategoryService;
-using Core.ApplicationManagement.Services.ManufacturerService;
-using Core.ApplicationManagement.Services.ProductGroupService;
 using Core.Common.ViewModels;
 using DataAccess.Entities;
-using DataAccess.Entities.Common.Repositories.UserRepository;
 using DataAccess.Infrastructure.UnitOfWork;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using CreateProductViewModel = Core.Common.CreateViewModels.CreateProductViewModel;
@@ -26,6 +21,7 @@ namespace Core.ApplicationManagement.Services.ProductService
         public async Task Add(CreateProductViewModel viewModel)
         {
             var id = Guid.NewGuid();
+            
             await _unitOfWork.Products.Add(new Product
             {
                 Id = id,
@@ -41,11 +37,15 @@ namespace Core.ApplicationManagement.Services.ProductService
             await _unitOfWork.Commit();
         }
 
-        public async Task<CreateProductViewModel> CreateProductViewModel()
+        public async Task<CreateProductViewModel> CreateProductViewModel(string userId)
         {
             var selectGroups = await GetSelectingGroup();
             var selectManufacturer = await GetSelectingManufacturer();
             var selectCategory = await GetSelectingCategory();
+
+            var user = await _unitOfWork.Users.FindUserById(userId);
+
+            var userRoles = await _unitOfWork.Users.GetUserRoleIds(user);
             
             return new CreateProductViewModel
             {

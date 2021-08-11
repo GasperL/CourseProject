@@ -2,6 +2,7 @@ using Core.ApplicationManagement.Services.CategoryService;
 using Core.ApplicationManagement.Services.ManufacturerService;
 using Core.ApplicationManagement.Services.ProductGroupService;
 using Core.ApplicationManagement.Services.ProductService;
+using Core.ApplicationManagement.Services.UserService;
 using DataAccess;
 using DataAccess.Entities;
 using DataAccess.Entities.Common.Repositories.GenericRepository;
@@ -30,6 +31,7 @@ namespace WebApp.Extensions
         public static void RegisterDependencies(this IServiceCollection services, IConfiguration configuration)
         {   
             services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<IUserAccountService, UserAccountService>();
             services.AddTransient<IProductGroupService, ProductGroupService>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IManufacturerService, ManufacturerService>();

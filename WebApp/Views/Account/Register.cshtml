@@ -1,0 +1,62 @@
+﻿@model Core.Common.ViewModels.Users.RegisterViewModel
+
+<div class="col-sm-6 bg-light rounded-3 mx-auto">
+    <div class="container py-2">
+        <div class="row">
+            <div class="col-xl-6 mx-auto">
+                <h3 class="display-4 text-center my-4">Регистрация</h3>
+                <form method="post" asp-action="Register">
+                    <div class="container">
+                        <div class="row-cols-1 py-1">
+                            <a href="" class="btn btn-block btn-twitter"> <i class="fab fa-twitter"></i> Войти через twitter</a>
+                        </div>
+                        <div class="row-cols-1 py-1">
+                            <a href="" class="btn btn-block btn-facebook"> <i class="fab fa-facebook-f"></i> Войти через facebook</a>
+                        </div>
+                        <div class="row-cols-1 py-1">
+                            <a href="" class="btn btn-block btn-vk"> <i class="fab fa-vk"></i> Войти через вконтакте</a>
+                        </div>
+                        <p class="divider-text">
+                            <span class="bg-light">или</span>
+                        </p>
+                    </div>
+                    <div class="container">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="row-cols-1 small mb-1">
+                            <label for="input-username" class="form-label"></label>
+                            <input id="input-username" asp-for="UserName" type="text" placeholder="Username" required="" autofocus="" class="form-control rounded-pill border-0 shadow-sm px-4">
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+                        <div class="row-cols-1 small mb-1">
+                            <label for="input-email" class="form-label"></label>
+                            <input id="input-email" asp-for="Email" type="text" placeholder="Email address" required="" autofocus="" class="form-control rounded-pill border-0 shadow-sm px-4">
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="row-cols-1 small mb-1">
+                            <label for="input-password" class="form-label"></label>
+                            <input id="input-password" asp-for="Password" type="password" placeholder="Password" required="" class="form-control rounded-pill border-0 shadow-sm px-4 text-primary">
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div class="row-cols-1 small mb-1">
+                            <label for="input-confirm-password" class="form-label"></label>
+                            <input id="input-confirm-password" asp-for="PasswordConfirm" type="password" placeholder="Confirm password" required="" class="form-control rounded-pill border-0 shadow-sm px-4 text-primary">
+                            <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
+                        </div>
+                        <div class="row-cols-1 py-4">
+                            <input type="submit" value="Зарегистрироваться" class="btn btn-primary"/>
+                        </div>
+                    </div>
+                    
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

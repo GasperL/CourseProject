@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Security.Claims;
+using System.Threading.Tasks;
 using Core.ApplicationManagement.Services.ProductService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -32,20 +33,16 @@ namespace WebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            // var userId =  User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            //
-            // if (!User.IsInRole(WebApplicationConstants.Roles.Provider) || userId == null)
-            // {
-            //     RedirectToAction("Index", "Home");
-            // }
+            var userId =  User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             
-            var product = await _product.CreateProductViewModel();
+            var product = await _product.CreateProductViewModel(userId);
             
             return View(product);
         }
 
         [HttpPost]
-        public async Task<IActionResult> NewProduct(CreateProductViewModel viewModel)
+        [ActionName("NewProduct")]
+        public async Task<IActionResult> CreateProduct(CreateProductViewModel viewModel)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             

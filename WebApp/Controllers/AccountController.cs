@@ -1,20 +1,20 @@
 ﻿using System.Threading.Tasks;
+using Core.ApplicationManagement.Services.UserService;
 using Core.Common.ViewModels.Users;
-using DataAccess.Entities;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers
 {
-    public class UserAccountController : Controller
+    [AllowAnonymous]
+    public class AccountController : Controller
     {
-        private readonly SignInManager<User> _signInManager;
-        private readonly UserManager<User> _userManager;
+      
+        private readonly IUserAccountService _accountService;
 
-        public UserAccountController(SignInManager<User> signInManager, UserManager<User> userManager)
+        public AccountController(IUserAccountService accountService)
         {
-            _signInManager = signInManager;
-            _userManager = userManager;
+            _accountService = accountService;
         }
 
         [HttpGet]
@@ -31,12 +31,8 @@ namespace WebApp.Controllers
                 return View(model);
             }
 
-            var result = await _signInManager.PasswordSignInAsync(
-                model.Email, 
-                model.Password, 
-                model.RememberMe, 
-                false);
-           
+            var result = await _accountService.SignIn(model);
+            
             if (result.Succeeded)
             {
                 if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
@@ -47,13 +43,14 @@ namespace WebApp.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            ModelState.AddModelError(string.Empty, "Invalid username or password");
+            ModelState.AddModelError(string.Empty, "Неправильное имя пользователя или пароль");
             return View(model);
         }
 
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
+            await _accountService.SignOut();
+            
             return RedirectToAction("Index", "Home");
         }
 
@@ -70,17 +67,17 @@ namespace WebApp.Controllers
                 return View(model);
             }
 
-            var user = new User
-            {
-                Email = model.Email,
-                UserName = model.Email,
-            };
-
-            var result = await _userManager.CreateAsync(user, model.Password);
+            var (result, user) = await _accountService.Create(model);
             
             if (result.Succeeded)
             {
-                await _signInManager.SignInAsync(user, false);
+                await _accountService.SignIn(new LoginViewModel
+                {
+                    Username = model.UserName,
+                    Password = model.Password,
+                    RememberMe = false,
+                });
+                
                 return RedirectToAction("Index", "Home");
             }
 

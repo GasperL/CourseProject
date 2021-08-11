@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
-using Core.Common.CreateViewModels;
 using Core.Common.ViewModels.Users;
+using DataAccess.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace Core.ApplicationManagement.Services.UserService
 {
-    public interface IUserService
+    public interface IUserAccountService
     {
         Task<UserViewModel[]> GetAllUserModels();
 
@@ -13,6 +13,9 @@ namespace Core.ApplicationManagement.Services.UserService
         
         Task UpdateAsync(UserViewModel userToUpdate);
 
-        Task<IdentityResult> Create(CreateUserViewModel model);
+        Task<(IdentityResult, User)> Create(RegisterViewModel model);
+
+        Task<SignInResult> SignIn(LoginViewModel model);
+        Task SignOut();
     }
 }

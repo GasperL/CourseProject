@@ -23,6 +23,10 @@
       <_ContentIncludedByDefault Remove="Models\UserAccount\Login.cshtml" />
       <_ContentIncludedByDefault Remove="Models\UserAccount\Register.cshtml" />
       <_ContentIncludedByDefault Remove="Models\Profile\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Users\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Users\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Users\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Users\UserDetails.cshtml" />
     </ItemGroup>
 
 </Project>
