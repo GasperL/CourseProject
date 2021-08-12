@@ -1,0 +1,34 @@
+﻿@model Core.Common.ViewModels.Users.LoginViewModel
+
+    <div class="col-md-6 bg-light rounded-3 mx-auto">
+            <div class="container py-4">
+                <div class="row">
+                    <div class="col-xl-6 mx-auto">
+                        <h3 class="display-4 text-center">Войти</h3>
+                        <form method="post" asp-action="Login">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group py-3 mb-3">
+                                <input id="inputEmail" asp-for="Username" type="text" placeholder="Email address" required="" autofocus="" class="form-control rounded-pill border-0 shadow-sm px-4">
+                                <span asp-validation-for="Username" class="text-danger"></span>
+                            </div>
+                            <div class="form-group mb-3">
+                                <input  id="inputPassword" asp-for="Password" type="password" placeholder="Password" required="" class="form-control rounded-pill border-0 shadow-sm px-4 text-primary">
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            <div class="custom-control custom-checkbox mb-3">
+                                <input id="customCheck1" asp-for="RememberMe" type="checkbox" checked class="custom-control-input">
+                                <label for="customCheck1" class="custom-control-label">Запомнить меня </label>
+                            </div>
+                            <input type="submit" value="Войти" class="btn btn-primary" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

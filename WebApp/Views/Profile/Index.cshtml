@@ -1,0 +1,46 @@
+﻿@model Core.Common.ViewModels.Users.UserViewModel
+
+<div class="col-sm-6 bg-light rounded mx-auto">
+    <div class="col-lg-5 py-3 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex flex-column align-items-center text-center">
+                    <img src="https://i.imgur.com/5aPWMWs.png" alt="" width="180" class="mw-200">
+                    <div class="mt-3">
+                        <h4 class="display-4">@Model.UserName</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-3">
+                <h6 class="mb-0">Уникальный индификатор</h6>
+            </div>
+            <div class="col-sm-9 text-secondary">@Model.Id</div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-3">
+                <h6 class="mb-0">Имя пользователя</h6>
+            </div>
+            <div class="col-sm-9 text-secondary">@Model.UserName</div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-3">
+                <h6 class="mb-0">Электронная почта</h6>
+            </div>
+            <div class="col-sm-9 text-secondary">@Model.Email</div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-12">
+                <a class="btn btn-primary">Стать поставщиком</a>
+                <a class="btn btn-info " target="__blank" href="https://www.bootdey.com/snippets/view/profile-edit-data-and-skills">Edit</a>
+            </div>
+        </div>
+    </div>
+</div>

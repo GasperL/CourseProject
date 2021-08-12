@@ -8,12 +8,9 @@ namespace DataAccess.Entities
 
         public User User { get; set; }
 
-        public Guid PersonalDiscountId { get; set; }
+
+        public int PersonalDiscount { get; set; }
         
-        public PersonalDiscount PersonalDiscount { get; set; }
-        
-        public Guid BonusPointsId { get; set; }
-        
-        public BonusPoints BonusPoints { get; set; }
+        public int BonusPointsId { get; set; }
     }
 }

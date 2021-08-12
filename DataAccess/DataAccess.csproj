@@ -9,4 +9,21 @@
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.8" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Entities\BonusPoints.cs" />
+      <Compile Remove="Entities\PersonalDiscount.cs" />
+      <Compile Remove="Entities\UserDiscount.cs" />
+      <Compile Remove="Entities\UserOrderHistory.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Infrastructure" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Microsoft.AspNetCore.Identity, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60">
+        <HintPath>..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\5.0.7\Microsoft.AspNetCore.Identity.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

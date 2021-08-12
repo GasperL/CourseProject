@@ -19,18 +19,36 @@ namespace DataAccess.Migrations
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("DataAccess.Entities.BonusPoints", b =>
+            modelBuilder.Entity("DataAccess.Entities.ApprovedProvider", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Amount")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ProviderId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.ToTable("BonusPoints");
+                    b.HasIndex("ProviderId");
+
+                    b.ToTable("ApprovedProvider");
+                });
+
+            modelBuilder.Entity("DataAccess.Entities.Category", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProductCategory");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Manufacturer", b =>
@@ -40,6 +58,7 @@ namespace DataAccess.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
@@ -48,121 +67,7 @@ namespace DataAccess.Migrations
                     b.ToTable("Manufacturer");
                 });
 
-            modelBuilder.Entity("DataAccess.Entities.Order", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ProductOrderId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("decimal(18,4)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Order");
-                });
-
-            modelBuilder.Entity("DataAccess.Entities.PersonalDiscount", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Discount")
-                        .HasColumnType("decimal(18,4)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PersonalDiscount");
-                });
-
-            modelBuilder.Entity("DataAccess.Entities.Product", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("Accessibility")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal>("Discount")
-                        .HasColumnType("decimal(18,4)");
-
-                    b.Property<string>("ManufacturerName")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,4)");
-
-                    b.Property<Guid>("ProductCategoryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ProductGroupId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ProductName")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<Guid>("ProviderId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ProviderName")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<int>("Remainder")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductCategoryId");
-
-                    b.HasIndex("ProductGroupId");
-
-                    b.HasIndex("ProviderId");
-
-                    b.ToTable("Product");
-                });
-
-            modelBuilder.Entity("DataAccess.Entities.ProductCategory", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ProductCategory");
-                });
-
-            modelBuilder.Entity("DataAccess.Entities.ProductGroup", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Discount")
-                        .HasColumnType("decimal(18,4)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ProductGroup");
-                });
-
-            modelBuilder.Entity("DataAccess.Entities.ProductOrder", b =>
+            modelBuilder.Entity("DataAccess.Entities.OrderItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -175,6 +80,7 @@ namespace DataAccess.Migrations
                         .HasColumnType("decimal(18,4)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
@@ -184,16 +90,83 @@ namespace DataAccess.Migrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("UserDiscountId")
+                    b.Property<Guid>("UserOrderId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("UserDiscountId");
+                    b.HasIndex("UserOrderId");
 
-                    b.ToTable("ProductOrder");
+                    b.ToTable("OrderItems");
+                });
+
+            modelBuilder.Entity("DataAccess.Entities.Product", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("ManufacturerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<Guid>("ProductGroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<Guid>("ProviderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("ManufacturerId");
+
+                    b.HasIndex("ProductGroupId");
+
+                    b.HasIndex("ProviderId");
+
+                    b.ToTable("Product");
+                });
+
+            modelBuilder.Entity("DataAccess.Entities.ProductGroup", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("BonusPoints")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Discount")
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProductGroup");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Provider", b =>
@@ -202,18 +175,33 @@ namespace DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ManufacturerId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ManufacturerId");
-
                     b.ToTable("Provider");
+                });
+
+            modelBuilder.Entity("DataAccess.Entities.ProviderRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ProviderRequest");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.User", b =>
@@ -222,6 +210,9 @@ namespace DataAccess.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BonusPoints")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -249,9 +240,6 @@ namespace DataAccess.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<Guid>("OrderId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
@@ -271,6 +259,9 @@ namespace DataAccess.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<Guid>("UserOrderId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -281,35 +272,26 @@ namespace DataAccess.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("OrderId");
-
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("DataAccess.Entities.UserDiscount", b =>
+            modelBuilder.Entity("DataAccess.Entities.UserOrder", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("BonusPointsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("PersonalDiscountId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BonusPointsId");
-
-                    b.HasIndex("PersonalDiscountId");
-
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserDiscount");
+                    b.ToTable("UserOrder");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -443,11 +425,47 @@ namespace DataAccess.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("DataAccess.Entities.ApprovedProvider", b =>
+                {
+                    b.HasOne("DataAccess.Entities.Provider", "Provider")
+                        .WithMany()
+                        .HasForeignKey("ProviderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Provider");
+                });
+
+            modelBuilder.Entity("DataAccess.Entities.OrderItem", b =>
+                {
+                    b.HasOne("DataAccess.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataAccess.Entities.UserOrder", "UserOrder")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("UserOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("UserOrder");
+                });
+
             modelBuilder.Entity("DataAccess.Entities.Product", b =>
                 {
-                    b.HasOne("DataAccess.Entities.ProductCategory", "ProductCategory")
+                    b.HasOne("DataAccess.Entities.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("ProductCategoryId")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataAccess.Entities.Manufacturer", "Manufacturer")
+                        .WithMany()
+                        .HasForeignKey("ManufacturerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -463,81 +481,29 @@ namespace DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ProductCategory");
+                    b.Navigation("Category");
+
+                    b.Navigation("Manufacturer");
 
                     b.Navigation("ProductGroup");
 
                     b.Navigation("Provider");
                 });
 
-            modelBuilder.Entity("DataAccess.Entities.ProductOrder", b =>
+            modelBuilder.Entity("DataAccess.Entities.ProviderRequest", b =>
                 {
-                    b.HasOne("DataAccess.Entities.Order", null)
-                        .WithMany("ProductOrder")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataAccess.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataAccess.Entities.UserDiscount", "UserDiscount")
-                        .WithMany()
-                        .HasForeignKey("UserDiscountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("UserDiscount");
-                });
-
-            modelBuilder.Entity("DataAccess.Entities.Provider", b =>
-                {
-                    b.HasOne("DataAccess.Entities.Manufacturer", "Manufacturer")
-                        .WithMany()
-                        .HasForeignKey("ManufacturerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Manufacturer");
-                });
-
-            modelBuilder.Entity("DataAccess.Entities.User", b =>
-                {
-                    b.HasOne("DataAccess.Entities.Order", "Order")
-                        .WithMany()
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
-                });
-
-            modelBuilder.Entity("DataAccess.Entities.UserDiscount", b =>
-                {
-                    b.HasOne("DataAccess.Entities.BonusPoints", "BonusPoints")
-                        .WithMany()
-                        .HasForeignKey("BonusPointsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataAccess.Entities.PersonalDiscount", "PersonalDiscount")
-                        .WithMany()
-                        .HasForeignKey("PersonalDiscountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DataAccess.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
-                    b.Navigation("BonusPoints");
+                    b.Navigation("User");
+                });
 
-                    b.Navigation("PersonalDiscount");
+            modelBuilder.Entity("DataAccess.Entities.UserOrder", b =>
+                {
+                    b.HasOne("DataAccess.Entities.User", "User")
+                        .WithMany("UserOrders")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -593,9 +559,14 @@ namespace DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DataAccess.Entities.Order", b =>
+            modelBuilder.Entity("DataAccess.Entities.User", b =>
                 {
-                    b.Navigation("ProductOrder");
+                    b.Navigation("UserOrders");
+                });
+
+            modelBuilder.Entity("DataAccess.Entities.UserOrder", b =>
+                {
+                    b.Navigation("OrderItems");
                 });
 #pragma warning restore 612, 618
         }

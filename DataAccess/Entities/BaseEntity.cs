@@ -1,9 +1,11 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace DataAccess.Entities
 {
-    public class BaseEntity
+    public abstract class BaseEntity
     {
+        [Required]
         public Guid Id { get; set; }
     }
 }
