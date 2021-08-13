@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20210813042600_AddRequestProviderAndUpdateProviderEntity")]
+    [Migration("20210813051722_AddRequestProviderAndUpdateProviderEntity")]
     partial class AddRequestProviderAndUpdateProviderEntity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -254,9 +254,6 @@ namespace DataAccess.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<Guid>("UserOrderId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -494,7 +491,7 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("DataAccess.Entities.UserOrder", b =>
                 {
                     b.HasOne("DataAccess.Entities.User", "User")
-                        .WithMany("UserOrders")
+                        .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
@@ -549,11 +546,6 @@ namespace DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("DataAccess.Entities.User", b =>
-                {
-                    b.Navigation("UserOrders");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.UserOrder", b =>

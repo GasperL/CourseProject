@@ -7,6 +7,10 @@ namespace DataAccess.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "UserOrderId",
+                table: "AspNetUsers");
+
             migrationBuilder.AddColumn<string>(
                 name: "Description",
                 table: "Provider",
@@ -59,6 +63,13 @@ namespace DataAccess.Migrations
             migrationBuilder.DropColumn(
                 name: "Description",
                 table: "Provider");
+
+            migrationBuilder.AddColumn<Guid>(
+                name: "UserOrderId",
+                table: "AspNetUsers",
+                type: "uniqueidentifier",
+                nullable: false,
+                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
         }
     }
 }

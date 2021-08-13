@@ -19,12 +19,13 @@ namespace Core.ApplicationManagement.Services.ManufacturerService
 
         public async Task Create(CreateManufacturerViewModel viewModel)
         {
-            
             await _unitOfWork.Manufacturers.Add(new Manufacturer
             {
                 Id = Guid.NewGuid(),
                 Name = viewModel.Name
             });
+
+            await _unitOfWork.Commit();
         }
 
         public async Task<ManufacturerViewModel[]> GetAll()

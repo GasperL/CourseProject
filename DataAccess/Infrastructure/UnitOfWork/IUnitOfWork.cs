@@ -14,9 +14,13 @@ namespace DataAccess.Infrastructure.UnitOfWork
         
         IGenericRepository<Category> Categories { get; }
         
+        IGenericRepository<Provider> Provider { get; }
+        
         IGenericRepository<Manufacturer> Manufacturers { get; }
         
         IGenericRepository<ProductGroup> ProductGroups { get; }
+        
+        IGenericRepository<ProviderRequest> ProviderRequest { get; }
 
         Task Commit();
     }
