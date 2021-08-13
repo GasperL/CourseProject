@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using DataAccess.Entities;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Core.Common.ViewModels
 {

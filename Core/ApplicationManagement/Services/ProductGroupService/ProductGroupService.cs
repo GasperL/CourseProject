@@ -34,16 +34,13 @@ namespace Core.ApplicationManagement.Services.ProductGroupService
         {
             var productGroups = await _unitOfWork.ProductGroups.GetAll();
 
-            var productGroupViewModels =
-                productGroups.Select(x => new ProductGroupViewModel
+            return productGroups.Select(x => new ProductGroupViewModel
                 {
                     Id = x.Id,
                     Name = x.Name,
                     Discount = x.Discount,
                     BonusPoints = x.BonusPoints
                 }).ToArray();
-
-            return productGroupViewModels;
         }
     }
 }

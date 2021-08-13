@@ -1,5 +1,3 @@
-using System.Reflection.Metadata;
-using DataAccess.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 

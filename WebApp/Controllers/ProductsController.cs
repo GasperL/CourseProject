@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Core.ApplicationManagement.Services.ProductService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using CreateProductViewModel = Core.Common.CreateViewModels.CreateProductViewModel;
+using Core.Common.CreateViewModels;
 
 namespace WebApp.Controllers
 {
@@ -35,7 +35,7 @@ namespace WebApp.Controllers
         {
             var userId =  User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             
-            var product = await _product.CreateProductViewModel(userId);
+            var product = await _product.GetCreateProductViewModel(userId);
             
             return View(product);
         }

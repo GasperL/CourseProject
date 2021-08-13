@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Core.Common.CreateViewModels;
 using Core.Common.ViewModels;
 using DataAccess.Entities;
 using DataAccess.Infrastructure.UnitOfWork;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using CreateProductViewModel = Core.Common.CreateViewModels.CreateProductViewModel;
 
 namespace Core.ApplicationManagement.Services.ProductService
 {
@@ -37,16 +37,12 @@ namespace Core.ApplicationManagement.Services.ProductService
             await _unitOfWork.Commit();
         }
 
-        public async Task<CreateProductViewModel> CreateProductViewModel(string userId)
+        public async Task<CreateProductViewModel> GetCreateProductViewModel(string userId)
         {
             var selectGroups = await GetSelectingGroup();
             var selectManufacturer = await GetSelectingManufacturer();
             var selectCategory = await GetSelectingCategory();
 
-            var user = await _unitOfWork.Users.FindUserById(userId);
-
-            var userRoles = await _unitOfWork.Users.GetUserRoleIds(user);
-            
             return new CreateProductViewModel
             {
                 SelectCategory = selectCategory,
@@ -123,26 +119,22 @@ namespace Core.ApplicationManagement.Services.ProductService
         {
             var categories = await _unitOfWork.Categories.GetAll();
 
-            var selectList = categories.Select(x => new SelectListItem
+            return categories.Select(x => new SelectListItem
             {
                 Value = x.Id.ToString(),
                 Text = x.Name
             }).ToArray();
-
-            return selectList;
         }
         
         private async Task<SelectListItem[]> GetSelectingManufacturer()
         {
             var manufacturers = await _unitOfWork.Manufacturers.GetAll();
 
-            var selectList = manufacturers.Select(x => new SelectListItem
+            return manufacturers.Select(x => new SelectListItem
             {
                 Value = x.Id.ToString(),
                 Text = x.Name
             }).ToArray();
-
-            return selectList;
         }
 
         private async Task<SelectListItem[]> GetSelectingGroup()

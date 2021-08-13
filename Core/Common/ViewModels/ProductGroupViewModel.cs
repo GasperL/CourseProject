@@ -8,7 +8,7 @@ namespace Core.Common.ViewModels
 
         public string Name { get; set; }
 
-        public decimal Discount { get; set; }
+        public double Discount { get; set; }
 
         public int BonusPoints { get; set; }
     }

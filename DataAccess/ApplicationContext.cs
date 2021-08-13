@@ -10,7 +10,7 @@ namespace DataAccess
     {
         public DbSet<UserOrder> UserOrder { get; set; }
 
-        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<OrderItem> OrderItem { get; set; }
 
         public DbSet<Provider> Provider { get; set; }
 
@@ -71,7 +71,7 @@ namespace DataAccess
                 .WithMany()
                 .HasForeignKey(x => x.UserId);
 
-            builder.Entity<ApprovedProvider>()
+            builder.Entity<ProviderRequest>()
                 .HasOne(x => x.Provider)
                 .WithMany()
                 .HasForeignKey(x => x.ProviderId);

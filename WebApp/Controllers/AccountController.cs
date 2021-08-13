@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Core.ApplicationManagement.Services.UserService;
 using Core.Common.ViewModels.Users;
+using DataAccess.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers
@@ -10,11 +12,15 @@ namespace WebApp.Controllers
     public class AccountController : Controller
     {
       
-        private readonly IUserAccountService _accountService;
+        private readonly IUserAccountService _userService;
+        private readonly SignInManager<User> _signInManager;
 
-        public AccountController(IUserAccountService accountService)
+        public AccountController(
+            IUserAccountService userService, 
+            SignInManager<User> signInManager)
         {
-            _accountService = accountService;
+            _userService = userService;
+            _signInManager = signInManager;
         }
 
         [HttpGet]
@@ -31,7 +37,11 @@ namespace WebApp.Controllers
                 return View(model);
             }
 
-            var result = await _accountService.SignIn(model);
+            var result = await _signInManager.PasswordSignInAsync(
+                model.Username, 
+                model.Password, 
+                model.RememberMe, 
+                false);
             
             if (result.Succeeded)
             {
@@ -43,14 +53,13 @@ namespace WebApp.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            ModelState.AddModelError(string.Empty, "Неправильное имя пользователя или пароль");
+            ModelState.AddModelError(string.Empty, "Invalid username or password");
             return View(model);
         }
 
         public async Task<IActionResult> Logout()
         {
-            await _accountService.SignOut();
-            
+            await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
 
@@ -67,17 +76,11 @@ namespace WebApp.Controllers
                 return View(model);
             }
 
-            var (result, user) = await _accountService.Create(model);
+            var (result, user) = await _userService.Create(model);
             
             if (result.Succeeded)
             {
-                await _accountService.SignIn(new LoginViewModel
-                {
-                    Username = model.UserName,
-                    Password = model.Password,
-                    RememberMe = false,
-                });
-                
+                await _signInManager.SignInAsync(user, false);
                 return RedirectToAction("Index", "Home");
             }
 

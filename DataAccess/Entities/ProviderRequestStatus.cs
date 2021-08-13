@@ -3,7 +3,7 @@
     public enum ProviderRequestStatusEnum
     {
         Requested = 1,
-        Approved,
-        Declined
+        Approved = 2,
+        Declined = 3,
     }
 }

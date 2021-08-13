@@ -11,7 +11,7 @@ namespace DataAccess.Entities
         
         [Column(TypeName = "decimal(18,4)")]
         [Required]
-        public decimal Discount { get; set; }
+        public double Discount { get; set; }
 
         public int BonusPoints { get; set; }
 

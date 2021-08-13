@@ -27,9 +27,5 @@ namespace DataAccess.Entities.Common.Repositories.UserRepository
         Task Update(User user);
 
         Task<IdentityResult> Create(User user, string password);
-        
-        Task<SignInResult> SignIn(string modelEmail, string modelPassword, bool modelRememberMe, bool lockoutOnFailrule);
-        
-        Task SignOut();
     }
 }

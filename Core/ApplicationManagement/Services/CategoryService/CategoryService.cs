@@ -31,12 +31,10 @@ namespace Core.ApplicationManagement.Services.CategoryService
         {
             var categories = await _unitOfWork.Categories.GetAll();
 
-            var categoryViewModels = categories.Select(x => new CategoryViewModel
+            return categories.Select(x => new CategoryViewModel
             {
                    Name = x.Name
             }).ToArray();
-
-            return categoryViewModels;
         }
     }
 }

@@ -8,8 +8,6 @@ namespace DataAccess.Entities
     {
         public ICollection<UserOrder> UserOrders { get; set; }
 
-        public Guid UserOrderId { get; set; }
-
         public int BonusPoints { get; set; }
     }
 }

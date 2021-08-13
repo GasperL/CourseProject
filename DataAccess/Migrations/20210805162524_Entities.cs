@@ -266,7 +266,7 @@ namespace DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderItems",
+                name: "OrderItem",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -335,12 +335,12 @@ namespace DataAccess.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_ProductId",
-                table: "OrderItems",
+                table: "OrderItem",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_UserOrderId",
-                table: "OrderItems",
+                table: "OrderItem",
                 column: "UserOrderId");
 
             migrationBuilder.CreateIndex(
@@ -387,7 +387,7 @@ namespace DataAccess.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "OrderItems");
+                name: "OrderItem");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

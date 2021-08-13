@@ -19,11 +19,10 @@ namespace Core.ApplicationManagement.Services.ManufacturerService
 
         public async Task Create(CreateManufacturerViewModel viewModel)
         {
-            var id = Guid.NewGuid();
             
             await _unitOfWork.Manufacturers.Add(new Manufacturer
             {
-                Id = id,
+                Id = Guid.NewGuid(),
                 Name = viewModel.Name
             });
         }
@@ -32,13 +31,11 @@ namespace Core.ApplicationManagement.Services.ManufacturerService
         {
             var manufacturers = await _unitOfWork.Manufacturers.GetAll();
 
-            var manufacturerViewModels = manufacturers.Select(x => new ManufacturerViewModel
+            return manufacturers.Select(x => new ManufacturerViewModel
             {
                 Id = x.Id,
                 Name = x.Name
             }).ToArray();
-
-            return manufacturerViewModels;
         }
     }
 }

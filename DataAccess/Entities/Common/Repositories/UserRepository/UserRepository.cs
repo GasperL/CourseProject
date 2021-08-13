@@ -9,16 +9,13 @@ namespace DataAccess.Entities.Common.Repositories.UserRepository
     {
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
 
         public UserRepository(
             UserManager<User> userManager,
-            RoleManager<IdentityRole> roleManager,
-            SignInManager<User> signInManager)
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
-            _signInManager = signInManager;
         }
 
         public Task<IdentityRole[]> GetRoles()
@@ -74,27 +71,6 @@ namespace DataAccess.Entities.Common.Repositories.UserRepository
         public Task<IdentityResult> Create(User user, string password)
         {
             return _userManager.CreateAsync(user, password);
-        }
-
-        public Task<SignInResult> SignIn(
-            string modelEmail,
-            string modelPassword,
-            bool modelRememberMe,
-            bool lockoutOnFailure)
-        {
-            var result = _signInManager.PasswordSignInAsync(
-                modelEmail,
-                modelPassword,
-                modelRememberMe, lockoutOnFailure);
-
-            return result;
-        }
-
-        public Task SignOut()
-        {
-            _signInManager.SignOutAsync();
-
-            return Task.CompletedTask;
         }
     }
 }

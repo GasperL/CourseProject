@@ -85,7 +85,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("UserOrderId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItem");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Product", b =>
@@ -398,7 +398,7 @@ namespace DataAccess.Migrations
                         .IsRequired();
 
                     b.HasOne("DataAccess.Entities.UserOrder", "UserOrder")
-                        .WithMany("OrderItems")
+                        .WithMany("OrderItem")
                         .HasForeignKey("UserOrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -510,7 +510,7 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Entities.UserOrder", b =>
                 {
-                    b.Navigation("OrderItems");
+                    b.Navigation("OrderItem");
                 });
 #pragma warning restore 612, 618
         }

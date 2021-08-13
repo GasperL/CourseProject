@@ -18,7 +18,7 @@ namespace WebApp.Controllers
         public async Task<IActionResult> Index()
         {
             var userId =  User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var user = await _userAccountService.GetUserModel(userId);
+            var user = await _userAccountService.Get(userId);
             
             return View(user);
         }

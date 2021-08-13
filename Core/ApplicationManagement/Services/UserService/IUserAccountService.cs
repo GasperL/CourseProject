@@ -7,15 +7,12 @@ namespace Core.ApplicationManagement.Services.UserService
 {
     public interface IUserAccountService
     {
-        Task<UserViewModel[]> GetAllUserModels();
+        Task<UserViewModel[]> GetAll();
 
-        Task<UserViewModel> GetUserModel(string id);
+        Task<UserViewModel> Get(string id);
         
-        Task UpdateAsync(UserViewModel userToUpdate);
+        Task Update(UserViewModel userToUpdate);
 
         Task<(IdentityResult, User)> Create(RegisterViewModel model);
-
-        Task<SignInResult> SignIn(LoginViewModel model);
-        Task SignOut();
     }
 }

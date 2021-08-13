@@ -3,27 +3,16 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DataAccess.Migrations
 {
-    public partial class AddProviderRequest : Migration
+    public partial class AddRequestProviderAndUpdateProviderEntity : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "ApprovedProvider",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProviderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ApprovedProvider", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ApprovedProvider_Provider_ProviderId",
-                        column: x => x.ProviderId,
-                        principalTable: "Provider",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+            migrationBuilder.AddColumn<string>(
+                name: "Description",
+                table: "Provider",
+                type: "nvarchar(100)",
+                maxLength: 100,
+                nullable: true);
 
             migrationBuilder.CreateTable(
                 name: "ProviderRequest",
@@ -31,6 +20,7 @@ namespace DataAccess.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ProviderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -42,11 +32,17 @@ namespace DataAccess.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ProviderRequest_Provider_ProviderId",
+                        column: x => x.ProviderId,
+                        principalTable: "Provider",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ApprovedProvider_ProviderId",
-                table: "ApprovedProvider",
+                name: "IX_ProviderRequest_ProviderId",
+                table: "ProviderRequest",
                 column: "ProviderId");
 
             migrationBuilder.CreateIndex(
@@ -58,10 +54,11 @@ namespace DataAccess.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ApprovedProvider");
-
-            migrationBuilder.DropTable(
                 name: "ProviderRequest");
+
+            migrationBuilder.DropColumn(
+                name: "Description",
+                table: "Provider");
         }
     }
 }
