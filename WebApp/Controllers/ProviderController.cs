@@ -37,13 +37,14 @@ namespace WebApp.Controllers
             
             var request = await _provider.CreateRequest(create);
             
-            return RedirectToAction("Requested", request);
+            return RedirectToAction("Index", "Profile");
         }
 
-        public IActionResult Requested(Guid request)
+        [ActionName("view-requests")]
+        public async Task <IActionResult> ProviderRequests()
         {
-            return View(request);
+
+            return View( await  _provider.GetAllActiveRequests());
         }
-        
     }
 }

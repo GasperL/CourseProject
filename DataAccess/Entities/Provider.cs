@@ -11,5 +11,7 @@ namespace DataAccess.Entities
 
         [MaxLength(100)]
         public string Description { get; set; }
+
+        public bool IsApproved { get; set; }
     }
 }

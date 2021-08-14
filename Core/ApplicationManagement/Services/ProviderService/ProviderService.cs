@@ -17,9 +17,10 @@ namespace Core.ApplicationManagement.Services.ProviderService
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ProviderRequestViewModel[]> GetAllRequests()
+        public async Task<ProviderRequestViewModel[]> GetAllActiveRequests()
         {
-            var requests = await _unitOfWork.ProviderRequest.GetAll();
+            var requests = await _unitOfWork.ProviderRequest
+                .GetAll(x => x.Status == ProviderRequestStatusEnum.Requested);
 
             return requests.Select(x => new ProviderRequestViewModel
             {
@@ -46,19 +47,14 @@ namespace Core.ApplicationManagement.Services.ProviderService
         public async Task<Guid> CreateRequest(CreateProviderViewModel viewModel)
         {
             var requests = await _unitOfWork.ProviderRequest
-                .GetAll(x => x.User.Id == viewModel.UserId);
-
-            if (requests.Select(x => x.Status).Last() != ProviderRequestStatusEnum.Approved
-            || requests.Select(x => x.Status).Last() == ProviderRequestStatusEnum.Requested)
-            {
-                return Guid.Empty;
-            }
+                .GetAll(x => x.UserId == viewModel.UserId);
             
-            var id = Guid.NewGuid();
-
+            var requestId = Guid.NewGuid();
+            var providerId = await CheckingRequestsStatus(requests);
+            
             await _unitOfWork.ProviderRequest.Add(new ProviderRequest
             {
-                Id = id,
+                Id = requestId,
                 UserId = viewModel.UserId,
                 Description = viewModel.Description,
                 Name = viewModel.Name,
@@ -66,35 +62,80 @@ namespace Core.ApplicationManagement.Services.ProviderService
                 {
                     Description = viewModel.Description,
                     Name = viewModel.Name,
-                    Id = new Guid()
+                    Id = providerId,
+                    IsApproved = false
                 },
                 Status = ProviderRequestStatusEnum.Requested,
             });
 
             await _unitOfWork.Commit();
 
-            return id;
+            return requestId;
         }
 
-        public async Task ApproveProvider(Guid requestId)
+        public async Task ApproveProviderRequest(Guid requestId)
         {
             var request = await _unitOfWork.ProviderRequest.GetEntityById(requestId);
+            var provider = await _unitOfWork.Provider.GetEntityById(request.ProviderId);
 
-            await _unitOfWork.Provider.Add(new Provider
-            {
-                Id = request.ProviderId,
-                Name = request.Name,
-                Description = request.Description,
-            });
+            provider.IsApproved = true;
 
             await ChangeStatus(request, ProviderRequestStatusEnum.Approved);
         }
 
-        public async Task DeclineProvider(Guid requestId)
+        public async Task DeclineProviderRequest(Guid requestId)
         {
             var request = await _unitOfWork.ProviderRequest.GetEntityById(requestId);
-            await _unitOfWork.Provider.Delete(request.ProviderId);
+
             await ChangeStatus(request, ProviderRequestStatusEnum.Declined);
+        }
+        
+        private async Task<Guid> CheckingRequestsStatus(ProviderRequest[] requests)
+        {
+            await AssertRequestStatus(requests);
+            return IfRequestIsDecline(requests);
+        }
+
+        private Guid IfRequestIsDecline(ProviderRequest[] requests)
+        {
+            var isDecline = CheckRequestByStatus(requests, ProviderRequestStatusEnum.Declined);
+
+            if (isDecline)
+            {
+                return requests
+                    .Where(x => x.ProviderId != Guid.Empty)
+                    .Select(x => x.ProviderId)
+                    .LastOrDefault();
+            }
+
+            return Guid.Empty;
+        }
+
+        private Task AssertRequestStatus(ProviderRequest[] requests)
+        {
+            var isRequested = CheckRequestByStatus(requests, ProviderRequestStatusEnum.Requested);
+
+            // todo custom exception
+            if (isRequested)
+            {
+                throw new Exception($"Request has already been send"); 
+            }
+
+            var isApproved = CheckRequestByStatus(requests, ProviderRequestStatusEnum.Approved);
+
+            if (isApproved)
+            {
+                throw new Exception($"Request already has been approved");
+            }
+            
+            return Task.CompletedTask;
+        }
+        
+        private bool CheckRequestByStatus(ProviderRequest[] requests, ProviderRequestStatusEnum status)
+        {
+            return requests
+                .Select(x => x.Status)
+                .LastOrDefault() == status;
         }
 
         private async Task ChangeStatus(ProviderRequest request, ProviderRequestStatusEnum status)
