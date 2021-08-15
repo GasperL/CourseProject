@@ -4,6 +4,8 @@
     word-break: break-all;
 }
 
+
+
 a {
     color: #0366d6;
 }
@@ -277,18 +279,75 @@ table.table td i {
     font-size: 13px;
 }
 
-table.table td a.accept-request{
-    color: #19b40b;
+.fa-check{
+    font-size: 21px;
 }
 
-table.table td a.reject-request{
-    color: #d20909;
+.fa-binoculars{
+    font-size: 21px;
 }
 
-table.table td a.request-view{
-    color: #ffde00;
+.fa-times{
+    font-size: 21px;
+}
+
+.fa-eye{
+    font-size: 25px;
+}
+
+table.table td button.view-description {
+    color: #5724fc;
+    text-decoration: none;
+    padding-right: 0.20rem;
+    outline: none;
+    box-shadow: none;
+}
+table.table td button.accept-request{
+    color: #0d6efd;
+    text-decoration: none;
+    padding-right: 0.20rem;
+    outline: none;
+    box-shadow: none;
+}
+
+table.table td button.reject-request{
+    color: #ef1e3a;
+    text-decoration: none;
+    padding-right: 0.20rem;
+    outline: none;
+    box-shadow: none;
+}
+
+table.table td button.request-view{
+    color: #ffc93e;
+    text-decoration: none;
+    padding-right: 0.20rem;
+    outline: none;
+    box-shadow: none;
 }
 
 table.table td a.view-description{
     color: #495cfc;
 }
+
+.dataTables_filter { 
+    display: none; 
+}
+
+
+.status-requested
+{
+    background: rgb(228 51 92) !important;
+}
+
+.status-approved
+{
+    background: #4cae4c !important;
+}
+
+.status-declined
+{
+    background: #827777 !important;
+}
+
+

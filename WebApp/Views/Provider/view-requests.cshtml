@@ -1,4 +1,21 @@
-﻿@model Core.Common.ViewModels.ProviderRequestViewModel[]
+﻿@using Core.Common.ViewModels
+@using DataAccess.Entities
+@model Core.Common.ViewModels.ProviderRequestViewModel[]
+
+@{
+    var count = 0;
+
+    static string StatusColor(ProviderRequestViewModel item)
+    {
+        return item.Status switch
+        {
+            ProviderRequestStatusEnum.Requested => "status-requested",
+            ProviderRequestStatusEnum.Approved => "status-approved",
+            ProviderRequestStatusEnum.Declined => "status-declined",
+            _ => null
+            };
+    }
+}
 
 <div class="container-x2 rounded bg-light">
     <div class="table-responsive">
@@ -12,48 +29,68 @@
                     </div>
                     <div class="col-sm-4">
                         <div class="search-box">
-                            <div  class="input-group">
+                            <div class="input-group">
                                 <span class="input-group-addon">
                                     <i class="fas fa-search-dollar"></i>
                                 </span>
-                                <input type="text" id="myInputTextField" class=" form-control form-control-sm bg-light" placeholder="Поиск">
+                                <input type="search" id="custom-filter" class="form-control f bg-light" placeholder="Поиск">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <table id="example" class="table table-striped">
+            
+            <table  id="person_listing" class="table table-hover table-bordered">
                 <thead>
                 <tr>
-                    <th>Пользователь №<i class="fa fa-sort"></i></th>
-                    <th>Производитель №<i class="fa fa-sort"></i></th>
-                    <th>Производитель<i class="fa fa-sort"></i></th>
-                    <th>Описания<i class="fa fa-sort"></i></th>
-                    <th>Статус<i class="fa fa-sort"></i></th>
-                    <th>Действия</th>
+                    <th>#<i class="fa fa-sort"></i></th>
+                    <th class="text-center">Пользователь №<i class="fa fa-sort"></i></th>
+                    <th class="text-center">Производитель №<i class="fa fa-sort"></i></th>
+                    <th class="text-center">Производитель<i class="fa fa-sort"></i></th>
+                    <th class="text-center">Описание<i class="fa fa-sort"></i></th>
+                    <th class="text-center">Статус<i class="fa fa-sort"></i></th>
+                    <th class="text-center">Действия</th>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach (var item in @Model)
-                {
-                    <tr>
-                        <td>@item.UserId[..8]</td>
-                        <td>@item.ProviderId.ToString()[..8]</td>
-                        <td >@item.Name</td>
-                        <td class="text-center"><a href="" class="view-description "><i class="far fa-eye"></i></a> </td>
-                        <td>@item.Status</td>
-                        <td>
-                            <a href="#" class="accept-request" title="Принять" data-toggle="tooltip">
-                                <i class="fas fa-check"></i>
-                            </a>
-                            <a href="#" class="reject-request" title="Отклонить" data-toggle="tooltip">
-                                <i class="fas fa-times"></i>
-                            </a>
-                            <a href="#" class="request-view" title="Подробнее" data-toggle="tooltip">
-                                <i class="fas fa-binoculars"></i>
-                            </a>
-                        </td>
-                    </tr>
+                @{
+                    foreach (var item in @Model)
+                    {
+                        count++;
+                        var statusColor = StatusColor(item);
+
+                        <tr>
+                            <td>@count</td>
+                            <td class="text-center" >@item.UserId[..8]</td>
+                            <td class="text-center">@item.ProviderId.ToString()[..8]</td>
+                            <td class="text-center">@item.Name</td>
+                            <td class="text-center">
+                                <button href="" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn view-description far fa-eye">  </button>
+                            </td>
+                            <td  class="@statusColor text-center" id="status-request2">@item.Status</td>
+                            <td>
+                                <form method="post" asp-route-requestId="@item.Id" type="hidden">
+                                <button  asp-action="ApproveRequest" asp-route-requestId="@item.Id" type="submit" class="btn accept-request fas fa-check" title="Принять" data-toggle="tooltip">   </button>
+                                    <button  asp-action="DeclineRequest" asp-route-requestId="@item.Id" class="btn reject-request fas fa-times" type="submit" title="Отклонить" data-toggle="tooltip"> </button>
+                                    <button class="btn request-view fas fa-binoculars" type="submit" title="Подробнее" data-toggle="tooltip"> </button>
+                                </form>
+                            </td>
+                        </tr>
+
+                        <div class="modal" id="exampleModal" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Описание поставщика</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>@item.Description</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 }
                 </tbody>
             </table>
@@ -61,10 +98,16 @@
     </div>
 </div>
 
+
+<div class="modal-dialog modal-dialog-centered">
+
+</div>
+
+<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+</div>
+
 @section Scripts
 {
     <script src="~/lib/DataTables/DataTables-1.10.25/js/jquery.dataTables.min.js"></script>
     <script src="~/lib/DataTables/DataTables-1.10.25/js/dataTables.bootstrap5.min.js"></script>
 }
-
-

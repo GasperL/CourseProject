@@ -28,14 +28,38 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> ApproveRequest(Guid requestId)
+        {
+            await _provider.ApproveProviderRequest(requestId);
+
+            return RedirectToAction("view-requests");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeclineRequest(Guid requestId)
+        {
+            await _provider.DeclineProviderRequest(requestId);
+
+            return RedirectToAction("view-requests");
+        }
+
+        [HttpPost]
         public async Task<IActionResult> AddRequest(CreateProviderViewModel create)
         {
             if (!ModelState.IsValid)
             {
                 return RedirectToAction("Index", "Profile");
             }
-            
-            var request = await _provider.CreateRequest(create);
+
+            try
+            {
+                await _provider.CreateRequest(create);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return RedirectToAction("Index", "Profile");
+            }
             
             return RedirectToAction("Index", "Profile");
         }
@@ -43,8 +67,7 @@ namespace WebApp.Controllers
         [ActionName("view-requests")]
         public async Task <IActionResult> ProviderRequests()
         {
-
-            return View( await  _provider.GetAllActiveRequests());
+            return View(await _provider.GetAll());
         }
     }
 }

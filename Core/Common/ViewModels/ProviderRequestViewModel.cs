@@ -5,6 +5,8 @@ namespace Core.Common.ViewModels
 {
     public class ProviderRequestViewModel
     {
+        public Guid Id { get; set; }
+        
         public string UserId { get; set; }
 
         public Guid ProviderId { get; set; }

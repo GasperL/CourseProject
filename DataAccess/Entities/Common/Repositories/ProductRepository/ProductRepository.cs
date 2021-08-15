@@ -13,7 +13,7 @@ namespace DataAccess.Entities.Common.Repositories.ProductRepository
         {
             return await GetAll(x => x.IsAvailable == true);
         }
-
+        
         public async Task<Product[]> GetAllUnavailableProducts()
         {
             return await GetAll(x => x.IsAvailable == false);
