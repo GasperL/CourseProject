@@ -17,7 +17,7 @@ namespace DataAccess.Entities
         [Required]
         public string Name { get; set; }
 
-        [MaxLength(100)]
+        [MaxLength(1200)]
         public string Description { get; set; }
         
         public ProviderRequestStatusEnum Status { get; set; }

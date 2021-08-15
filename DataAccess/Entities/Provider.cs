@@ -5,11 +5,11 @@ namespace DataAccess.Entities
 {
     public class Provider : BaseEntity
     {
-        [MaxLength(20)]
+        [MaxLength(25)]
         [Required]
         public string Name { get; set; }
 
-        [MaxLength(100)]
+        [MaxLength(1200)]
         public string Description { get; set; }
 
         public bool IsApproved { get; set; }

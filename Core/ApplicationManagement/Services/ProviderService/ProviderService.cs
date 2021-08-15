@@ -93,19 +93,15 @@ namespace Core.ApplicationManagement.Services.ProviderService
 
         private async Task<Guid> CheckingRequestStatus(ProviderRequest[] requests)
         {
-            var status = await GetRequestStatus(requests, ProviderRequestStatusEnum.Requested);
+            var status = await GetRequestStatus(requests);
 
-            switch (status)
+            return status switch
             {
-                case ProviderRequestStatusEnum.Requested:
-                    throw new Exception($"Request has already been send");
-                case ProviderRequestStatusEnum.Approved:
-                    throw new Exception($"Request already has been approved");
-                case ProviderRequestStatusEnum.Declined:
-                    return await IfRequestStatusDecline(requests, status);
-                default:
-                    throw new InvalidOperationException();
-            }
+                ProviderRequestStatusEnum.Requested => throw new Exception($"Request has already been send"),
+                ProviderRequestStatusEnum.Approved => throw new Exception($"Request already has been approved"),
+                ProviderRequestStatusEnum.Declined => await IfRequestStatusDecline(requests, status),
+                _ => throw new InvalidOperationException()
+            };
         }
         private Task<Guid> IfRequestStatusDecline(
             ProviderRequest[] requests, 
@@ -123,8 +119,7 @@ namespace Core.ApplicationManagement.Services.ProviderService
         }
         
         private Task<ProviderRequestStatusEnum> GetRequestStatus(
-            ProviderRequest[] requests, 
-            ProviderRequestStatusEnum status)
+            ProviderRequest[] requests)
         {
             return Task.FromResult(requests
                 .Select(x => x.Status)

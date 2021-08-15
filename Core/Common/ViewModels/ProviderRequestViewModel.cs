@@ -13,6 +13,7 @@ namespace Core.Common.ViewModels
 
         public string Name { get; set; }
         
+        
         public string Description { get; set; }
         
         public ProviderRequestStatusEnum Status { get; set; }

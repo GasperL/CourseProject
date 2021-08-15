@@ -4,11 +4,11 @@ namespace Core.Common.CreateViewModels
 {
     public class CreateProviderViewModel
     {
-        [MaxLength(20)]
+        [MaxLength(25)]
         [Required]
         public string Name { get; set; }
 
-        [MaxLength(100)]
+        [MaxLength(1200)]
         [Required]
         public string Description { get; set; }
         
