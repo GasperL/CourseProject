@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Common.CreateViewModels;
@@ -22,11 +23,12 @@ namespace Core.ApplicationManagement.Services.ProviderService
             var requests = await _unitOfWork.ProviderRequest
                 .GetAll();
             
+            // x => x.Status == ProviderRequestStatus.Requested
+            
             return requests.Select(x => new ProviderRequestViewModel
             {
                 Id = x.Id,
                 UserId = x.UserId,
-                ProviderId = x.ProviderId,
                 Name = x.Name,
                 Description = x.Description,
                 Status = x.Status
@@ -41,95 +43,115 @@ namespace Core.ApplicationManagement.Services.ProviderService
             {
                 Id = request.Id,
                 UserId = request.UserId,
-                ProviderId = request.ProviderId,
                 Status = request.Status,
             };
         }
 
-        public async Task CreateRequest(CreateProviderViewModel viewModel)
+        public async Task CreateRequest(CreateProviderRequestViewModel requestViewModel)
         {
-            var requests = await _unitOfWork.ProviderRequest
-                .GetAll(x => 
-                    x.UserId == viewModel.UserId, p=> 
-                    p.Provider);
-            
-            var providerId = await CheckingRequestStatus(requests);
-            
-            await _unitOfWork.ProviderRequest.Add(new ProviderRequest
-            {
-                Id = Guid.NewGuid(),
-                UserId = viewModel.UserId,
-                Description = viewModel.Description,
-                Name = viewModel.Name,
-                Provider = new Provider
-                {
-                    Description = viewModel.Description,
-                    Name = viewModel.Name,
-                    Id = providerId,
-                    IsApproved = false
-                },
-                Status = ProviderRequestStatusEnum.Requested,
-            });
+            var request = await FindProviderRequestByUser(requestViewModel);
 
-            await _unitOfWork.Commit();
+            if (request == null)
+            {
+                await AddProviderRequest(requestViewModel);
+            }
+            
+            await CheckStatusRequest(request);
+
+            await UpdateProviderRequest(requestViewModel, request.Id);
+        }
+
+        private async Task CheckStatusRequest(ProviderRequest request)
+        {
+            switch (request.Status)
+            {
+                case ProviderRequestStatus.Requested or ProviderRequestStatus.Approved:
+                    throw new Exception("Request already has been created or approved");
+                case ProviderRequestStatus.Declined:
+                    await ChangeStatus(request, ProviderRequestStatus.Requested);
+                    break;
+            }
         }
 
         public async Task ApproveProviderRequest(Guid requestId)
         {
             var request = await _unitOfWork.ProviderRequest.GetEntityById(requestId);
-            var provider = await _unitOfWork.Provider.GetEntityById(request.ProviderId);
 
-            provider.IsApproved = true;
-
-            await ChangeStatus(request, ProviderRequestStatusEnum.Approved);
+            await AssertRequestStatus(request);
+            
+            await _unitOfWork.Provider.Add(new Provider
+            {
+                Id = Guid.NewGuid(),
+                Name = request.Name,
+                Description = request.Description,
+                ProviderRequestId = request.Id
+            });
+            
+            await ChangeStatus(request, ProviderRequestStatus.Approved);
         }
 
         public async Task DeclineProviderRequest(Guid requestId)
         {
             var request = await _unitOfWork.ProviderRequest.GetEntityById(requestId);
 
-            await ChangeStatus(request, ProviderRequestStatusEnum.Declined);
+            await AssertRequestStatus(request);
+
+            await ChangeStatus(request, ProviderRequestStatus.Declined);
         }
 
-        private async Task<Guid> CheckingRequestStatus(ProviderRequest[] requests)
-        {
-            var status = await GetRequestStatus(requests);
-
-            return status switch
-            {
-                ProviderRequestStatusEnum.Requested => throw new Exception($"Request has already been send"),
-                ProviderRequestStatusEnum.Approved => throw new Exception($"Request already has been approved"),
-                ProviderRequestStatusEnum.Declined => await IfRequestStatusDecline(requests, status),
-                _ => throw new InvalidOperationException()
-            };
-        }
-        private Task<Guid> IfRequestStatusDecline(
-            ProviderRequest[] requests, 
-            ProviderRequestStatusEnum status)
-        {
-            if (status == ProviderRequestStatusEnum.Declined)
-            {
-                 Task.FromResult(requests
-                    .Where(x => !x.Provider.IsApproved)
-                    .Select(x => x.ProviderId)
-                    .LastOrDefault());
-            }
-
-            return Task.FromResult(Guid.Empty);
-        }
-        
-        private Task<ProviderRequestStatusEnum> GetRequestStatus(
-            ProviderRequest[] requests)
-        {
-            return Task.FromResult(requests
-                .Select(x => x.Status)
-                .LastOrDefault());
-        }
-
-        private async Task ChangeStatus(ProviderRequest request, ProviderRequestStatusEnum status)
+        private async Task ChangeStatus(ProviderRequest request, ProviderRequestStatus status)
         {
             request.Status = status;
 
+            await _unitOfWork.Commit();
+        }
+        
+        private static Task AssertRequestStatus(ProviderRequest request)
+        {
+            if (request.Status is ProviderRequestStatus.Approved or ProviderRequestStatus.Declined)
+            {
+                throw new Exception("Request status already was approved or declined");
+            }
+            
+            return Task.CompletedTask;
+        }
+        
+        private async Task<ProviderRequest?> FindProviderRequestByUser(CreateProviderRequestViewModel requestViewModel)
+        {
+            var requests = await _unitOfWork.ProviderRequest.GetAll();
+
+            var request = requests.SingleOrDefault(x => x.UserId == requestViewModel.UserId);
+            
+            return request;
+        }
+        
+        private async Task AddProviderRequest(CreateProviderRequestViewModel requestViewModel)
+        {
+            var id = Guid.NewGuid();
+            
+            await _unitOfWork.ProviderRequest.Add(new ProviderRequest
+            {
+                Id = id,
+                UserId = requestViewModel.UserId,
+                Description = requestViewModel.Description,
+                Name = requestViewModel.Name,
+                Status = ProviderRequestStatus.Requested
+            });
+
+            await _unitOfWork.Commit();
+        }
+
+        private async Task UpdateProviderRequest(CreateProviderRequestViewModel requestViewModel, Guid id)
+        {
+            await _unitOfWork.ProviderRequest.Update(new ProviderRequest
+            {
+                Id = id,
+                UserId = requestViewModel.UserId,
+                Description = requestViewModel.Description,
+                Name = requestViewModel.Name,
+                Status = ProviderRequestStatus.Requested
+            });
+            
             await _unitOfWork.Commit();
         }
     }

@@ -9,17 +9,17 @@ namespace DataAccess.Infrastructure.UnitOfWork
     public interface IUnitOfWork
     {
         IProductRepository Products { get; }
-        
+
         IUserRepository Users { get; }
-        
+
         IGenericRepository<Category> Categories { get; }
-        
+
         IGenericRepository<Provider> Provider { get; }
-        
+
         IGenericRepository<Manufacturer> Manufacturers { get; }
-        
+
         IGenericRepository<ProductGroup> ProductGroups { get; }
-        
+
         IGenericRepository<ProviderRequest> ProviderRequest { get; }
 
         Task Commit();

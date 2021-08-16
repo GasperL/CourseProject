@@ -2,16 +2,16 @@
 
 namespace Core.Common.CreateViewModels
 {
-    public class CreateProviderViewModel
+    public class CreateProviderRequestViewModel
     {
         [MaxLength(25)]
         [Required]
         public string Name { get; set; }
 
         [MaxLength(1200)]
-        [Required]
         public string Description { get; set; }
         
+        [Required]
         public string UserId { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace DataAccess.Entities
 {
-    public enum ProviderRequestStatusEnum
+    public enum ProviderRequestStatus
     {
         Requested = 1,
         Approved = 2,

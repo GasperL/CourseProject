@@ -9,9 +9,9 @@
     {
         return item.Status switch
         {
-            ProviderRequestStatusEnum.Requested => "status-requested",
-            ProviderRequestStatusEnum.Approved => "status-approved",
-            ProviderRequestStatusEnum.Declined => "status-declined",
+            ProviderRequestStatus.Requested => "status-requested",
+            ProviderRequestStatus.Approved => "status-approved",
+            ProviderRequestStatus.Declined => "status-declined",
             _ => null
             };
     }

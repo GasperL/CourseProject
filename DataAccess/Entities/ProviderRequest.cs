@@ -1,18 +1,15 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace DataAccess.Entities
 {
     public class ProviderRequest : BaseEntity
     {
-        public User User { get; set; }
-
+        public User User{ get; set; }
+        
+        [Required]
         public string UserId { get; set; }
-
-        public Guid ProviderId { get; set; }
-
-        public Provider Provider { get; set; }
-
+        
         [MaxLength(20)]
         [Required]
         public string Name { get; set; }
@@ -20,6 +17,7 @@ namespace DataAccess.Entities
         [MaxLength(1200)]
         public string Description { get; set; }
         
-        public ProviderRequestStatusEnum Status { get; set; }
+        [Required]
+        public ProviderRequestStatus Status { get; set; }
     }
 }

@@ -13,9 +13,7 @@ namespace DataAccess.Entities.Common.Repositories.GenericRepository
 
         Task<TEntity[]> GetAll();
 
-        Task<TEntity[]> GetAll<T>(
-            Expression<Func<TEntity, bool>> filter,
-            Expression<Func<TEntity, T>> include);
+        Task<TEntity[]> GetAll<T>(Expression<Func<TEntity, bool>> filter, Expression<Func<TEntity, T>> include);
 
         Task<TEntity[]> GetAll(Expression<Func<TEntity, bool>> filter);
         

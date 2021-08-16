@@ -21,7 +21,7 @@ namespace DataAccess.Infrastructure.UnitOfWork
         public IGenericRepository<Manufacturer> Manufacturers { get; }
 
         public IGenericRepository<ProductGroup> ProductGroups { get; }
-
+        
         private readonly ApplicationContext _context;
 
         public UnitOfWork(
@@ -30,7 +30,9 @@ namespace DataAccess.Infrastructure.UnitOfWork
             IUserRepository users,
             IGenericRepository<Category> category, 
             IGenericRepository<ProductGroup> productGroups, 
-            IGenericRepository<Manufacturer> manufacturers, IGenericRepository<ProviderRequest> providerRequest, IGenericRepository<Provider> provider)
+            IGenericRepository<Manufacturer> manufacturers, 
+            IGenericRepository<ProviderRequest> providerRequest, 
+            IGenericRepository<Provider> provider)
         {
             _context = context;
             Products = products;

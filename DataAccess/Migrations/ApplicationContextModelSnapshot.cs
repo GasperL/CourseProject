@@ -163,15 +163,17 @@ namespace DataAccess.Migrations
                         .HasMaxLength(1200)
                         .HasColumnType("nvarchar(1200)");
 
-                    b.Property<bool>("IsApproved")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(25)
                         .HasColumnType("nvarchar(25)");
 
+                    b.Property<Guid>("ProviderRequestId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ProviderRequestId");
 
                     b.ToTable("Provider");
                 });
@@ -191,18 +193,14 @@ namespace DataAccess.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<Guid>("ProviderId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProviderId");
 
                     b.HasIndex("UserId");
 
@@ -253,6 +251,9 @@ namespace DataAccess.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<Guid>("ProviderRequestId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -481,19 +482,24 @@ namespace DataAccess.Migrations
                     b.Navigation("Provider");
                 });
 
-            modelBuilder.Entity("DataAccess.Entities.ProviderRequest", b =>
+            modelBuilder.Entity("DataAccess.Entities.Provider", b =>
                 {
-                    b.HasOne("DataAccess.Entities.Provider", "Provider")
+                    b.HasOne("DataAccess.Entities.ProviderRequest", "ProviderRequest")
                         .WithMany()
-                        .HasForeignKey("ProviderId")
+                        .HasForeignKey("ProviderRequestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccess.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                    b.Navigation("ProviderRequest");
+                });
 
-                    b.Navigation("Provider");
+            modelBuilder.Entity("DataAccess.Entities.ProviderRequest", b =>
+                {
+                    b.HasOne("DataAccess.Entities.User", "User")
+                        .WithMany("ProviderRequests")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -556,6 +562,11 @@ namespace DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DataAccess.Entities.User", b =>
+                {
+                    b.Navigation("ProviderRequests");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.UserOrder", b =>

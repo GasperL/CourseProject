@@ -9,7 +9,7 @@ namespace Core.ApplicationManagement.Services.ProviderService
     {
         Task<ProviderRequestViewModel> GetRequestModel(Guid id);
 
-        Task CreateRequest(CreateProviderViewModel viewModel);
+        Task CreateRequest(CreateProviderRequestViewModel requestViewModel);
 
         Task ApproveProviderRequest(Guid requestId);
 
