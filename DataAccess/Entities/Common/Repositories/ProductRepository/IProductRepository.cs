@@ -6,7 +6,7 @@ namespace DataAccess.Entities.Common.Repositories.ProductRepository
     public interface IProductRepository : IGenericRepository<Product>
     {
         Task<Product[]> GetAllAvailableProducts();
-
+        
         Task<Product[]> GetAllUnavailableProducts();
     }
 }

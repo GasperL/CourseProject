@@ -21,7 +21,6 @@ namespace DataAccess
         public DbSet<ProductGroup> ProductGroup { get; set; }
 
         public DbSet<Category> ProductCategory { get; set; }
-        
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
@@ -30,10 +29,10 @@ namespace DataAccess
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-        
-            builder.Entity<User>()
-                .HasMany(x => x.UserOrders)
-                .WithOne(x => x.User)
+
+            builder.Entity<UserOrder>()
+                .HasOne(x => x.User)
+                .WithMany()
                 .HasForeignKey(x => x.UserId);
             
             builder.Entity<UserOrder>()

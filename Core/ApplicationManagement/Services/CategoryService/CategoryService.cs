@@ -25,6 +25,8 @@ namespace Core.ApplicationManagement.Services.CategoryService
                 Id = id,
                 Name = viewModel.Name
             });
+            
+            await _unitOfWork.Commit();
         }
 
         public async Task<CategoryViewModel[]> GetAll()

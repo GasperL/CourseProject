@@ -42,6 +42,17 @@ namespace DataAccess.Entities.Common.Repositories.GenericRepository
                 .Where(filter)
                 .ToArrayAsync();
         }
+        
+        public async Task<TEntity[]> GetAll<T>(
+            Expression<Func<TEntity, bool>> filter, 
+            Expression<Func<TEntity, T>> include)
+        {
+            return await _dbSet
+                .AsNoTracking()
+                .Include(include)
+                .Where(filter)
+                .ToArrayAsync();
+        }
 
         public async Task<TEntity> GetEntityById(Guid entityId)
         {

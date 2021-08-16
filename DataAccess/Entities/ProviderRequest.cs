@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace DataAccess.Entities
 {
@@ -11,6 +12,13 @@ namespace DataAccess.Entities
         public Guid ProviderId { get; set; }
 
         public Provider Provider { get; set; }
+
+        [MaxLength(20)]
+        [Required]
+        public string Name { get; set; }
+
+        [MaxLength(1200)]
+        public string Description { get; set; }
         
         public ProviderRequestStatusEnum Status { get; set; }
     }

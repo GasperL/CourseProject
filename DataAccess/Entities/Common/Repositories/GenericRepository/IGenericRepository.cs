@@ -12,9 +12,13 @@ namespace DataAccess.Entities.Common.Repositories.GenericRepository
         Task Delete(Guid entityId);
 
         Task<TEntity[]> GetAll();
-        
-        Task<TEntity[]> GetAll(Expression<Func<TEntity, bool>> filter);
 
+        Task<TEntity[]> GetAll<T>(
+            Expression<Func<TEntity, bool>> filter,
+            Expression<Func<TEntity, T>> include);
+
+        Task<TEntity[]> GetAll(Expression<Func<TEntity, bool>> filter);
+        
         Task<TEntity> GetEntityById(Guid entityId);
 
         Task Update(TEntity item);

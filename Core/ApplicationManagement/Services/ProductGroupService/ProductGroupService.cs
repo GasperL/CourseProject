@@ -28,6 +28,8 @@ namespace Core.ApplicationManagement.Services.ProductGroupService
                 Discount = options.Discount,
                 BonusPoints = options.BonusPoints
             });
+            
+            await _unitOfWork.Commit();
         }
 
         public async Task<ProductGroupViewModel[]> GetAll()

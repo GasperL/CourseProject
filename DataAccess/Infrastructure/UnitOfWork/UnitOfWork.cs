@@ -14,6 +14,10 @@ namespace DataAccess.Infrastructure.UnitOfWork
 
         public IGenericRepository<Category> Categories { get; }
         
+        public IGenericRepository<Provider> Provider { get; }
+        
+        public IGenericRepository<ProviderRequest> ProviderRequest { get; }
+
         public IGenericRepository<Manufacturer> Manufacturers { get; }
 
         public IGenericRepository<ProductGroup> ProductGroups { get; }
@@ -26,7 +30,7 @@ namespace DataAccess.Infrastructure.UnitOfWork
             IUserRepository users,
             IGenericRepository<Category> category, 
             IGenericRepository<ProductGroup> productGroups, 
-            IGenericRepository<Manufacturer> manufacturers)
+            IGenericRepository<Manufacturer> manufacturers, IGenericRepository<ProviderRequest> providerRequest, IGenericRepository<Provider> provider)
         {
             _context = context;
             Products = products;
@@ -34,6 +38,8 @@ namespace DataAccess.Infrastructure.UnitOfWork
             Categories = category;
             ProductGroups = productGroups;
             Manufacturers = manufacturers;
+            ProviderRequest = providerRequest;
+            Provider = provider;
         }
 
         public async Task Commit()

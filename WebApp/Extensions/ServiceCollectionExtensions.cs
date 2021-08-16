@@ -2,6 +2,7 @@ using Core.ApplicationManagement.Services.CategoryService;
 using Core.ApplicationManagement.Services.ManufacturerService;
 using Core.ApplicationManagement.Services.ProductGroupService;
 using Core.ApplicationManagement.Services.ProductService;
+using Core.ApplicationManagement.Services.ProviderService;
 using Core.ApplicationManagement.Services.UserService;
 using DataAccess;
 using DataAccess.Entities;
@@ -35,6 +36,7 @@ namespace WebApp.Extensions
             services.AddTransient<IProductGroupService, ProductGroupService>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IManufacturerService, ManufacturerService>();
+            services.AddTransient<IProviderService, ProviderService>();
         }
 
         public static void RegisterEntityFramework(this IServiceCollection services, IConfiguration configuration)
