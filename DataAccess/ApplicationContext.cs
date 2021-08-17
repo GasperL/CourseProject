@@ -67,13 +67,13 @@ namespace DataAccess
 
             builder.Entity<Provider>()
                 .HasOne(x => x.ProviderRequest)
-                .WithMany()
-                .HasForeignKey(x => x.ProviderRequestId);
+                .WithOne()
+                .HasForeignKey<ProviderRequest>();
 
-            builder.Entity<User>()
-                .HasMany(x => x.ProviderRequests)
-                .WithOne(x => x.User)
-                .HasForeignKey(x => x.UserId);
+            builder.Entity<ProviderRequest>()
+                .HasOne(x => x.User)
+                .WithOne()
+                .HasForeignKey<ProviderRequest>();
         }
     }
 }

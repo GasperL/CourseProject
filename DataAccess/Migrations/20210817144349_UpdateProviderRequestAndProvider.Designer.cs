@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20210813051722_AddRequestProviderAndUpdateProviderEntity")]
-    partial class AddRequestProviderAndUpdateProviderEntity
+    [Migration("20210817144349_UpdateProviderRequestAndProvider")]
+    partial class UpdateProviderRequestAndProvider
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -117,8 +117,9 @@ namespace DataAccess.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<Guid>("ProviderId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("ProviderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -157,18 +158,17 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Entities.Provider", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(1200)
+                        .HasColumnType("nvarchar(1200)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
 
                     b.HasKey("Id");
 
@@ -177,12 +177,17 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Entities.ProviderRequest", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("ProviderId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Description")
+                        .HasMaxLength(1200)
+                        .HasColumnType("nvarchar(1200)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -192,9 +197,9 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProviderId");
-
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("ProviderRequest");
                 });
@@ -243,6 +248,9 @@ namespace DataAccess.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<Guid>("ProviderRequestId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -473,17 +481,15 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Entities.ProviderRequest", b =>
                 {
-                    b.HasOne("DataAccess.Entities.Provider", "Provider")
-                        .WithMany()
-                        .HasForeignKey("ProviderId")
+                    b.HasOne("DataAccess.Entities.Provider", null)
+                        .WithOne("ProviderRequest")
+                        .HasForeignKey("DataAccess.Entities.ProviderRequest", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DataAccess.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Provider");
+                        .WithOne()
+                        .HasForeignKey("DataAccess.Entities.ProviderRequest", "UserId");
 
                     b.Navigation("User");
                 });
@@ -546,6 +552,11 @@ namespace DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DataAccess.Entities.Provider", b =>
+                {
+                    b.Navigation("ProviderRequest");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.UserOrder", b =>
