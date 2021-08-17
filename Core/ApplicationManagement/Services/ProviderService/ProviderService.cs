@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Core.ApplicationManagement.Exceptions;
 using Core.Common.CreateViewModels;
 using Core.Common.ViewModels;
 using DataAccess.Entities;
@@ -21,30 +22,15 @@ namespace Core.ApplicationManagement.Services.ProviderService
         public async Task<ProviderRequestViewModel[]> GetAll()
         {
             var requests = await _unitOfWork.ProviderRequest
-                .GetAll();
-            
-            // x => x.Status == ProviderRequestStatus.Requested
+                .GetAll(x => x.Status == ProviderRequestStatus.Requested);
             
             return requests.Select(x => new ProviderRequestViewModel
             {
                 Id = x.Id,
-                UserId = x.UserId,
                 Name = x.Name,
                 Description = x.Description,
                 Status = x.Status
             }).ToArray();
-        }
-
-        public async Task<ProviderRequestViewModel> GetRequestModel(Guid id)
-        {
-            var request = await _unitOfWork.ProviderRequest.GetEntityById(id);
-
-            return new ProviderRequestViewModel
-            {
-                Id = request.Id,
-                UserId = request.UserId,
-                Status = request.Status,
-            };
         }
 
         public async Task CreateRequest(CreateProviderRequestViewModel requestViewModel)
@@ -54,6 +40,8 @@ namespace Core.ApplicationManagement.Services.ProviderService
             if (request == null)
             {
                 await AddProviderRequest(requestViewModel);
+                
+                return;
             }
             
             await CheckStatusRequest(request);
@@ -66,14 +54,14 @@ namespace Core.ApplicationManagement.Services.ProviderService
             switch (request.Status)
             {
                 case ProviderRequestStatus.Requested or ProviderRequestStatus.Approved:
-                    throw new Exception("Request already has been created or approved");
+                    throw new ProviderRequestException($"Request status already {request.Status}", request.Status);
                 case ProviderRequestStatus.Declined:
                     await ChangeStatus(request, ProviderRequestStatus.Requested);
                     break;
             }
         }
 
-        public async Task ApproveProviderRequest(Guid requestId)
+        public async Task ApproveProviderRequest(string requestId)
         {
             var request = await _unitOfWork.ProviderRequest.GetEntityById(requestId);
 
@@ -84,13 +72,12 @@ namespace Core.ApplicationManagement.Services.ProviderService
                 Id = Guid.NewGuid(),
                 Name = request.Name,
                 Description = request.Description,
-                ProviderRequestId = request.Id
             });
             
             await ChangeStatus(request, ProviderRequestStatus.Approved);
         }
 
-        public async Task DeclineProviderRequest(Guid requestId)
+        public async Task DeclineProviderRequest(string requestId)
         {
             var request = await _unitOfWork.ProviderRequest.GetEntityById(requestId);
 
@@ -110,7 +97,7 @@ namespace Core.ApplicationManagement.Services.ProviderService
         {
             if (request.Status is ProviderRequestStatus.Approved or ProviderRequestStatus.Declined)
             {
-                throw new Exception("Request status already was approved or declined");
+                throw new ProviderRequestException($"Request status already {request.Status}", request.Status);
             }
             
             return Task.CompletedTask;
@@ -120,33 +107,29 @@ namespace Core.ApplicationManagement.Services.ProviderService
         {
             var requests = await _unitOfWork.ProviderRequest.GetAll();
 
-            var request = requests.SingleOrDefault(x => x.UserId == requestViewModel.UserId);
+            var request = requests.SingleOrDefault(x => requestViewModel.UserId == x.Id);
             
             return request;
         }
         
         private async Task AddProviderRequest(CreateProviderRequestViewModel requestViewModel)
         {
-            var id = Guid.NewGuid();
-            
             await _unitOfWork.ProviderRequest.Add(new ProviderRequest
             {
-                Id = id,
-                UserId = requestViewModel.UserId,
+                Id = requestViewModel.UserId,
                 Description = requestViewModel.Description,
                 Name = requestViewModel.Name,
                 Status = ProviderRequestStatus.Requested
-            });
+            }); 
 
             await _unitOfWork.Commit();
         }
 
-        private async Task UpdateProviderRequest(CreateProviderRequestViewModel requestViewModel, Guid id)
+        private async Task UpdateProviderRequest(CreateProviderRequestViewModel requestViewModel, string id)
         {
             await _unitOfWork.ProviderRequest.Update(new ProviderRequest
             {
                 Id = id,
-                UserId = requestViewModel.UserId,
                 Description = requestViewModel.Description,
                 Name = requestViewModel.Name,
                 Status = ProviderRequestStatus.Requested

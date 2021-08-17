@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20210817144349_UpdateProviderRequestAndProvider")]
+    [Migration("20210817200837_UpdateProviderRequestAndProvider")]
     partial class UpdateProviderRequestAndProvider
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -117,9 +117,8 @@ namespace DataAccess.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("ProviderId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("ProviderId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -158,8 +157,9 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Entities.Provider", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .HasMaxLength(1200)
@@ -189,17 +189,15 @@ namespace DataAccess.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<string>("ProviderId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique()
-                        .HasFilter("[UserId] IS NOT NULL");
+                    b.HasIndex("ProviderId");
 
                     b.ToTable("ProviderRequest");
                 });
@@ -248,9 +246,6 @@ namespace DataAccess.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<Guid>("ProviderRequestId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -481,15 +476,17 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Entities.ProviderRequest", b =>
                 {
-                    b.HasOne("DataAccess.Entities.Provider", null)
-                        .WithOne("ProviderRequest")
+                    b.HasOne("DataAccess.Entities.User", "User")
+                        .WithOne()
                         .HasForeignKey("DataAccess.Entities.ProviderRequest", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccess.Entities.User", "User")
-                        .WithOne()
-                        .HasForeignKey("DataAccess.Entities.ProviderRequest", "UserId");
+                    b.HasOne("DataAccess.Entities.ProviderRequest", "Provider")
+                        .WithMany()
+                        .HasForeignKey("ProviderId");
+
+                    b.Navigation("Provider");
 
                     b.Navigation("User");
                 });
@@ -552,11 +549,6 @@ namespace DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("DataAccess.Entities.Provider", b =>
-                {
-                    b.Navigation("ProviderRequest");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.UserOrder", b =>

@@ -58,6 +58,11 @@ namespace DataAccess.Entities.Common.Repositories.GenericRepository
         {
             return await _dbSet.FindAsync(entityId).AsTask();
         }
+        
+        public async Task<TEntity> GetEntityById(string entityId)
+        {
+            return await _dbSet.FindAsync(entityId).AsTask();
+        }
 
         public Task Update(TEntity item)
         {

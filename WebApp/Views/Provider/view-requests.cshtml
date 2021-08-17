@@ -45,7 +45,6 @@
                 <tr>
                     <th>#<i class="fa fa-sort"></i></th>
                     <th class="text-center">Пользователь №<i class="fa fa-sort"></i></th>
-                    <th class="text-center">Производитель №<i class="fa fa-sort"></i></th>
                     <th class="text-center">Производитель<i class="fa fa-sort"></i></th>
                     <th class="text-center">Описание<i class="fa fa-sort"></i></th>
                     <th class="text-center">Статус<i class="fa fa-sort"></i></th>
@@ -61,8 +60,7 @@
 
                         <tr>
                             <td>@count</td>
-                            <td class="text-center" >@item.UserId[..8]</td>
-                            <td class="text-center">@item.ProviderId.ToString()[..8]</td>
+                            <td class="text-center" >@item.Id[..8]</td>
                             <td class="text-center">@item.Name</td>
                             <td class="text-center">
                                 <button href="" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn view-description far fa-eye">  </button>

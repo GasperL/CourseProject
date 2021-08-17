@@ -19,8 +19,10 @@ namespace DataAccess.Entities.Common.Repositories.GenericRepository
 
         Task<TEntity[]> GetAll(Expression<Func<TEntity, bool>> filter);
         
+        Task<TEntity> GetEntityById(string entityId);
+        
         Task<TEntity> GetEntityById(Guid entityId);
-
+        
         Task Update(TEntity item);
     }
 }
