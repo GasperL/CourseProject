@@ -168,7 +168,12 @@ namespace DataAccess.Migrations
                         .HasMaxLength(25)
                         .HasColumnType("nvarchar(25)");
 
+                    b.Property<string>("ProviderRequestId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ProviderRequestId");
 
                     b.ToTable("Provider");
                 });
@@ -187,15 +192,10 @@ namespace DataAccess.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("ProviderId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProviderId");
 
                     b.ToTable("ProviderRequest");
                 });
@@ -472,6 +472,15 @@ namespace DataAccess.Migrations
                     b.Navigation("Provider");
                 });
 
+            modelBuilder.Entity("DataAccess.Entities.Provider", b =>
+                {
+                    b.HasOne("DataAccess.Entities.ProviderRequest", "ProviderRequest")
+                        .WithMany()
+                        .HasForeignKey("ProviderRequestId");
+
+                    b.Navigation("ProviderRequest");
+                });
+
             modelBuilder.Entity("DataAccess.Entities.ProviderRequest", b =>
                 {
                     b.HasOne("DataAccess.Entities.User", "User")
@@ -479,12 +488,6 @@ namespace DataAccess.Migrations
                         .HasForeignKey("DataAccess.Entities.ProviderRequest", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("DataAccess.Entities.ProviderRequest", "Provider")
-                        .WithMany()
-                        .HasForeignKey("ProviderId");
-
-                    b.Navigation("Provider");
 
                     b.Navigation("User");
                 });

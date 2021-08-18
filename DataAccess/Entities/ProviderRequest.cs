@@ -15,10 +15,6 @@ namespace DataAccess.Entities
         [MaxLength(1200)]
         public string Description { get; set; }
         
-        public ProviderRequest Provider { get; set; }
-        
-        public string ProviderId { get; set; }
-        
         [Required]
         public ProviderRequestStatus Status { get; set; }
     }

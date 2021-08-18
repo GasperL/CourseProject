@@ -8,9 +8,8 @@ namespace Core.ApplicationManagement.Exceptions
     {
         public ProviderRequestStatus Status { get; set; }
         
-        public ProviderRequestException(string message, ProviderRequestStatus status) : base(message)
+        public ProviderRequestException(string message) : base(message)
         {
-            Status = status;
         }
     }
 }

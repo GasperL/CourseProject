@@ -4,6 +4,7 @@ using Core.ApplicationManagement.Services.ProductService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Core.Common.CreateViewModels;
+using Serilog;
 
 namespace WebApp.Controllers
 {
@@ -12,15 +13,11 @@ namespace WebApp.Controllers
     public class ProductsController : Controller
     {
         private readonly IProductService _product;
-        private readonly ILogger<HomeController> _logger;
 
         public ProductsController(
-            IProductService product,
-            ILogger<HomeController> logger
-        )
+            IProductService product)
         {
             _product = product;
-            _logger = logger;
         }
 
         [HttpGet]
@@ -47,7 +44,8 @@ namespace WebApp.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
             
             await _product.Add(viewModel);
-
+            Log.Information("Product created");
+            
             return RedirectToAction("Index");
         }
     }

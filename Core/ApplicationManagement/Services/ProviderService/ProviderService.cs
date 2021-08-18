@@ -40,7 +40,6 @@ namespace Core.ApplicationManagement.Services.ProviderService
             if (request == null)
             {
                 await AddProviderRequest(requestViewModel);
-                
                 return;
             }
             
@@ -54,7 +53,8 @@ namespace Core.ApplicationManagement.Services.ProviderService
             switch (request.Status)
             {
                 case ProviderRequestStatus.Requested or ProviderRequestStatus.Approved:
-                    throw new ProviderRequestException($"Request status already {request.Status}", request.Status);
+                    await AssertRequestStatus(request);
+                    break;
                 case ProviderRequestStatus.Declined:
                     await ChangeStatus(request, ProviderRequestStatus.Requested);
                     break;
@@ -97,7 +97,10 @@ namespace Core.ApplicationManagement.Services.ProviderService
         {
             if (request.Status is ProviderRequestStatus.Approved or ProviderRequestStatus.Declined)
             {
-                throw new ProviderRequestException($"Request status already {request.Status}", request.Status);
+                throw new ProviderRequestException($"Request status already {request.Status}")
+                {
+                    Status = request.Status
+                };
             }
             
             return Task.CompletedTask;

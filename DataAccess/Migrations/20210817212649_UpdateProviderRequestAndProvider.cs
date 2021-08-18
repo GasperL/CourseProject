@@ -28,6 +28,12 @@ namespace DataAccess.Migrations
                 maxLength: 1200,
                 nullable: true);
 
+            migrationBuilder.AddColumn<string>(
+                name: "ProviderRequestId",
+                table: "Provider",
+                type: "nvarchar(450)",
+                nullable: true);
+
             migrationBuilder.CreateTable(
                 name: "ProviderRequest",
                 columns: table => new
@@ -35,7 +41,6 @@ namespace DataAccess.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1200)", maxLength: 1200, nullable: true),
-                    ProviderId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -47,27 +52,41 @@ namespace DataAccess.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ProviderRequest_ProviderRequest_ProviderId",
-                        column: x => x.ProviderId,
-                        principalTable: "ProviderRequest",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProviderRequest_ProviderId",
-                table: "ProviderRequest",
-                column: "ProviderId");
+                name: "IX_Provider_ProviderRequestId",
+                table: "Provider",
+                column: "ProviderRequestId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Provider_ProviderRequest_ProviderRequestId",
+                table: "Provider",
+                column: "ProviderRequestId",
+                principalTable: "ProviderRequest",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Provider_ProviderRequest_ProviderRequestId",
+                table: "Provider");
+
             migrationBuilder.DropTable(
                 name: "ProviderRequest");
 
+            migrationBuilder.DropIndex(
+                name: "IX_Provider_ProviderRequestId",
+                table: "Provider");
+
             migrationBuilder.DropColumn(
                 name: "Description",
+                table: "Provider");
+
+            migrationBuilder.DropColumn(
+                name: "ProviderRequestId",
                 table: "Provider");
 
             migrationBuilder.AlterColumn<string>(

@@ -5,6 +5,7 @@ using Core.ApplicationManagement.Services.ProviderService;
 using Core.Common.CreateViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace WebApp.Controllers
 {
@@ -64,7 +65,7 @@ namespace WebApp.Controllers
             {
                 ModelState.AddModelError(string.Empty, exception.Message);
                 
-                _logger.Log(LogLevel.Error, exception.Message);
+                Log.Error(exception.Message, exception);
 
                 return View("CreateRequest",create);
             }

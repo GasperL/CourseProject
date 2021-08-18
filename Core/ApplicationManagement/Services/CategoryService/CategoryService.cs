@@ -17,13 +17,12 @@ namespace Core.ApplicationManagement.Services.CategoryService
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Create(CreateCategoryViewModel viewModel)
+        public async Task Create(string categoryName)
         {
-            var id = Guid.NewGuid();
             await _unitOfWork.Categories.Add(new Category
             {
-                Id = id,
-                Name = viewModel.Name
+                Id = Guid.NewGuid(),
+                Name = categoryName
             });
             
             await _unitOfWork.Commit();
@@ -35,8 +34,15 @@ namespace Core.ApplicationManagement.Services.CategoryService
 
             return categories.Select(x => new CategoryViewModel
             {
-                   Name = x.Name
+                Id = x.Id,
+                Name = x.Name
             }).ToArray();
+        }
+
+        public async Task Remove(Guid categoryId)
+        {
+            await _unitOfWork.Categories.Delete(categoryId);
+            await _unitOfWork.Commit();
         }
     }
 }

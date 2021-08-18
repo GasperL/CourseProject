@@ -9,7 +9,7 @@
             "zeroRecords": "Ничего не найдено",
             "info": "Страница _PAGE_ из _PAGES_",
             "infoEmpty": "Не найдено ни одной записи",
-            "infoFiltered": "(filtered from _MAX_ total records)"
+            "infoFiltered": ""
         }
     });
 
