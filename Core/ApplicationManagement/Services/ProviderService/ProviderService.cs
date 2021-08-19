@@ -64,16 +64,16 @@ namespace Core.ApplicationManagement.Services.ProviderService
         public async Task ApproveProviderRequest(string requestId)
         {
             var request = await _unitOfWork.ProviderRequest.GetEntityById(requestId);
-
             await AssertRequestStatus(request);
-            
+
             await _unitOfWork.Provider.Add(new Provider
             {
                 Id = Guid.NewGuid(),
                 Name = request.Name,
                 Description = request.Description,
+                ProviderRequestId = request.Id,
             });
-            
+
             await ChangeStatus(request, ProviderRequestStatus.Approved);
         }
 
@@ -122,7 +122,7 @@ namespace Core.ApplicationManagement.Services.ProviderService
                 Id = requestViewModel.UserId,
                 Description = requestViewModel.Description,
                 Name = requestViewModel.Name,
-                Status = ProviderRequestStatus.Requested
+                Status = ProviderRequestStatus.Requested,
             }); 
 
             await _unitOfWork.Commit();

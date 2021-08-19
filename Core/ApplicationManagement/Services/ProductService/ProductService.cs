@@ -43,9 +43,22 @@ namespace Core.ApplicationManagement.Services.ProductService
             var selectGroups = await GetSelectingGroup();
             var selectManufacturer = await GetSelectingManufacturer();
             var selectCategory = await GetSelectingCategory();
+
+            var providers = await _unitOfWork.Provider.GetAll(
+                x => x.ProviderRequestId == userId, 
+                i => i.ProviderRequest);
+
+            var provider = providers.SingleOrDefault
+                (x => x.ProviderRequest.Status == ProviderRequestStatus.Approved);
+            
+            if (provider == null)
+            {
+                throw new Exception("Provider not found");
+            }
             
             return new CreateProductViewModel
             {
+                ProviderId = provider.Id,
                 SelectCategory = selectCategory,
                 SelectManufacturer = selectManufacturer,
                 SelectProductGroups = selectGroups

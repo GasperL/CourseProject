@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Core.ApplicationManagement.Services.ProductService;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Core.Common.CreateViewModels;
 using Serilog;
 
@@ -10,11 +9,11 @@ namespace WebApp.Controllers
 {
     // [Authorize(Roles = WebApplicationConstants.Roles.Provider)]
     // [Authorize(Roles = WebApplicationConstants.Roles.Administrator)]
-    public class ProductsController : Controller
+    public class ProductController : Controller
     {
         private readonly IProductService _product;
 
-        public ProductsController(
+        public ProductController(
             IProductService product)
         {
             _product = product;
@@ -30,7 +29,7 @@ namespace WebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var userId =  User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             
             var product = await _product.GetCreateProductViewModel(userId);
             
