@@ -7,7 +7,7 @@ namespace Core.Common.ViewModels
     public class ProductViewModel
     {
         public Guid Id { get; set; }
-
+        
         public Category Category { get; set; }
 
         public ProductGroup ProductGroup { get; set; }

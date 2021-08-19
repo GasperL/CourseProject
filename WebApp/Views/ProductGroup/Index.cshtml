@@ -1,2 +1,79 @@
-﻿@model dynamic
+﻿@model Core.Common.ViewModels.ProductGroupViewModel[]
 
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6 bg-light rounded mx-auto">
+            <div class="table-title py-2">
+                <div class="row">
+                    <div class="col-sm-4">
+                    </div>
+                    <div class="col-sm-4">
+                        <h2 class="text-center">Группы товаров</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container table-responsive">
+
+                <div class="row-cols-3">
+                    <div class="col-4">
+                        <div class="search-box py-2">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fas fa-search-dollar"></i>
+                                </span>
+                                <input type="search" id="custom-filter" class="form-control f bg-light" placeholder="Поиск">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table id="person_listing" class="table table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <th class="text-center">#<i class="fa fa-sort"></i></th>
+                        <th class="text-center">Имя группы<i class="fa fa-sort"></i></th>
+                        <th class="text-center">Группа №<i class="fa fa-sort"></i></th>
+                        <th class="text-center">Бонусные балы<i class="fa fa-sort"></i></th>
+                        <th class="text-center">Скидка<i class="fa fa-sort"></i></th>
+                        <th class="text-center">Действия<i class="fa fa-sort"></i></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @{
+                        var count = 0;
+                        foreach (var item in @Model)
+                        {
+                            count++;
+                            <tr>
+                                <td>@count</td>
+                                <td class="text-center">@item.Name</td>
+                                <td class="text-center">@item.Id.ToString()[..8]</td>
+                                <td class="text-center">@item.BonusPoints</td>
+                                <td class="text-center">@item.Discount</td>
+                                <td>
+                                    <form method="post" asp-route-requestId="@item.Id">
+                                        <button asp-action="Remove" asp-route-categoryId="@item.Id" type="submit" class="btn remove-category fas fa-trash" title="Принять" data-toggle="tooltip"> </button>
+                                        <button type="submit" class="btn remove-category fas fa-binoculars" title="Посмотреть товары группы" data-toggle="tooltip"> </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    </tbody>
+                </table>
+                <div class="row-cols-1 py-3">
+                    <a class="btn btn-secondary popup" data-url="ProductGroup/Add" data-toggle="modal" data-target="#modal-add" id="CategoryModal">Добавить</a>
+                    @await Html.PartialAsync("_Modal")
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script src="~/lib/DataTables/DataTables-1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="~/js/modal.js"></script>
+    <script src="~/lib/DataTables/DataTables-1.10.25/js/dataTables.bootstrap5.min.js"></script>
+}

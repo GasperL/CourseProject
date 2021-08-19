@@ -65,11 +65,6 @@ namespace DataAccess
                 .WithMany()
                 .HasForeignKey(x => x.ManufacturerId);
 
-            builder.Entity<Provider>()
-                .HasOne(x => x.ProviderRequest)
-                .WithMany()
-                .HasForeignKey(x => x.ProviderRequestId);
-
             builder.Entity<ProviderRequest>()
                 .HasOne(x => x.User)
                 .WithOne()

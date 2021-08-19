@@ -16,7 +16,7 @@ namespace DataAccess.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.9")
+                .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("DataAccess.Entities.Category", b =>
@@ -159,45 +159,14 @@ namespace DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(1200)
-                        .HasColumnType("nvarchar(1200)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("nvarchar(25)");
-
-                    b.Property<string>("ProviderRequestId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProviderRequestId");
-
-                    b.ToTable("Provider");
-                });
-
-            modelBuilder.Entity("DataAccess.Entities.ProviderRequest", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1200)
-                        .HasColumnType("nvarchar(1200)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.ToTable("ProviderRequest");
+                    b.ToTable("Provider");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.User", b =>
@@ -254,6 +223,9 @@ namespace DataAccess.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<Guid>("UserOrderId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -427,7 +399,7 @@ namespace DataAccess.Migrations
                         .IsRequired();
 
                     b.HasOne("DataAccess.Entities.UserOrder", "UserOrder")
-                        .WithMany("OrderItems")
+                        .WithMany("OrderItem")
                         .HasForeignKey("UserOrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -472,30 +444,10 @@ namespace DataAccess.Migrations
                     b.Navigation("Provider");
                 });
 
-            modelBuilder.Entity("DataAccess.Entities.Provider", b =>
-                {
-                    b.HasOne("DataAccess.Entities.ProviderRequest", "ProviderRequest")
-                        .WithMany()
-                        .HasForeignKey("ProviderRequestId");
-
-                    b.Navigation("ProviderRequest");
-                });
-
-            modelBuilder.Entity("DataAccess.Entities.ProviderRequest", b =>
-                {
-                    b.HasOne("DataAccess.Entities.User", "User")
-                        .WithOne()
-                        .HasForeignKey("DataAccess.Entities.ProviderRequest", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("DataAccess.Entities.UserOrder", b =>
                 {
                     b.HasOne("DataAccess.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("UserOrders")
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
@@ -552,9 +504,14 @@ namespace DataAccess.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DataAccess.Entities.User", b =>
+                {
+                    b.Navigation("UserOrders");
+                });
+
             modelBuilder.Entity("DataAccess.Entities.UserOrder", b =>
                 {
-                    b.Navigation("OrderItems");
+                    b.Navigation("OrderItem");
                 });
 #pragma warning restore 612, 618
         }

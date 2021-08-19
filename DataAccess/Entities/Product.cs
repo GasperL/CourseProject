@@ -37,5 +37,7 @@ namespace DataAccess.Entities
         [Column(TypeName = "decimal(18,4)")]
         [Required]
         public decimal Price { get; set; }
+        
+        //public byte[] Image { get; set; }
     }
 }

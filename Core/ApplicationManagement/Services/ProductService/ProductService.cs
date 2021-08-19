@@ -28,6 +28,7 @@ namespace Core.ApplicationManagement.Services.ProductService
                 CategoryId = viewModel.CategoryId,
                 ProductGroupId = viewModel.ProductGroupId,
                 ManufacturerId = viewModel.ManufacturerId,
+                ProviderId = viewModel.ProviderId,
                 Price = viewModel.Price,
                 IsAvailable = false,
                 ProductName = viewModel.ProductName,
@@ -42,7 +43,7 @@ namespace Core.ApplicationManagement.Services.ProductService
             var selectGroups = await GetSelectingGroup();
             var selectManufacturer = await GetSelectingManufacturer();
             var selectCategory = await GetSelectingCategory();
-
+            
             return new CreateProductViewModel
             {
                 SelectCategory = selectCategory,
@@ -70,51 +71,6 @@ namespace Core.ApplicationManagement.Services.ProductService
             }).ToArray();
         }
 
-        // public async Task<ProductViewModel[]> GetAllAvailableProducts()
-        // {
-        //     var products = await _unitOfWork.Products.GetAllAvailableProducts();
-        //     var selectCategory = await GetSelectingCategory();
-        //     var selectGroup = await GetSelectingGroup();
-        //     
-        //     return products.Select(x => new ProductViewModel
-        //     {
-        //         Id = x.Id,
-        //         SelectCategory = selectCategory,
-        //         SelectProductGroups = selectGroup,
-        //         Provider = x.Provider,
-        //         ManufacturerId = x.ManufacturerId,
-        //         IsAvailable = x.IsAvailable,
-        //         ProductName = x.ProductName,
-        //         Amount = x.Amount,
-        //         Price = x.Price
-        //     }).ToArray();
-        // }
-        //
-        // public async Task<ProductViewModel[]> GetAllUnavailableProducts()
-        // {
-        //     var products = await _unitOfWork.Products.GetAllUnavailableProducts();
-        //     var selectCategory = await GetSelectingCategory();
-        //     var selectGroup = await GetSelectingGroup();
-        //     var selectManufacturers = await GetSelectingManufacturer();
-        //
-        //
-        //     var productModels = products.Select(x => new ProductViewModel
-        //     {
-        //         Id = x.Id,
-        //         SelectCategory = selectCategory,
-        //         SelectProductGroups = selectGroup,
-        //         Provider = x.Provider,
-        //         SelectManufacturer = selectManufacturers,
-        //         ManufacturerId = x.ManufacturerId,
-        //         IsAvailable = x.IsAvailable,
-        //         ProductName = x.ProductName,
-        //         Amount = x.Amount,
-        //         Price = x.Price
-        //     }).ToArray();
-        //
-        //     return productModels;
-        // }
-        
         private async Task<SelectListItem[]> GetSelectingCategory()
         {
             var categories = await _unitOfWork.Categories.GetAll();

@@ -44,5 +44,11 @@ namespace Core.ApplicationManagement.Services.ProductGroupService
                     BonusPoints = x.BonusPoints
                 }).ToArray();
         }
+
+        public async Task Remove(Guid id)
+        {
+            await _unitOfWork.ProductGroups.Delete(id);
+            await _unitOfWork.Commit();
+        }
     }
 }

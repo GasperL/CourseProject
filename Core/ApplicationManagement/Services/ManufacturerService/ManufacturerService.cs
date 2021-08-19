@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Core.Common.CreateViewModels;
 using Core.Common.ViewModels;
 using DataAccess.Entities;
 using DataAccess.Infrastructure.UnitOfWork;
@@ -17,7 +16,7 @@ namespace Core.ApplicationManagement.Services.ManufacturerService
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Create(CreateManufacturerViewModel viewModel)
+        public async Task Create(ManufacturerViewModel viewModel)
         {
             await _unitOfWork.Manufacturers.Add(new Manufacturer
             {
@@ -37,6 +36,12 @@ namespace Core.ApplicationManagement.Services.ManufacturerService
                 Id = x.Id,
                 Name = x.Name
             }).ToArray();
+        }
+
+        public async Task Remove(Guid categoryId)
+        {
+            await _unitOfWork.Manufacturers.Delete(categoryId);
+            await _unitOfWork.Commit();
         }
     }
 }

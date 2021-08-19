@@ -11,7 +11,7 @@
             <form method="post" asp-action="AddRequest">
                 <input type="hidden" asp-for="UserId">
                 <div class="col-sm-9 mx-auto">
-                 <div asp-validation-summary="ModelOnly" class="text-danger "></div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger "></div>
                     <div class="container">
                         <fieldset>
                             <div class="mb-3">
@@ -21,8 +21,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="input-description" class="form-label">Описание:</label>
-                                <input asp-for="Description" type="text" value="@Model.Description" id="input-description" class="form-control" placeholder="Описание">
-                                <span asp-validation-for="Description" class="text-danger"></span>
+                                <textarea asp-for="Description" value="@Model.Description" rows="4" type="text" id="input-description" class="form-control" placeholder="Описание"> </textarea> <span asp-validation-for="Description" class="text-danger"></span>
                             </div>
                             <div class="container my-1">
                                 <div class="row-cols-1 py-2">

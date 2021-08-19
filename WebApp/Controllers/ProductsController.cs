@@ -30,7 +30,7 @@ namespace WebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var userId =  User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId =  User.FindFirst(ClaimTypes.NameIdentifier).Value;
             
             var product = await _product.GetCreateProductViewModel(userId);
             

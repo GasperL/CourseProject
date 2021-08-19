@@ -24,7 +24,7 @@ namespace WebApp.Controllers
 
         public IActionResult Add()
         {
-            return View(new CategoryViewModel());
+            return PartialView("_Add", new CategoryViewModel());
         }
         
         [HttpPost]
@@ -32,7 +32,7 @@ namespace WebApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return PartialView("Add", model);
+                return PartialView("_Add", model);
             }
             
             await _category.Create(model.Name);
