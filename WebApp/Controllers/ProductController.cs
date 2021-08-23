@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Core.ApplicationManagement.Services.ProductService;
 using Microsoft.AspNetCore.Mvc;
@@ -13,8 +14,7 @@ namespace WebApp.Controllers
     {
         private readonly IProductService _product;
 
-        public ProductController(
-            IProductService product)
+        public ProductController(IProductService product)
         {
             _product = product;
         }
@@ -40,11 +40,15 @@ namespace WebApp.Controllers
         [ActionName("NewProduct")]
         public async Task<IActionResult> CreateProduct(CreateProductViewModel viewModel)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-            
+            if (!ModelState.IsValid)
+            {
+                return View("Create",viewModel);
+            }
+
             await _product.Add(viewModel);
-            Log.Information("Product created");
             
+            Log.Information("Product created");
+
             return RedirectToAction("Index");
         }
     }

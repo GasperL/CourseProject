@@ -16,14 +16,15 @@ namespace Core.Common.ViewModels
 
         public Provider Provider { get; set; }
 
-        public Guid ManufacturerId { get; set; }
-
         public bool IsAvailable { get; set; }
 
         public string ProductName { get; set; }
 
         public int Amount { get; set; }
 
-        [Required] public decimal Price { get; set; }
+        [Required] 
+        public decimal Price { get; set; }
+
+        public string PhotoBase64 { get; set; }
     }
 }

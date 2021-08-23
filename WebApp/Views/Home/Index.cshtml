@@ -1,3 +1,10 @@
-﻿<div class="text-center">
-    <h1 class="display-4"></h1>
-</div>
+﻿@model Core.Common.ViewModels.ProductViewModel[]
+<section class="py-5 ">
+    <div class="row">
+        @foreach (var card in @Model)
+        {
+            @await Html.PartialAsync("_ProductCard", @card);
+        }
+       
+    </div>
+</section>

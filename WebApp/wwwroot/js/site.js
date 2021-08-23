@@ -17,3 +17,32 @@
         table.search( this.value ).draw();
     } );
 });
+
+
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            $('#imageResult')
+                .attr('src', e.target.result);
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+$(function () {
+    $('#upload').on('change', function () {
+        readURL(input);
+    });
+});
+
+function dynamicValue(input, card){
+    const node = $(input).on("input", function() {
+        if (input.type === "range"){
+            $(card).text("$" + node.val().toString())
+        }
+        else{
+            $(card).text(node.val().toString())
+        }
+    });
+}

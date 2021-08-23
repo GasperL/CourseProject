@@ -1,10 +1,13 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Core.ApplicationManagement.Services.Utils;
 using Core.Common.CreateViewModels;
 using Core.Common.ViewModels;
 using DataAccess.Entities;
 using DataAccess.Infrastructure.UnitOfWork;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Core.ApplicationManagement.Services.ProductService
@@ -32,9 +35,11 @@ namespace Core.ApplicationManagement.Services.ProductService
                 Price = viewModel.Price,
                 IsAvailable = false,
                 ProductName = viewModel.ProductName,
-                Amount = viewModel.Amount
+                Amount = viewModel.Amount,
             });
-            
+
+            await AddPhoto(viewModel.Photo, id);
+
             await _unitOfWork.Commit();
         }
 
@@ -45,17 +50,17 @@ namespace Core.ApplicationManagement.Services.ProductService
             var selectCategory = await GetSelectingCategory();
 
             var providers = await _unitOfWork.Provider.GetAll(
-                x => x.ProviderRequestId == userId, 
+                x => x.ProviderRequestId == userId,
                 i => i.ProviderRequest);
 
             var provider = providers.SingleOrDefault
                 (x => x.ProviderRequest.Status == ProviderRequestStatus.Approved);
-            
+
             if (provider == null)
             {
                 throw new Exception("Provider not found");
             }
-            
+
             return new CreateProductViewModel
             {
                 ProviderId = provider.Id,
@@ -64,24 +69,26 @@ namespace Core.ApplicationManagement.Services.ProductService
                 SelectProductGroups = selectGroups
             };
         }
-        
+
         public async Task<ProductViewModel[]> GetAllProducts()
         {
             var products = await _unitOfWork.Products.GetAll();
-            
-            return products.Select(x => new ProductViewModel
-            {
-                Id = x.Id,
-                Category = x.Category,
-                ProductGroup = x.ProductGroup,
-                Manufacturer = x.Manufacturer,
-                ManufacturerId = x.ManufacturerId,
-                Provider = x.Provider,
-                IsAvailable = x.IsAvailable,
-                ProductName = x.ProductName,
-                Amount = x.Amount,
-                Price = x.Price
-            }).ToArray();
+            var photos = await _unitOfWork.Files.GetAll();
+
+            return photos.Zip(products, 
+                (photo, product) => new ProductViewModel
+                {
+                    Id = product.Id,
+                    Category = product.Category,
+                    ProductGroup = product.ProductGroup,
+                    Manufacturer = product.Manufacturer,
+                    Provider = product.Provider,
+                    IsAvailable = product.IsAvailable,
+                    ProductName = product.ProductName,
+                    Amount = product.Amount,
+                    Price = product.Price,
+                    PhotoBase64 = FileUtils.GetPhotoBase64(photo.Image)
+                }).ToArray();
         }
 
         private async Task<SelectListItem[]> GetSelectingCategory()
@@ -94,7 +101,7 @@ namespace Core.ApplicationManagement.Services.ProductService
                 Text = x.Name
             }).ToArray();
         }
-        
+
         private async Task<SelectListItem[]> GetSelectingManufacturer()
         {
             var manufacturers = await _unitOfWork.Manufacturers.GetAll();
@@ -117,6 +124,19 @@ namespace Core.ApplicationManagement.Services.ProductService
             }).ToArray();
 
             return selectList;
+        }
+
+        private async Task AddPhoto(IFormFile file, Guid productId)
+        {
+            var id = Guid.NewGuid();
+            var fileBytes = await FileUtils.GetFileBytes(file);
+
+            await _unitOfWork.Files.Add(new ProductPhoto
+            {
+                Id = id,
+                Image = fileBytes,
+                ProductId = productId
+            });
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -37,7 +38,7 @@ namespace DataAccess.Entities
         [Column(TypeName = "decimal(18,4)")]
         [Required]
         public decimal Price { get; set; }
-        
-        //public byte[] Image { get; set; }
+
+        public ICollection<ProductPhoto> Photos { get; set; }
     }
 }

@@ -5,10 +5,15 @@
         public static class Roles
         {
             public const string Administrator = "admin";
-            
+
             public const string Provider = "provider";
 
             public const string User = "user";
+        }
+
+        public static class Files
+        {
+            public const string PublicStaticImagesPath = "images";
         }
     }
 }

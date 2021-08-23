@@ -13,6 +13,8 @@ namespace DataAccess.Infrastructure.UnitOfWork
         IUserRepository Users { get; }
 
         IGenericRepository<Category> Categories { get; }
+        
+        IGenericRepository<ProductPhoto> Files { get; }
 
         IGenericRepository<Provider> Provider { get; }
 

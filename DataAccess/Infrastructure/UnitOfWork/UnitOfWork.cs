@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿
+
+using System.Threading.Tasks;
 using DataAccess.Entities;
 using DataAccess.Entities.Common.Repositories.GenericRepository;
 using DataAccess.Entities.Common.Repositories.ProductRepository;
@@ -11,6 +13,8 @@ namespace DataAccess.Infrastructure.UnitOfWork
         public IProductRepository Products { get; }
        
         public IUserRepository Users { get; }
+
+        public IGenericRepository<ProductPhoto> Files { get;}
 
         public IGenericRepository<Category> Categories { get; }
         
@@ -32,7 +36,8 @@ namespace DataAccess.Infrastructure.UnitOfWork
             IGenericRepository<ProductGroup> productGroups, 
             IGenericRepository<Manufacturer> manufacturers, 
             IGenericRepository<ProviderRequest> providerRequest, 
-            IGenericRepository<Provider> provider)
+            IGenericRepository<Provider> provider, 
+            IGenericRepository<ProductPhoto> files)
         {
             _context = context;
             Products = products;
@@ -42,6 +47,7 @@ namespace DataAccess.Infrastructure.UnitOfWork
             Manufacturers = manufacturers;
             ProviderRequest = providerRequest;
             Provider = provider;
+            Files = files;
         }
 
         public async Task Commit()
