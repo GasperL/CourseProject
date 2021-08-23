@@ -3,11 +3,13 @@
 <div class="row col-md-3">
     <div class="mb-5">
         <div class="card">
-            <img class="card-img-top" src="@Model.PhotoBase64" alt="..."/>
+            <div class="badge discount-badge bg-dark text-white position-absolute">Скидка</div>
+            <img class="card-img-top" src="@Model.PhotoBase64" alt=".."/>
             <div class="card-body p-4">
                 <div class="text-center">
                     <h5 class="fw-bolder">@Model.ProductName</h5>
-                    $@Model.Price.ToString("0.##")
+                    <span class="text-muted text-decoration-line-through">$@Model.Price.ToString("0.##")</span>
+                    $@Model.DiscountPrice.ToString("0.##")
                 </div>
             </div>
             <!-- Product actions-->

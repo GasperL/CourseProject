@@ -25,8 +25,7 @@ namespace Core.ApplicationManagement.Services.ProductGroupService
             {
                 Id = id,
                 Name = options.Name,
-                Discount = options.Discount,
-                BonusPoints = options.BonusPoints
+                Discount = options.Discount
             });
             
             await _unitOfWork.Commit();
@@ -41,7 +40,6 @@ namespace Core.ApplicationManagement.Services.ProductGroupService
                     Id = x.Id,
                     Name = x.Name,
                     Discount = x.Discount,
-                    BonusPoints = x.BonusPoints
                 }).ToArray();
         }
 

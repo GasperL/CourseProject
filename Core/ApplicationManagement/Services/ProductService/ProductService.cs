@@ -24,7 +24,7 @@ namespace Core.ApplicationManagement.Services.ProductService
         public async Task Add(CreateProductViewModel viewModel)
         {
             var id = Guid.NewGuid();
-            
+
             await _unitOfWork.Products.Add(new Product
             {
                 Id = id,
@@ -37,7 +37,7 @@ namespace Core.ApplicationManagement.Services.ProductService
                 ProductName = viewModel.ProductName,
                 Amount = viewModel.Amount,
             });
-
+            
             await AddPhoto(viewModel.Photo, id);
 
             await _unitOfWork.Commit();
@@ -72,9 +72,11 @@ namespace Core.ApplicationManagement.Services.ProductService
 
         public async Task<ProductViewModel[]> GetAllProducts()
         {
-            var products = await _unitOfWork.Products.GetAll();
+            var products = await _unitOfWork.Products
+                .GetAll(x => x.IsAvailable, p => p.ProductGroup);
+            
             var photos = await _unitOfWork.Files.GetAll();
-
+            
             return photos.Zip(products, 
                 (photo, product) => new ProductViewModel
                 {
@@ -87,6 +89,7 @@ namespace Core.ApplicationManagement.Services.ProductService
                     ProductName = product.ProductName,
                     Amount = product.Amount,
                     Price = product.Price,
+                    DiscountPrice = CalculateProductDiscountPercentages(product), 
                     PhotoBase64 = FileUtils.GetPhotoBase64(photo.Image)
                 }).ToArray();
         }
@@ -137,6 +140,11 @@ namespace Core.ApplicationManagement.Services.ProductService
                 Image = fileBytes,
                 ProductId = productId
             });
+        }
+        
+        private static decimal CalculateProductDiscountPercentages(Product product)
+        {
+            return product.Price - ((product.Price * (decimal) product.ProductGroup.Discount) / 100);
         }
     }
 }

@@ -1,10 +1,17 @@
 ﻿@model Core.Common.ViewModels.ProductViewModel[]
 <section class="py-5 ">
     <div class="row">
+        
         @foreach (var card in @Model)
         {
-            @await Html.PartialAsync("_ProductCard", @card);
+            if (card.DiscountPrice == card.Price)
+            {
+                @await Html.PartialAsync("_ProductCard", @card);
+            }
+            else
+            {
+                 @await Html.PartialAsync("_ProductDiscountCard", @card);
+            }
         }
-       
     </div>
 </section>

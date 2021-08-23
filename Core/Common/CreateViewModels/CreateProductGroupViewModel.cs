@@ -11,9 +11,5 @@ namespace Core.Common.CreateViewModels
         [Required]
         [Range(0, double.MaxValue)]
         public double Discount { get; set; }
-
-        [Range(0, 100)]
-        [Required]
-        public int BonusPoints { get; set; }
     }
 }

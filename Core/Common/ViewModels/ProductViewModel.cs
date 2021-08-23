@@ -22,9 +22,10 @@ namespace Core.Common.ViewModels
 
         public int Amount { get; set; }
 
-        [Required] 
         public decimal Price { get; set; }
-
+        
+        public decimal DiscountPrice { get; set; }
+        
         public string PhotoBase64 { get; set; }
     }
 }

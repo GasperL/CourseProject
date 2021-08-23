@@ -11,12 +11,7 @@ namespace DataAccess.Entities
         public string Name { get; set; }
         
         [Column(TypeName = "decimal(18,4)")]
-        [Required]
-        [Range(0, Double.MaxValue)]
-        public double Discount { get; set; }
-
         [Range(0, 100)]
-        [Required]
-        public int BonusPoints { get; set; }
+        public double Discount { get; set; }
     }
 }
