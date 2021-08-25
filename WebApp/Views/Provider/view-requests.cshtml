@@ -48,7 +48,7 @@
                             <td class="text-center">
                                 <button href="" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn view-description far fa-eye"> </button>
                             </td>
-                            <td class="@ProviderUi.StatusColor(item) text-center" id="status-request2">@item.Status</td>
+                            <td class="@ProviderUi.GetStatusColor(item) text-center" id="status-request2">@item.Status</td>
                             <td>
                                 <form method="post" asp-route-requestId="@item.Id">
                                     <button asp-action="ApproveRequest" asp-route-requestId="@item.Id" type="submit" class="btn accept-request fas fa-check" title="Принять" data-toggle="tooltip"> </button>
@@ -57,7 +57,7 @@
                                 </form>
                             </td>
                         </tr>
-                        @await Html.PartialAsync("_ModalViewDescription", @item.Description);
+                        @await Html.PartialAsync("_ModalViewDescription", @item);
 
                     }
                 }

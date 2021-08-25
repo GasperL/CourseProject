@@ -3,9 +3,9 @@ using DataAccess.Entities;
 
 namespace WebApp.Views.Provider.Utils
 {
-    public class ProviderUi
+    public static class ProviderUi
     {
-        public static string StatusColor(ProviderRequestViewModel item)
+        public static string GetStatusColor(ProviderRequestViewModel item)
         {
             return item.Status switch
             {

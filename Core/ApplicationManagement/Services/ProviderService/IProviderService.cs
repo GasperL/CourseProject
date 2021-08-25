@@ -13,6 +13,6 @@ namespace Core.ApplicationManagement.Services.ProviderService
 
         Task DeclineProviderRequest(string requestId);
 
-        Task<ProviderRequestViewModel[]> GetAll();
+        Task<ProviderRequestViewModel[]> GetProviderRequests();
     }
 }

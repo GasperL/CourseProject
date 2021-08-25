@@ -61,7 +61,7 @@
                     </tbody>
                 </table>
                 <div class="row-cols-1 py-3">
-                    <a class="btn btn-secondary popup" data-url="ProductGroup/Add" data-toggle="modal" data-target="#modal-add" id="CategoryModal">Добавить</a>
+                    <a class="btn btn-secondary" data-url="ProductGroup/Add" data-toggle="modal" onclick="modals.openModal(this)" data-target="#modal-add" id="CategoryModal">Добавить</a>
                     @await Html.PartialAsync("_Modal")
                     </div>
             </div>

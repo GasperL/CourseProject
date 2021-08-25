@@ -19,11 +19,11 @@ namespace Core.ApplicationManagement.Services.ProviderService
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ProviderRequestViewModel[]> GetAll()
+        public async Task<ProviderRequestViewModel[]> GetProviderRequests()
         {
             var requests = await _unitOfWork.ProviderRequest
                 .GetAll(x => x.Status == ProviderRequestStatus.Requested);
-            
+
             return requests.Select(x => new ProviderRequestViewModel
             {
                 Id = x.Id,
@@ -39,32 +39,39 @@ namespace Core.ApplicationManagement.Services.ProviderService
 
             if (request == null)
             {
-                await AddProviderRequest(requestViewModel);
+                await CreateProviderRequest(requestViewModel);
+                await _unitOfWork.Commit();
                 return;
             }
-            
-            await CheckStatusRequest(request);
 
-            await UpdateProviderRequest(requestViewModel, request.Id);
+            if (request.Status == ProviderRequestStatus.Declined)
+            {
+                await UpdateProviderRequest(requestViewModel, request.Id);
+            }
+            else
+            {
+                throw new ProviderRequestException(
+                    $"Cant create request because current status: {request.Status.ToString().ToLower()}");
+            }
+
+            await _unitOfWork.Commit();
         }
 
-        private async Task CheckStatusRequest(ProviderRequest request)
+        private static void AssertRequestStatus(ProviderRequest request)
         {
-            switch (request.Status)
+            if (request.Status is ProviderRequestStatus.Approved or ProviderRequestStatus.Declined)
             {
-                case ProviderRequestStatus.Requested or ProviderRequestStatus.Approved:
-                    await AssertRequestStatus(request);
-                    break;
-                case ProviderRequestStatus.Declined:
-                    await ChangeStatus(request, ProviderRequestStatus.Requested);
-                    break;
+                throw new ProviderRequestException($"Request status already {request.Status}")
+                {
+                    Status = request.Status
+                };
             }
         }
 
         public async Task ApproveProviderRequest(string requestId)
         {
             var request = await _unitOfWork.ProviderRequest.GetEntityById(requestId);
-            await AssertRequestStatus(request);
+            AssertRequestStatus(request);
 
             await _unitOfWork.Provider.Add(new Provider
             {
@@ -75,47 +82,34 @@ namespace Core.ApplicationManagement.Services.ProviderService
             });
 
             await ChangeStatus(request, ProviderRequestStatus.Approved);
+            
+            await _unitOfWork.Commit();
         }
 
         public async Task DeclineProviderRequest(string requestId)
         {
             var request = await _unitOfWork.ProviderRequest.GetEntityById(requestId);
 
-            await AssertRequestStatus(request);
+             AssertRequestStatus(request);
 
             await ChangeStatus(request, ProviderRequestStatus.Declined);
+
+            await _unitOfWork.Commit();
         }
 
         private async Task ChangeStatus(ProviderRequest request, ProviderRequestStatus status)
         {
             request.Status = status;
-
-            await _unitOfWork.Commit();
-        }
-        
-        private static Task AssertRequestStatus(ProviderRequest request)
-        {
-            if (request.Status is ProviderRequestStatus.Approved or ProviderRequestStatus.Declined)
-            {
-                throw new ProviderRequestException($"Request status already {request.Status}")
-                {
-                    Status = request.Status
-                };
-            }
             
-            return Task.CompletedTask;
+            await _unitOfWork.ProviderRequest.Update(request);
         }
-        
+
         private async Task<ProviderRequest?> FindProviderRequestByUser(CreateProviderRequestViewModel requestViewModel)
         {
-            var requests = await _unitOfWork.ProviderRequest.GetAll();
-
-            var request = requests.SingleOrDefault(x => requestViewModel.UserId == x.Id);
-            
-            return request;
+            return await _unitOfWork.ProviderRequest.GetSingle(x => requestViewModel.UserId == x.Id);
         }
-        
-        private async Task AddProviderRequest(CreateProviderRequestViewModel requestViewModel)
+
+        private async Task CreateProviderRequest(CreateProviderRequestViewModel requestViewModel)
         {
             await _unitOfWork.ProviderRequest.Add(new ProviderRequest
             {
@@ -123,22 +117,18 @@ namespace Core.ApplicationManagement.Services.ProviderService
                 Description = requestViewModel.Description,
                 Name = requestViewModel.Name,
                 Status = ProviderRequestStatus.Requested,
-            }); 
-
-            await _unitOfWork.Commit();
+            });
         }
 
-        private async Task UpdateProviderRequest(CreateProviderRequestViewModel requestViewModel, string id)
+        private async Task UpdateProviderRequest(CreateProviderRequestViewModel currentRequest, string id)
         {
-            await _unitOfWork.ProviderRequest.Update(new ProviderRequest
-            {
-                Id = id,
-                Description = requestViewModel.Description,
-                Name = requestViewModel.Name,
-                Status = ProviderRequestStatus.Requested
-            });
+            var request = await _unitOfWork.ProviderRequest.GetEntityById(id);
+
+            request.Status = ProviderRequestStatus.Requested;
+            request.Description = currentRequest.Description;
+            request.Name = currentRequest.Name;
             
-            await _unitOfWork.Commit();
+            await _unitOfWork.ProviderRequest.Update(request);
         }
     }
 }

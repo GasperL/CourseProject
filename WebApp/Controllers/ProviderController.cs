@@ -76,7 +76,7 @@ namespace WebApp.Controllers
         [ActionName("view-requests")]
         public async Task<IActionResult> ProviderRequests()
         {
-            return View(await _provider.GetAll());
+            return View(await _provider.GetProviderRequests());
         }
     }
 }

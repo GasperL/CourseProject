@@ -15,15 +15,12 @@ namespace Core.Common.Attributes
         protected override ValidationResult IsValid(
             object value, ValidationContext validationContext)
         {
-            if (value is IFormFile file)
+            if (value is not IFormFile file)
             {
-                if (file.Length > _maxFileSize)
-                {
-                    return new ValidationResult(GetErrorMessage());
-                }
+                return ValidationResult.Success;
             }
 
-            return ValidationResult.Success;
+            return file.Length > _maxFileSize ? new ValidationResult(GetErrorMessage()) : ValidationResult.Success;
         }
 
         private string GetErrorMessage()

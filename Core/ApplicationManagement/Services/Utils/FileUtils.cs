@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
 namespace Core.ApplicationManagement.Services.Utils
@@ -12,12 +11,12 @@ namespace Core.ApplicationManagement.Services.Utils
             return $"data:image/jpeg;base64,{Convert.ToBase64String(bytes)}";
         }
 
-        public static Task<byte[]> GetFileBytes(IFormFile file)
+        public static byte[] GetFileBytes(IFormFile file)
         {
             using var binaryReader = new BinaryReader(file.OpenReadStream());
             var fileBytes = binaryReader.ReadBytes((int) file.Length);
-
-            return Task.FromResult(fileBytes);
+            
+            return fileBytes;
         }
     }
 }

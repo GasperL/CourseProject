@@ -20,7 +20,7 @@ namespace DataAccess
 
         public DbSet<Category> ProductCategory { get; set; }
         
-        public DbSet<ProductPhoto> Files { get; set; }
+        public DbSet<ProductPhoto> ProductPhotos { get; set; }
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)

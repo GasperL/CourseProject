@@ -18,7 +18,6 @@
     } );
 });
 
-
 function readURL(input) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -35,6 +34,7 @@ $(function () {
         readURL(input);
     });
 });
+
 
 function dynamicValue(input, card){
     const node = $(input).on("input", function() {

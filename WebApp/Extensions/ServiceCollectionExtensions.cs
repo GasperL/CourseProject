@@ -7,7 +7,6 @@ using Core.ApplicationManagement.Services.UserService;
 using DataAccess;
 using DataAccess.Entities;
 using DataAccess.Entities.Common.Repositories.GenericRepository;
-using DataAccess.Entities.Common.Repositories.ProductRepository;
 using DataAccess.Entities.Common.Repositories.UserRepository;
 using DataAccess.Infrastructure.UnitOfWork;
 using Microsoft.AspNetCore.Hosting;
@@ -41,7 +40,6 @@ namespace WebApp.Extensions
 
         public static void RegisterEntityFramework(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();

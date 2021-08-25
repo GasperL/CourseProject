@@ -166,7 +166,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Files");
+                    b.ToTable("ProductPhotos");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Provider", b =>

@@ -30,7 +30,7 @@ namespace Core.Common.Attributes
 
         private string GetErrorMessage()
         {
-            return "Данный формат фотографий не поддерживается";
+            return "Данный формат картинки не поддерживается";
         }
     }
 }

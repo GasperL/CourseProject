@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.ApplicationManagement.Services.Utils;
@@ -33,11 +32,11 @@ namespace Core.ApplicationManagement.Services.ProductService
                 ManufacturerId = viewModel.ManufacturerId,
                 ProviderId = viewModel.ProviderId,
                 Price = viewModel.Price,
-                IsAvailable = false,
+                IsAvailable = true,
                 ProductName = viewModel.ProductName,
                 Amount = viewModel.Amount,
             });
-            
+
             await AddPhoto(viewModel.Photo, id);
 
             await _unitOfWork.Commit();
@@ -49,12 +48,9 @@ namespace Core.ApplicationManagement.Services.ProductService
             var selectManufacturer = await GetSelectingManufacturer();
             var selectCategory = await GetSelectingCategory();
 
-            var providers = await _unitOfWork.Provider.GetAll(
+            var provider = await _unitOfWork.Provider.GetSingleWithFilter(
                 x => x.ProviderRequestId == userId,
-                i => i.ProviderRequest);
-
-            var provider = providers.SingleOrDefault
-                (x => x.ProviderRequest.Status == ProviderRequestStatus.Approved);
+                s => s.ProviderRequest.Status == ProviderRequestStatus.Approved);
 
             if (provider == null)
             {
@@ -72,13 +68,9 @@ namespace Core.ApplicationManagement.Services.ProductService
 
         public async Task<ProductViewModel[]> GetAllProducts()
         {
-            var products = await _unitOfWork.Products
-                .GetAll(x => x.IsAvailable, p => p.ProductGroup);
-            
-            var photos = await _unitOfWork.Files.GetAll();
-            
-            return photos.Zip(products, 
-                (photo, product) => new ProductViewModel
+            return await _unitOfWork.Products.GetWithInclude(
+                product => product.IsAvailable,
+                product => new ProductViewModel
                 {
                     Id = product.Id,
                     Category = product.Category,
@@ -89,9 +81,11 @@ namespace Core.ApplicationManagement.Services.ProductService
                     ProductName = product.ProductName,
                     Amount = product.Amount,
                     Price = product.Price,
-                    DiscountPrice = CalculateProductDiscountPercentages(product), 
-                    PhotoBase64 = FileUtils.GetPhotoBase64(photo.Image)
-                }).ToArray();
+                    DiscountPrice = CalculateProductDiscountPercentages(product),
+                    PhotoBase64 = FileUtils.GetPhotoBase64(product.Photos.First().Image)
+                },
+                p => p.ProductGroup,
+                p => p.Photos);
         }
 
         private async Task<SelectListItem[]> GetSelectingCategory()
@@ -132,16 +126,16 @@ namespace Core.ApplicationManagement.Services.ProductService
         private async Task AddPhoto(IFormFile file, Guid productId)
         {
             var id = Guid.NewGuid();
-            var fileBytes = await FileUtils.GetFileBytes(file);
+            var fileBytes = FileUtils.GetFileBytes(file);
 
-            await _unitOfWork.Files.Add(new ProductPhoto
+            await _unitOfWork.ProductPhotos.Add(new ProductPhoto
             {
                 Id = id,
                 Image = fileBytes,
                 ProductId = productId
             });
         }
-        
+
         private static decimal CalculateProductDiscountPercentages(Product product)
         {
             return product.Price - ((product.Price * (decimal) product.ProductGroup.Discount) / 100);

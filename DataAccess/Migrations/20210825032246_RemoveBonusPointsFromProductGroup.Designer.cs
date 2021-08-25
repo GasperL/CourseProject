@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20210823023726_RemoveBonusPointsFromProductGroup")]
+    [Migration("20210825032246_RemoveBonusPointsFromProductGroup")]
     partial class RemoveBonusPointsFromProductGroup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -168,7 +168,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Files");
+                    b.ToTable("ProductPhotos");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Provider", b =>

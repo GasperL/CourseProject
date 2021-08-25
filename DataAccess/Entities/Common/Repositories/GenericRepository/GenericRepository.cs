@@ -35,6 +35,26 @@ namespace DataAccess.Entities.Common.Repositories.GenericRepository
                 .ToArrayAsync();
         }
 
+        public async Task<TEntity> GetSingleWithFilter(
+            Expression<Func<TEntity, bool>> filter, 
+            Expression<Func<TEntity, bool>> single,
+            params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            return await
+                Include(includeProperties)
+                    .Where(filter)
+                    .SingleOrDefaultAsync(single);
+        }
+        
+        public async Task<TEntity> GetSingle(
+            Expression<Func<TEntity, bool>> single,
+            params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            return await
+                Include(includeProperties)
+                    .SingleOrDefaultAsync(single);
+        }
+
         public async Task<TEntity[]> GetAll(Expression<Func<TEntity, bool>> filter)
         {
             return await _dbSet
@@ -43,15 +63,27 @@ namespace DataAccess.Entities.Common.Repositories.GenericRepository
                 .ToArrayAsync();
         }
         
-        public async Task<TEntity[]> GetAll<T>(
+        public async Task<TResult[]> GetAll<TResult>(
             Expression<Func<TEntity, bool>> filter, 
-            Expression<Func<TEntity, T>> include)
+            Expression<Func<TEntity, TResult>> selector)
         {
             return await _dbSet
                 .AsNoTracking()
-                .Include(include)
                 .Where(filter)
+                .Select(selector)
                 .ToArrayAsync();
+        }
+
+        public async Task<TResult[]> GetWithInclude<TResult>(
+                Expression<Func<TEntity, bool>> filter,
+                Expression<Func<TEntity, TResult>> selector, 
+                params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            return await
+                Include(includeProperties)
+                    .Where(filter)
+                    .Select(selector)
+                    .ToArrayAsync();
         }
 
         public async Task<TEntity> GetEntityById(Guid entityId)
@@ -68,6 +100,15 @@ namespace DataAccess.Entities.Common.Repositories.GenericRepository
         {
             _dbSet.Update(item);
             return Task.CompletedTask;
+        }
+
+        private IQueryable<TEntity> Include(params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            return 
+                includeProperties
+                    .Aggregate(_dbSet
+                    .AsNoTracking(), (current, property) => current
+                    .Include(property));
         }
     }
 }
