@@ -4,6 +4,7 @@ using Core.ApplicationManagement.Services.ProductGroupService;
 using Core.ApplicationManagement.Services.ProductService;
 using Core.ApplicationManagement.Services.ProviderService;
 using Core.ApplicationManagement.Services.UserService;
+using Core.Mappings;
 using DataAccess;
 using DataAccess.Entities;
 using DataAccess.Entities.Common.Repositories.GenericRepository;
@@ -26,6 +27,11 @@ namespace WebApp.Extensions
             {
                 services.AddRazorPages().AddRazorRuntimeCompilation();
             }
+        }
+
+        public static void RegisterAutoMapper(this IServiceCollection services)
+        {
+            services.AddAutoMapper(typeof(UserMappingProfile).Assembly);
         }
 
         public static void RegisterDependencies(this IServiceCollection services, IConfiguration configuration)

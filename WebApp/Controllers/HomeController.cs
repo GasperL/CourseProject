@@ -18,7 +18,7 @@ namespace WebApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _productService.GetAllProducts());
+            return View(await _productService.GetAvailableProducts());
         }
 
         public IActionResult Privacy()

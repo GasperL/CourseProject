@@ -1,7 +1,6 @@
 ﻿#nullable enable
-using System;
-using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Core.ApplicationManagement.Exceptions;
 using Core.Common.CreateViewModels;
 using Core.Common.ViewModels;
@@ -13,24 +12,22 @@ namespace Core.ApplicationManagement.Services.ProviderService
     public class ProviderService : IProviderService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public ProviderService(IUnitOfWork unitOfWork)
+        public ProviderService(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task<ProviderRequestViewModel[]> GetProviderRequests()
         {
             var requests = await _unitOfWork.ProviderRequest
                 .GetAll(x => x.Status == ProviderRequestStatus.Requested);
-
-            return requests.Select(x => new ProviderRequestViewModel
-            {
-                Id = x.Id,
-                Name = x.Name,
-                Description = x.Description,
-                Status = x.Status
-            }).ToArray();
+            
+            return _mapper.Map<ProviderRequestViewModel[]>(requests);
         }
 
         public async Task CreateRequest(CreateProviderRequestViewModel requestViewModel)
@@ -73,16 +70,8 @@ namespace Core.ApplicationManagement.Services.ProviderService
             var request = await _unitOfWork.ProviderRequest.GetEntityById(requestId);
             AssertRequestStatus(request);
 
-            await _unitOfWork.Provider.Add(new Provider
-            {
-                Id = Guid.NewGuid(),
-                Name = request.Name,
-                Description = request.Description,
-                ProviderRequestId = request.Id,
-            });
-
+            await _unitOfWork.Provider.Add(_mapper.Map<Provider>(request));
             await ChangeStatus(request, ProviderRequestStatus.Approved);
-            
             await _unitOfWork.Commit();
         }
 
@@ -111,13 +100,10 @@ namespace Core.ApplicationManagement.Services.ProviderService
 
         private async Task CreateProviderRequest(CreateProviderRequestViewModel requestViewModel)
         {
-            await _unitOfWork.ProviderRequest.Add(new ProviderRequest
-            {
-                Id = requestViewModel.UserId,
-                Description = requestViewModel.Description,
-                Name = requestViewModel.Name,
-                Status = ProviderRequestStatus.Requested,
-            });
+            var request = _mapper.Map<ProviderRequest>(requestViewModel);
+            request.Status = ProviderRequestStatus.Requested;
+            
+            await _unitOfWork.ProviderRequest.Add(request);
         }
 
         private async Task UpdateProviderRequest(CreateProviderRequestViewModel currentRequest, string id)

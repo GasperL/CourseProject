@@ -9,7 +9,9 @@ namespace Core.ApplicationManagement.Services.ProductService
     {
         Task Add(CreateProductViewModel viewModel);
 
-        Task<ProductViewModel[]> GetAllProducts();
+        Task<ProductViewModel[]> GetAll();
+        
+        Task<ProductViewModel[]> GetAvailableProducts();
 
         Task<CreateProductViewModel> GetCreateProductViewModel(string userId);
     }

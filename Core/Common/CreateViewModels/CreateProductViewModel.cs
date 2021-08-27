@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using Core.Common.Attributes;
 using Core.Common.Constants;
 using Microsoft.AspNetCore.Http;
@@ -40,7 +39,5 @@ namespace Core.Common.CreateViewModels
         [AllowedExtensions(new []{".jpg", ".png"})]
         [MaxFileSize(AttributeConstants.MaxFileSize)]
         public IFormFile Photo { get; set; }
-
-        public string PhotoPath { get; set; }
     }
 }

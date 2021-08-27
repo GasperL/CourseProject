@@ -1,6 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using AutoMapper;
 using Core.Common.ViewModels.Users;
 using DataAccess.Entities;
 using DataAccess.Infrastructure.UnitOfWork;
@@ -11,33 +10,28 @@ namespace Core.ApplicationManagement.Services.UserService
     public class UserAccountService : IUserAccountService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public UserAccountService(IUnitOfWork unitOfWork)
+        public UserAccountService(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task<UserViewModel[]> GetAll()
         {
             var users = await _unitOfWork.Users.GetAll();
 
-            return users.Select(x => new UserViewModel
-            {
-                Id = x.Id,
-                Email = x.Email,
-            }).ToArray();
+            return _mapper.Map<UserViewModel[]>(users);
         }
 
         public async Task<UserViewModel> Get(string id)
         {
             var user = await _unitOfWork.Users.FindUserById(id);
 
-            return new UserViewModel
-            {
-                Email = user.Email,
-                Id = user.Id,
-                UserName = user.UserName
-            };
+            return _mapper.Map<UserViewModel>(user);
         }
 
         public async Task Update(UserViewModel userToUpdate)
@@ -50,16 +44,13 @@ namespace Core.ApplicationManagement.Services.UserService
             }
 
             await _unitOfWork.Users.Update(user);
+            
             await _unitOfWork.Commit();
         }
 
         public async Task<(IdentityResult, User)> Create(RegisterViewModel model)
         {
-            var user = new User
-            {
-                Email = model.Email,
-                UserName = model.UserName
-            };
+            var user = _mapper.Map<User>(model);
 
             var result = await _unitOfWork.Users.Create(user, model.Password);
 

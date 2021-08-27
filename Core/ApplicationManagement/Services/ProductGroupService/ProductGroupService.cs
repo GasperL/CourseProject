@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Core.Common.CreateViewModels;
 using Core.Common.ViewModels;
 using DataAccess.Entities;
@@ -11,10 +12,14 @@ namespace Core.ApplicationManagement.Services.ProductGroupService
     public class ProductGroupService : IProductGroupService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public ProductGroupService(IUnitOfWork unitOfWork)
+        public ProductGroupService(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task Create(CreateProductGroupViewModel options)
@@ -34,13 +39,7 @@ namespace Core.ApplicationManagement.Services.ProductGroupService
         public async Task<ProductGroupViewModel[]> GetAll()
         {
             var productGroups = await _unitOfWork.ProductGroups.GetAll();
-
-            return productGroups.Select(x => new ProductGroupViewModel
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Discount = x.Discount,
-                }).ToArray();
+            return _mapper.Map<ProductGroupViewModel[]>(productGroups);
         }
 
         public async Task Remove(Guid id)

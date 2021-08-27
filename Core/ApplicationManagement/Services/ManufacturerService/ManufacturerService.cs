@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Core.Common.ViewModels;
 using DataAccess.Entities;
 using DataAccess.Infrastructure.UnitOfWork;
@@ -10,10 +11,14 @@ namespace Core.ApplicationManagement.Services.ManufacturerService
     public class ManufacturerService : IManufacturerService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public ManufacturerService(IUnitOfWork unitOfWork)
+        public ManufacturerService(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task Create(ManufacturerViewModel viewModel)
@@ -30,12 +35,7 @@ namespace Core.ApplicationManagement.Services.ManufacturerService
         public async Task<ManufacturerViewModel[]> GetAll()
         {
             var manufacturers = await _unitOfWork.Manufacturers.GetAll();
-
-            return manufacturers.Select(x => new ManufacturerViewModel
-            {
-                Id = x.Id,
-                Name = x.Name
-            }).ToArray();
+            return _mapper.Map<ManufacturerViewModel[]>(manufacturers);
         }
 
         public async Task Remove(Guid categoryId)

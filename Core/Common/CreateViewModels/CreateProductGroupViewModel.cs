@@ -9,7 +9,7 @@ namespace Core.Common.CreateViewModels
         public string Name { get; set; }
         
         [Required]
-        [Range(0, double.MaxValue)]
+        [Range(0, 100)]
         public double Discount { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Core.ApplicationManagement.Services.Utils;
 using Core.Common.CreateViewModels;
 using Core.Common.ViewModels;
@@ -14,31 +14,26 @@ namespace Core.ApplicationManagement.Services.ProductService
     public class ProductService : IProductService
     {
         private readonly IUnitOfWork _unitOfWork;
-
-        public ProductService(IUnitOfWork unitOfWork)
+        private readonly IMapper _mapper;
+        
+        public ProductService(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task Add(CreateProductViewModel viewModel)
         {
             var id = Guid.NewGuid();
 
-            await _unitOfWork.Products.Add(new Product
-            {
-                Id = id,
-                CategoryId = viewModel.CategoryId,
-                ProductGroupId = viewModel.ProductGroupId,
-                ManufacturerId = viewModel.ManufacturerId,
-                ProviderId = viewModel.ProviderId,
-                Price = viewModel.Price,
-                IsAvailable = true,
-                ProductName = viewModel.ProductName,
-                Amount = viewModel.Amount,
-            });
-
+            var product = _mapper.Map<Product>(viewModel);
+            product.Id = id;
+            
+            await _unitOfWork.Products.Add(product);
+            
             await AddPhoto(viewModel.Photo, id);
-
             await _unitOfWork.Commit();
         }
 
@@ -65,62 +60,48 @@ namespace Core.ApplicationManagement.Services.ProductService
                 SelectProductGroups = selectGroups
             };
         }
-
-        public async Task<ProductViewModel[]> GetAllProducts()
+        
+        public async Task<ProductViewModel[]> GetAvailableProducts()
         {
-            return await _unitOfWork.Products.GetWithInclude(
+            var model =  _mapper.Map<ProductViewModel[]>(await _unitOfWork.Products.GetWithInclude(
                 product => product.IsAvailable,
-                product => new ProductViewModel
-                {
-                    Id = product.Id,
-                    Category = product.Category,
-                    ProductGroup = product.ProductGroup,
-                    Manufacturer = product.Manufacturer,
-                    Provider = product.Provider,
-                    IsAvailable = product.IsAvailable,
-                    ProductName = product.ProductName,
-                    Amount = product.Amount,
-                    Price = product.Price,
-                    DiscountPrice = CalculateProductDiscountPercentages(product),
-                    PhotoBase64 = FileUtils.GetPhotoBase64(product.Photos.First().Image)
-                },
+                product => product,
                 p => p.ProductGroup,
-                p => p.Photos);
+                p => p.Photos));
+
+            return model;
+        }
+        
+        public async Task<ProductViewModel[]> GetAll() 
+        {
+            var model =  _mapper.Map<ProductViewModel[]>(await _unitOfWork.Products.GetWithInclude(
+                product => true,
+                product => product,
+                p => p.ProductGroup,
+                p => p.Photos,
+                g => g.ProductGroup));
+
+            return model;
         }
 
         private async Task<SelectListItem[]> GetSelectingCategory()
         {
             var categories = await _unitOfWork.Categories.GetAll();
 
-            return categories.Select(x => new SelectListItem
-            {
-                Value = x.Id.ToString(),
-                Text = x.Name
-            }).ToArray();
+            return _mapper.Map<SelectListItem[]>(categories);
         }
 
         private async Task<SelectListItem[]> GetSelectingManufacturer()
         {
             var manufacturers = await _unitOfWork.Manufacturers.GetAll();
+            return _mapper.Map<SelectListItem[]>(manufacturers);
 
-            return manufacturers.Select(x => new SelectListItem
-            {
-                Value = x.Id.ToString(),
-                Text = x.Name
-            }).ToArray();
         }
 
         private async Task<SelectListItem[]> GetSelectingGroup()
         {
             var groups = await _unitOfWork.ProductGroups.GetAll();
-
-            var selectList = groups.Select(x => new SelectListItem
-            {
-                Value = x.Id.ToString(),
-                Text = x.Name
-            }).ToArray();
-
-            return selectList;
+            return _mapper.Map<SelectListItem[]>(groups);
         }
 
         private async Task AddPhoto(IFormFile file, Guid productId)
@@ -134,11 +115,6 @@ namespace Core.ApplicationManagement.Services.ProductService
                 Image = fileBytes,
                 ProductId = productId
             });
-        }
-
-        private static decimal CalculateProductDiscountPercentages(Product product)
-        {
-            return product.Price - ((product.Price * (decimal) product.ProductGroup.Discount) / 100);
         }
     }
 }
