@@ -337,6 +337,56 @@ table.table td a.view-description{
     background: rgb(228 51 92) !important;
 }
 
+.activate
+{
+    font-size: 3rem !important;
+    color: green;
+}
+
+.activate:hover{
+    color: green;
+}
+
+.deactivate
+{
+    font-size: 3rem !important;
+    color: red;
+}
+
+.deactivate:hover{
+    color: red;
+}
+
+.view
+{
+    font-size: 3rem !important;
+    color: blue;
+}
+
+.view:hover{
+    color: blue;
+}
+
+/*fas fa-smile" : "far fa-angry"*/
+
+.smile-smile{
+    color: #42a206 !important;
+    font-size: 5rem !important;
+    padding-top: 50% !important;
+    padding-bottom: 50% !important;
+}
+
+.smile-angry{
+    color: #ce0000 !important;
+    font-size: 5rem !important;
+    padding-top: 50% !important;
+    padding-bottom: 50% !important;
+}
+
+.isAvailable{
+    display: none;
+}
+
 .status-approved
 {
     background: #4cae4c !important;

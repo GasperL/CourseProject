@@ -1,0 +1,45 @@
+﻿@model Core.Common.CreateViewModels.CreateProductViewModel
+
+
+<div class="col mb-2">
+    <div class="container">
+        <div class="mb-3">
+            <input asp-for="ProductName" type="text" maxlength="20" onchange="dynamicValue(this, '#card-input-name')" id="input-product-name" class="form-control" placeholder="Имя товара">
+            <span asp-validation-for="ProductName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <select id="select-category" class="form-control" asp-for="CategoryId" asp-items="@Model.SelectCategory">
+                <option>Категория</option>
+            </select>
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <select id="select-manufacturer" class="form-control" asp-for="ManufacturerId" asp-items="@Model.SelectManufacturer">
+                <option>Производитель</option>
+            </select>
+            <span asp-validation-for="ManufacturerId" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <select id="select-product-group" class="form-control" asp-for="ProductGroupId" asp-items="@Model.SelectProductGroups">
+                <option>Группа продуктов</option>
+            </select>
+            <span asp-validation-for="ProductGroupId" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <input type="number" asp-for="Amount" class="form-control" placeholder="Количество">
+            <span asp-validation-for="Amount" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <input asp-for="Price" type="range" max="3000" onchange="dynamicValue(this, '#card-input-price')" id="input-product-price" class="form-range" placeholder="Цена">
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <div class="col py-2">
+            <div class="row">
+                <input type="submit" value="Добавить" class="btn btn-primary my-2"/>
+            </div>
+            <div class="row">
+                <button type="button" asp-action="Index" class="btn btn-secondary my-2" data-bs-dismiss="modal" aria-label="Close">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>

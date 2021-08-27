@@ -22,8 +22,7 @@ namespace WebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var model = await _product.GetAllProducts();
-            return View(model);
+            return View(await _product.GetAll());
         }
 
         [HttpGet]
@@ -31,9 +30,7 @@ namespace WebApp.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             
-            var product = await _product.GetCreateProductViewModel(userId);
-            
-            return View(product);
+            return PartialView("_Create", await _product.GetCreateProductViewModel(userId));
         }
 
         [HttpPost]
@@ -42,7 +39,7 @@ namespace WebApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View("Create",viewModel);
+                return PartialView("_Create", viewModel);
             }
 
             await _product.Add(viewModel);

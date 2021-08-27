@@ -1,4 +1,4 @@
-﻿@using WebApp.Views.Provider.Utils
+﻿@using WebApp.Views.Utils
 @model Core.Common.ViewModels.ProviderRequestViewModel[]
 
 <div class="container">
@@ -48,12 +48,12 @@
                             <td class="text-center">
                                 <button href="" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn view-description far fa-eye"> </button>
                             </td>
-                            <td class="@ProviderUi.GetStatusColor(item) text-center" id="status-request2">@item.Status</td>
+                            <td class="@UiHelper.GetStatusColor(item) text-center" id="status-request2">@item.Status</td>
                             <td>
                                 <form method="post" asp-route-requestId="@item.Id">
                                     <button asp-action="ApproveRequest" asp-route-requestId="@item.Id" type="submit" class="btn accept-request fas fa-check" title="Принять" data-toggle="tooltip"> </button>
                                     <button asp-action="DeclineRequest" asp-route-requestId="@item.Id" class="btn reject-request fas fa-times" type="submit" title="Отклонить" data-toggle="tooltip"> </button>
-                                    <button asp-controller="Profile" asp-action="Index" asp-route-user="@item.Id" class="btn request-view fas fa-binoculars" type="submit" title="Профиль пользователя" data-toggle="tooltip"> </button>
+                                    <button asp-controller="Profile" asp-action="Index" asp-route-user="@item.Id" class="btn request-view fas fa-binoculars" type="submit" title="Профиль пользователя" data-toggle="tooltip"></button>
                                 </form>
                             </td>
                         </tr>

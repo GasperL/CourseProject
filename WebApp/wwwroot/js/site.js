@@ -4,6 +4,7 @@
         "paging": true,
         "pagingType": "numbers",
         "lengthChange": false,
+        "pageLength": 2,
         "language": {
             "lengthMenu": "Display _MENU_ records per page",
             "zeroRecords": "Ничего не найдено",
@@ -14,7 +15,7 @@
     });
 
     $('#custom-filter').keyup( function() {
-        table.search( this.value ).draw();
+        table.search(this.value).draw();
     } );
 });
 

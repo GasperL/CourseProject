@@ -1,0 +1,32 @@
+﻿@model Core.Common.CreateViewModels.CreateProductViewModel
+
+<link rel="stylesheet" href="~/css/card.css"/>
+
+<div class="modal-content">
+    @* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
+    <div class="row">
+        <div class="bg-light rounded">
+            <div class="container">
+                <div class="row-cols-1 py-3">
+                    <h1 class="text-center">Добавление товара</h1>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                </div>
+            </div>
+            <form method="post" asp-action="NewProduct" enctype="multipart/form-data">
+                <input type="hidden" asp-for="ProviderId">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="row">
+                        @await Html.PartialAsync("_ProductPhoto", @Model)
+                        @await Html.PartialAsync("_ProductCreateInputs", @Model)
+                    </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

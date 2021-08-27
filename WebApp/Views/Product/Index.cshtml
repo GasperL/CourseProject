@@ -1,5 +1,74 @@
-﻿@model Core.Common.ViewModels.ProductViewModel[]
+﻿@using WebApp.Views.Utils
+@model Core.Common.ViewModels.ProductViewModel[]
 
 <div class="container">
-    <a asp-action="Create" class="btn btn-secondary">Добавить</a>
+    <div class="row">
+        <div class="col-lg-5 table-responsive bg-light rounded mx-auto">
+            <div class="table-title py-2">
+                <div class="row py-2">
+                    <div class="col-sm-4">
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="search-box">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fas fa-search-dollar"></i>
+                                </span>
+                                <input type="search" id="custom-filter" class="form-control f bg-light" placeholder="Поиск">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table id="person_listing" class="table table-hover table-bordered">
+                <thead>
+                <tr>
+                    <th class="text-center">Продукт</th>
+                    <th class="text-center">Доступность</th>
+                    <th class="text-center">Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                @{
+                    foreach (var item in @Model)
+                    {
+                        <tr>
+                            <td>
+                                @await Html.PartialAsync("_ProductCard", item)
+                            </td>
+
+                            <td class="text-center">
+                                <p class="isAvailable">@item.IsAvailable</p>
+                                <i class="@UiHelper.GetAvailabilitySmile(item.IsAvailable)"></i>
+                            </td>
+
+                            <td class="text-center">
+                                <form method="post">
+                                    <div class="col">
+                                        <button type="submit" class="activate btn fas fa-check py-3" title="Активировать" data-toggle="tooltip"></button>
+                                        <button type="submit" class="deactivate btn fas fa-times py-3" title="Деактивировать" data-toggle="tooltip"></button>
+                                        <button type="submit" class="view btn fas fa-binoculars py-3" title="Подробней" data-toggle="tooltip"></button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+            <div class="row-cols-2 text-center py-2">
+                <a data-url="Product/Create" data-toggle="modal" onclick="modals.openModal(this)" class="btn btn-secondary">Добавить</a>
+                @await Html.PartialAsync("_ProductModal")
+            </div>
+        </div>
+
+    </div>
 </div>
+
+@section Scripts
+{
+    <script src="~/lib/DataTables/DataTables-1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="~/js/modal.js"></script>
+    <script src="~/lib/DataTables/DataTables-1.10.25/js/dataTables.bootstrap5.min.js"></script>
+}

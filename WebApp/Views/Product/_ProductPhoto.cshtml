@@ -1,0 +1,20 @@
+﻿@model Core.Common.CreateViewModels.CreateProductViewModel
+
+<div class="col mb-2">
+    <div class="card">
+        <h5 class="text-center fw-bolder">Пример</h5>
+        <div class="image-area">
+            <label>
+                <input id="upload" asp-for="Photo" type="file" onchange="readURL(this);" class="form-control border-0">
+                <img id="imageResult" class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt=""/>
+                <span asp-validation-for="Photo" class="text-danger"></span>
+            </label>
+        </div>
+        <div class="card-body">
+            <div class="text-center">
+                <h5 class="fw-bolder" id="card-input-name">Телевизор</h5>
+                <span id="card-input-price" class="text-muted">$20.00</span>
+            </div>
+        </div>
+    </div>
+</div>

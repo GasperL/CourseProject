@@ -1,9 +1,9 @@
 ﻿using Core.Common.ViewModels;
 using DataAccess.Entities;
 
-namespace WebApp.Views.Provider.Utils
+namespace WebApp.Views.Utils
 {
-    public static class ProviderUi
+    public static class UiHelper
     {
         public static string GetStatusColor(ProviderRequestViewModel item)
         {
@@ -14,6 +14,11 @@ namespace WebApp.Views.Provider.Utils
                 ProviderRequestStatus.Declined => "status-declined",
                 _ => null
             };
+        }
+        
+        public static string GetAvailabilitySmile(bool availability)
+        {
+            return availability == true ? "smile-smile fas fa-smile" : "smile-angry far fa-angry";
         }
     }
 }
