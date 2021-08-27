@@ -25,6 +25,22 @@ namespace WebApp.Controllers
             return View(await _product.GetAll());
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ActivateProduct(Guid productId)
+        {
+            await _product.Activate(productId);
+            
+            return RedirectToAction("Index");
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> DeactivateProduct(Guid productId)
+        {
+            await _product.Deactivate(productId);
+
+            return View("Index");
+        }
+
         [HttpGet]
         public async Task<IActionResult> Create()
         {

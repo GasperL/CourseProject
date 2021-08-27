@@ -1,4 +1,5 @@
-﻿$(document).ready(function(){
+﻿// todo 
+$(document).ready(function(){
     const table = $('#person_listing').DataTable({
         "scrollCollapse": true,
         "paging": true,
@@ -19,6 +20,7 @@
     } );
 });
 
+// todo
 function readURL(input) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -35,7 +37,6 @@ $(function () {
         readURL(input);
     });
 });
-
 
 function dynamicValue(input, card){
     const node = $(input).on("input", function() {

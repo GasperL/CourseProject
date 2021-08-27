@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
+using Core.ApplicationManagement.Exceptions;
 using Core.ApplicationManagement.Services.Utils;
 using Core.Common.CreateViewModels;
 using Core.Common.ViewModels;
@@ -32,8 +33,8 @@ namespace Core.ApplicationManagement.Services.ProductService
             product.Id = id;
             
             await _unitOfWork.Products.Add(product);
-            
             await AddPhoto(viewModel.Photo, id);
+            
             await _unitOfWork.Commit();
         }
 
@@ -60,7 +61,32 @@ namespace Core.ApplicationManagement.Services.ProductService
                 SelectProductGroups = selectGroups
             };
         }
+
+        public async Task Deactivate(Guid productId)
+        {
+            var product = await _unitOfWork.Products.GetEntityById(productId);
+            
+            AssertProductIsNotNull(productId, product);
+            AssertProductAvailability(product, false);
+            
+            product.IsAvailable = false;
+            
+            await _unitOfWork.Commit();
+        }
         
+        public async Task Activate(Guid productId)
+        {
+            var product = await _unitOfWork.Products.GetEntityById(productId);
+
+            AssertProductIsNotNull(productId, product);
+            AssertProductAvailability(product, true);
+            AssertProductAmount(product);
+
+            product.IsAvailable = true;
+            
+            await _unitOfWork.Commit();
+        }
+
         public async Task<ProductViewModel[]> GetAvailableProducts()
         {
             var model =  _mapper.Map<ProductViewModel[]>(await _unitOfWork.Products.GetWithInclude(
@@ -83,7 +109,7 @@ namespace Core.ApplicationManagement.Services.ProductService
 
             return model;
         }
-
+        
         private async Task<SelectListItem[]> GetSelectingCategory()
         {
             var categories = await _unitOfWork.Categories.GetAll();
@@ -115,6 +141,42 @@ namespace Core.ApplicationManagement.Services.ProductService
                 Image = fileBytes,
                 ProductId = productId
             });
+        }
+
+        private static void AssertProductAmount(Product product)
+        {
+            if (product.Amount == 0)
+            {
+                ThrowProductActivateException(product, "Продукт недоступен потому что его количество 0");
+            }
+        }
+
+        private static void AssertProductAvailability(Product product, bool availability)
+        {
+            var textError = availability == true ? "доступен" : "недоступен";
+            
+            if (product.IsAvailable == availability)
+            {
+                ThrowProductActivateException(product, $"Товар уже {textError} для покупки.");
+            }
+        }
+        
+        private static void ThrowProductActivateException(Product product, string text)
+        {
+            throw new ProductActivateException(text)
+            {
+                Amount = product.Amount,
+                IsAvailable = product.IsAvailable,
+                ProductId = product.Id
+            };
+        }
+        
+        private static void AssertProductIsNotNull(Guid productId, Product product)
+        {
+            if (product == null)
+            {
+                throw new Exception($"Продукт под id {productId} не найден");
+            }
         }
     }
 }

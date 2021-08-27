@@ -14,5 +14,9 @@ namespace Core.ApplicationManagement.Services.ProductService
         Task<ProductViewModel[]> GetAvailableProducts();
 
         Task<CreateProductViewModel> GetCreateProductViewModel(string userId);
+        
+        Task Deactivate(Guid productId);
+        
+        Task Activate(Guid productId);
     }
 }

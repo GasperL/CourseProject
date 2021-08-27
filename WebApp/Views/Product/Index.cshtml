@@ -1,6 +1,9 @@
 ﻿@using WebApp.Views.Utils
 @model Core.Common.ViewModels.ProductViewModel[]
 
+
+<link rel="stylesheet" href="~/css/card.css"/>
+
 <div class="container">
     <div class="row">
         <div class="col-lg-5 table-responsive bg-light rounded mx-auto">
@@ -42,12 +45,12 @@
                                 <p class="isAvailable">@item.IsAvailable</p>
                                 <i class="@UiHelper.GetAvailabilitySmile(item.IsAvailable)"></i>
                             </td>
-
+                            
                             <td class="text-center">
                                 <form method="post">
                                     <div class="col">
-                                        <button type="submit" class="activate btn fas fa-check py-3" title="Активировать" data-toggle="tooltip"></button>
-                                        <button type="submit" class="deactivate btn fas fa-times py-3" title="Деактивировать" data-toggle="tooltip"></button>
+                                        <button asp-action="ActivateProduct" asp-route-productId="@item.Id" type="submit" class="activate btn fas fa-check py-3" title="Активировать" data-toggle="tooltip"></button>
+                                        <button asp-action="DeactivateProduct" asp-route-productId="@item.Id" type="submit" class="deactivate btn fas fa-times py-3" title="Деактивировать" data-toggle="tooltip"></button>
                                         <button type="submit" class="view btn fas fa-binoculars py-3" title="Подробней" data-toggle="tooltip"></button>
                                     </div>
                                 </form>
