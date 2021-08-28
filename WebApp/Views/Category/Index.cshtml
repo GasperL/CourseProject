@@ -49,6 +49,7 @@
                                 <td>
                                     <form method="post" asp-route-requestId="@item.Id">
                                         <button asp-action="Remove" asp-route-categoryId="@item.Id" type="submit" class="btn remove-category fas fa-trash" title="Принять" data-toggle="tooltip"> </button>
+                                        <a data-url="Category/Edit/@item.Id" onclick="modals.openModal(this)" class="btn manufacturer-edit fas fa-edit" title="Изменить" data-toggle="tooltip"> </a>
                                         <button type="submit" class="btn remove-category fas fa-binoculars" title="Посмотреть товары категории" data-toggle="tooltip"> </button>
                                     </form>
                                 </td>
@@ -58,9 +59,9 @@
                     </tbody>
                 </table>
                 <div class="row-cols-1 py-3">
-                    <a class="btn btn-secondary popup" onclick="modals.openModal(this)"  data-url="Category/Add" data-toggle="modal" data-target="#modal-add">Добавить</a>
+                    <a class="btn btn-secondary popup" onclick="modals.openModal(this)" data-url="Category/Add" data-toggle="modal" data-target="#modal-add">Добавить</a>
                     @await Html.PartialAsync("_Modal")
-                    </div>
+                </div>
             </div>
         </div>
     </div>

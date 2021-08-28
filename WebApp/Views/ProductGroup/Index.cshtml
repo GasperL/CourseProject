@@ -49,9 +49,9 @@
                                 <td class="text-center">@item.Id.ToString()[..8]</td>
                                 <td class="text-center">@item.Discount%</td>
                                 <td>
-                                    <form method="post" asp-route-requestId="@item.Id">
+                                    <form method="post">
                                         <button asp-action="Remove" asp-route-categoryId="@item.Id" type="submit" class="btn remove-category fas fa-trash" title="Принять" data-toggle="tooltip"> </button>
-                                        <button type="submit" class="btn remove-category fas fa-edit" title="Изменить" data-toggle="tooltip"> </button>
+                                        <a data-url="ProductGroup/Edit/@item.Id" onclick="modals.openModal(this)" class="btn remove-category fas fa-edit" title="Изменить" data-toggle="tooltip"> </a>
                                         <button type="submit" class="btn remove-category fas fa-binoculars" title="Посмотреть товары группы" data-toggle="tooltip"> </button>
                                     </form>
                                 </td>
@@ -61,9 +61,9 @@
                     </tbody>
                 </table>
                 <div class="row-cols-1 py-3">
-                    <a class="btn btn-secondary" data-url="ProductGroup/Add" data-toggle="modal" onclick="modals.openModal(this)"  id="CategoryModal">Добавить</a>
+                    <a class="btn btn-secondary" data-url="ProductGroup/Add" data-toggle="modal" onclick="modals.openModal(this)" id="CategoryModal">Добавить</a>
                     @await Html.PartialAsync("_Modal")
-                    </div>
+                </div>
             </div>
         </div>
     </div>

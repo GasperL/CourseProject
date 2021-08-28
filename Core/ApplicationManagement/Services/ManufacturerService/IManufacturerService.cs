@@ -11,5 +11,9 @@ namespace Core.ApplicationManagement.Services.ManufacturerService
         Task<ManufacturerViewModel[]> GetAll();
         
         Task Remove(Guid categoryId);
+       
+        Task Edit(ManufacturerViewModel model);
+        
+        Task<ManufacturerViewModel> GetManufacturerViewModel(Guid manufacturerId);
     }
 }

@@ -12,5 +12,8 @@ namespace Core.ApplicationManagement.Services.ProductGroupService
         Task<ProductGroupViewModel[]> GetAll();
 
         Task Remove(Guid id);
+        Task Edit(ProductGroupViewModel model);
+        
+        Task<ProductGroupViewModel> GetProductGroupViewModel(Guid id);
     }
 }

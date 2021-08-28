@@ -230,9 +230,15 @@ table.table td:last-child {
     width: 130px;
 }
 table.table td a {
-    color: #a0a5b1;
+    color: black;
     display: inline-block;
-    margin: 0 5px;
+    margin: 0;
+    padding: 5px 8px;
+}
+
+table.table td a.manufacturer-edit {
+    color: black;
+    padding: 3px 1px;
 }
 
 table.table td i {
@@ -257,19 +263,24 @@ table.table td i {
 .pagination li a:hover {
     color: #666;
 }
+
 .pagination li.active a {
     background: #03A9F4;
 }
+
 .pagination li.active a:hover {
     background: #0397d6;
 }
+
 .pagination li.disabled i {
     color: #ccc;
 }
+
 .pagination li i {
     font-size: 16px;
     padding-top: 6px
 }
+
 .hint-text {
     float: left;
     margin-top: 10px;
@@ -396,6 +407,8 @@ table.table td a.view-description{
 {
     background: #827777 !important;
 }
+
+
 
 
 #upload {

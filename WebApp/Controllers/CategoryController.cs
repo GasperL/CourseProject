@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Core.ApplicationManagement.Services.CategoryService;
 using Core.Common.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace WebApp.Controllers
 {
@@ -44,6 +45,29 @@ namespace WebApp.Controllers
         public async Task<IActionResult> Remove(Guid categoryId)
         {
             await _category.Remove(categoryId);
+            
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            var model = await _category.GetCategoryViewModel(id);
+
+            return PartialView("_Edit", model);
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> Edit(CategoryViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return PartialView("_Edit", model);
+            }
+             
+            await _category.Edit(model);
+            
+            Log.Information($"Category id {model.Id} edited");
             
             return RedirectToAction("Index");
         }

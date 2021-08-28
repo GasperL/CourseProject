@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Core.Common.CreateViewModels;
+using Core.ApplicationManagement.Services.Utils;
 using Core.Common.ViewModels;
 using DataAccess.Entities;
 using DataAccess.Infrastructure.UnitOfWork;
@@ -42,6 +41,28 @@ namespace Core.ApplicationManagement.Services.CategoryService
         public async Task Remove(Guid categoryId)
         {
             await _unitOfWork.Categories.Delete(categoryId);
+            await _unitOfWork.Commit();
+        }
+       
+        public async Task<CategoryViewModel> GetCategoryViewModel(Guid id)
+        {
+            var category = await _unitOfWork.Categories.GetEntityById(id);
+            
+            AssertionsUtils.AssertIsNotNull(category, "Категория не найдена");
+           
+            return _mapper.Map<CategoryViewModel>(category);
+        }
+
+        public async Task Edit(CategoryViewModel model)
+        {
+            var category =  await _unitOfWork.Categories.GetEntityById(model.Id);
+
+            AssertionsUtils.AssertIsNotNull(category, "Категория не найдена");
+
+            category.Name = model.Name;
+            
+            await _unitOfWork.Categories.Update(category);
+            
             await _unitOfWork.Commit();
         }
     }

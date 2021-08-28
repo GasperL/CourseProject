@@ -48,10 +48,7 @@ namespace Core.ApplicationManagement.Services.ProductService
                 x => x.ProviderRequestId == userId,
                 s => s.ProviderRequest.Status == ProviderRequestStatus.Approved);
 
-            if (provider == null)
-            {
-                throw new Exception("Provider not found");
-            }
+            AssertionsUtils.AssertIsNotNull(provider, "Поставщик не найден");
 
             return new CreateProductViewModel
             {
@@ -66,7 +63,7 @@ namespace Core.ApplicationManagement.Services.ProductService
         {
             var product = await _unitOfWork.Products.GetEntityById(productId);
             
-            AssertProductIsNotNull(productId, product);
+            AssertionsUtils.AssertIsNotNull(product, $"Продукт под id {productId} не найден");
             AssertProductAvailability(product, false);
             
             product.IsAvailable = false;
@@ -78,7 +75,7 @@ namespace Core.ApplicationManagement.Services.ProductService
         {
             var product = await _unitOfWork.Products.GetEntityById(productId);
 
-            AssertProductIsNotNull(productId, product);
+            AssertionsUtils.AssertIsNotNull(product, $"Продукт под id {productId} не найден");
             AssertProductAvailability(product, true);
             AssertProductAmount(product);
 
@@ -169,14 +166,6 @@ namespace Core.ApplicationManagement.Services.ProductService
                 IsAvailable = product.IsAvailable,
                 ProductId = product.Id
             };
-        }
-        
-        private static void AssertProductIsNotNull(Guid productId, Product product)
-        {
-            if (product == null)
-            {
-                throw new Exception($"Продукт под id {productId} не найден");
-            }
         }
     }
 }

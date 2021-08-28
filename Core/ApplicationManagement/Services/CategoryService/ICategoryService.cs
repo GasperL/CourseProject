@@ -11,5 +11,9 @@ namespace Core.ApplicationManagement.Services.CategoryService
        Task<CategoryViewModel[]> GetAll();
        
        Task Remove(Guid categoryId);
+
+       Task<CategoryViewModel> GetCategoryViewModel(Guid id);
+
+       Task Edit(CategoryViewModel model);
     }
 }

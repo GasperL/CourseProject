@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Core.ApplicationManagement.Services.Utils;
 using Core.Common.CreateViewModels;
 using Core.Common.ViewModels;
 using DataAccess.Entities;
@@ -41,11 +41,34 @@ namespace Core.ApplicationManagement.Services.ProductGroupService
             var productGroups = await _unitOfWork.ProductGroups.GetAll();
             return _mapper.Map<ProductGroupViewModel[]>(productGroups);
         }
-
+        
         public async Task Remove(Guid id)
         {
             await _unitOfWork.ProductGroups.Delete(id);
             await _unitOfWork.Commit();
         }
+
+        public async Task<ProductGroupViewModel> GetProductGroupViewModel(Guid id)
+        {
+            var group = await _unitOfWork.ProductGroups.GetEntityById(id);
+            
+            AssertionsUtils.AssertIsNotNull(group, "Группа не найдена");
+           
+            return _mapper.Map<ProductGroupViewModel>(group);
+        }
+      
+        public async Task Edit(ProductGroupViewModel model)
+        {
+            var group =  await _unitOfWork.ProductGroups.GetEntityById(model.Id);
+
+            AssertionsUtils.AssertIsNotNull(group, "Группа не найдена");
+
+            group.Discount = model.Discount;
+            group.Name = model.Name;
+
+            await _unitOfWork.ProductGroups.Update(group);
+            await _unitOfWork.Commit();
+        }
+      
     }
 }

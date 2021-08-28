@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using AutoMapper;
+using Core.ApplicationManagement.Services.Utils;
 using Core.Common.ViewModels.Users;
 using DataAccess.Entities;
 using DataAccess.Infrastructure.UnitOfWork;
@@ -38,10 +39,7 @@ namespace Core.ApplicationManagement.Services.UserService
         {
             var user = await _unitOfWork.Users.FindUserById(userToUpdate.Id);
 
-            if (user == null)
-            {
-                return;
-            }
+            AssertionsUtils.AssertIsNotNull(user, $"Пользователь не найден");
 
             await _unitOfWork.Users.Update(user);
             
