@@ -37,6 +37,13 @@
         </div>
         <hr>
         <div class="row">
+            <div class="col-sm-3">
+                <h6 class="mb-0">Бонусные балы</h6>
+            </div>
+            <div class="col-sm-9 text-secondary">@Model.BonusPoints</div>
+        </div>
+        <hr>
+        <div class="row">
             <div class="col-sm-12">
                 <a asp-controller="Provider" asp-action="CreateRequest" class="btn btn-primary">Стать поставщиком</a>
                 <a asp-controller="Provider" asp-action="view-requests" class="btn btn-primary">Проверить заявки на поставщика</a>

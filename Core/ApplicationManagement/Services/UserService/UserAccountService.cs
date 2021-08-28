@@ -31,7 +31,9 @@ namespace Core.ApplicationManagement.Services.UserService
         public async Task<UserViewModel> Get(string id)
         {
             var user = await _unitOfWork.Users.FindUserById(id);
-
+           
+            AssertionsUtils.AssertIsNotNull(user, "Пользователь не найден");
+            
             return _mapper.Map<UserViewModel>(user);
         }
 
