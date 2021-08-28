@@ -46,7 +46,7 @@
                             <td class="text-center">@item.Id[..8]</td>
                             <td class="text-center">@item.Name</td>
                             <td class="text-center">
-                                <button href="" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn view-description far fa-eye"> </button>
+                                <button href="" data-bs-toggle="modal" data-bs-target="#description-modal" class="btn view-description far fa-eye"> </button>
                             </td>
                             <td class="@UiHelper.GetStatusColor(item) text-center" id="status-request2">@item.Status</td>
                             <td>
@@ -58,7 +58,6 @@
                             </td>
                         </tr>
                         @await Html.PartialAsync("_ModalViewDescription", @item);
-
                     }
                 }
                 </tbody>

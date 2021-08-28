@@ -1,5 +1,5 @@
 ﻿// todo 
-$(document).ready(function(){
+$(document).ready(function () {
     const table = $('#person_listing').DataTable({
         "scrollCollapse": true,
         "paging": true,
@@ -15,9 +15,9 @@ $(document).ready(function(){
         }
     });
 
-    $('#custom-filter').keyup( function() {
+    $('#custom-filter').keyup(function () {
         table.search(this.value).draw();
-    } );
+    });
 });
 
 // todo
@@ -38,12 +38,11 @@ $(function () {
     });
 });
 
-function dynamicValue(input, card){
-    const node = $(input).on("input", function() {
-        if (input.type === "range"){
+function dynamicValue(input, card) {
+    const node = $(input).on("input", function () {
+        if (input.type === "range") {
             $(card).text("$" + node.val().toString())
-        }
-        else{
+        } else {
             $(card).text(node.val().toString())
         }
     });
