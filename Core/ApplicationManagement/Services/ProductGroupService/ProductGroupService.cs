@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Core.ApplicationManagement.Services.Utils;
 using Core.Common.CreateViewModels;
 using Core.Common.ViewModels;
 using DataAccess.Entities;
@@ -11,10 +12,14 @@ namespace Core.ApplicationManagement.Services.ProductGroupService
     public class ProductGroupService : IProductGroupService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public ProductGroupService(IUnitOfWork unitOfWork)
+        public ProductGroupService(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task Create(CreateProductGroupViewModel options)
@@ -25,8 +30,7 @@ namespace Core.ApplicationManagement.Services.ProductGroupService
             {
                 Id = id,
                 Name = options.Name,
-                Discount = options.Discount,
-                BonusPoints = options.BonusPoints
+                Discount = options.Discount
             });
             
             await _unitOfWork.Commit();
@@ -35,14 +39,36 @@ namespace Core.ApplicationManagement.Services.ProductGroupService
         public async Task<ProductGroupViewModel[]> GetAll()
         {
             var productGroups = await _unitOfWork.ProductGroups.GetAll();
-
-            return productGroups.Select(x => new ProductGroupViewModel
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Discount = x.Discount,
-                    BonusPoints = x.BonusPoints
-                }).ToArray();
+            return _mapper.Map<ProductGroupViewModel[]>(productGroups);
         }
+        
+        public async Task Remove(Guid id)
+        {
+            await _unitOfWork.ProductGroups.Delete(id);
+            await _unitOfWork.Commit();
+        }
+
+        public async Task<ProductGroupViewModel> GetProductGroupViewModel(Guid id)
+        {
+            var group = await _unitOfWork.ProductGroups.GetEntityById(id);
+            
+            AssertionsUtils.AssertIsNotNull(group, "Группа не найдена");
+           
+            return _mapper.Map<ProductGroupViewModel>(group);
+        }
+      
+        public async Task Edit(ProductGroupViewModel model)
+        {
+            var group =  await _unitOfWork.ProductGroups.GetEntityById(model.Id);
+
+            AssertionsUtils.AssertIsNotNull(group, "Группа не найдена");
+
+            group.Discount = model.Discount;
+            group.Name = model.Name;
+
+            await _unitOfWork.ProductGroups.Update(group);
+            await _unitOfWork.Commit();
+        }
+      
     }
 }

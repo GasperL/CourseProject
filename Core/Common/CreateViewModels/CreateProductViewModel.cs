@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.ComponentModel.DataAnnotations;
+using Core.Common.Attributes;
+using Core.Common.Constants;
+using Microsoft.AspNetCore.Http;
 
 
 namespace Core.Common.CreateViewModels
@@ -22,12 +25,19 @@ namespace Core.Common.CreateViewModels
         public Guid ProviderId { get; set; }
        
         [Required]
+        [Range(0, 100000)]
         public decimal Price { get; set; }  
         
         [Required]
         public string ProductName { get; set; }  
         
         [Required]
+        [Range(0, 100000)]
         public int Amount { get; set; }  
+        
+        [Required]
+        [AllowedExtensions(new []{".jpg", ".png"})]
+        [MaxFileSize(AttributeConstants.MaxFileSize)]
+        public IFormFile Photo { get; set; }
     }
 }

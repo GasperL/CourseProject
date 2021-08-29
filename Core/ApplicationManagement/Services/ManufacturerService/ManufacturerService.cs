@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
-using Core.Common.CreateViewModels;
+using AutoMapper;
+using Core.ApplicationManagement.Services.Utils;
 using Core.Common.ViewModels;
 using DataAccess.Entities;
 using DataAccess.Infrastructure.UnitOfWork;
@@ -11,13 +11,17 @@ namespace Core.ApplicationManagement.Services.ManufacturerService
     public class ManufacturerService : IManufacturerService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public ManufacturerService(IUnitOfWork unitOfWork)
+        public ManufacturerService(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
-        public async Task Create(CreateManufacturerViewModel viewModel)
+        public async Task Create(ManufacturerViewModel viewModel)
         {
             await _unitOfWork.Manufacturers.Add(new Manufacturer
             {
@@ -31,12 +35,35 @@ namespace Core.ApplicationManagement.Services.ManufacturerService
         public async Task<ManufacturerViewModel[]> GetAll()
         {
             var manufacturers = await _unitOfWork.Manufacturers.GetAll();
+            return _mapper.Map<ManufacturerViewModel[]>(manufacturers);
+        }
 
-            return manufacturers.Select(x => new ManufacturerViewModel
-            {
-                Id = x.Id,
-                Name = x.Name
-            }).ToArray();
+        public async Task Remove(Guid categoryId)
+        {
+            await _unitOfWork.Manufacturers.Delete(categoryId);
+            await _unitOfWork.Commit();
+        }
+
+        public async Task Edit(ManufacturerViewModel model)
+        {
+            var manufacturer =  await _unitOfWork.Manufacturers.GetEntityById(model.Id);
+
+            AssertionsUtils.AssertIsNotNull(manufacturer, "Производитель не найден");
+            
+            manufacturer.Name = model.Name;
+
+            await _unitOfWork.Manufacturers.Update(manufacturer);
+            
+            await _unitOfWork.Commit();
+        }
+        
+        public async Task<ManufacturerViewModel> GetManufacturerViewModel(Guid manufacturerId)
+        {
+            var manufacturer = await _unitOfWork.Manufacturers.GetEntityById(manufacturerId);
+            
+            AssertionsUtils.AssertIsNotNull(manufacturer, "Производитель не найден");
+            
+            return _mapper.Map<ManufacturerViewModel>(manufacturer);
         }
     }
 }

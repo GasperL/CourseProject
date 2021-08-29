@@ -13,6 +13,7 @@ namespace WebApp
         {
             Configuration = configuration;
             WebHostEnvironment = webHostEnvironment;
+            
         }
 
         public IWebHostEnvironment WebHostEnvironment { get; }
@@ -23,12 +24,15 @@ namespace WebApp
             services.RegisterEntityFramework(Configuration);
             services.RegisterDependencies(Configuration);
             services.EnableRuntimeCompilation(WebHostEnvironment);
+            services.RegisterAutoMapper();
             services.AddControllersWithViews();
             services.AddRazorPages()
                 .AddRazorRuntimeCompilation();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app, 
+            IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -44,7 +48,7 @@ namespace WebApp
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            
             app.UseAuthentication();
             app.UseAuthorization();
 

@@ -12,5 +12,7 @@ namespace Core.Common.ViewModels.Users
 
         [Required]
         public string UserName { get; set; }
+        
+        public string BonusPoints { get; set; }
     }
 }

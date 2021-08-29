@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Core.Common.CreateViewModels;
 using Core.Common.ViewModels;
 
@@ -9,5 +10,10 @@ namespace Core.ApplicationManagement.Services.ProductGroupService
         Task Create(CreateProductGroupViewModel options);
 
         Task<ProductGroupViewModel[]> GetAll();
+
+        Task Remove(Guid id);
+        Task Edit(ProductGroupViewModel model);
+        
+        Task<ProductGroupViewModel> GetProductGroupViewModel(Guid id);
     }
 }

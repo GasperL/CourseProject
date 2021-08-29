@@ -1,14 +1,19 @@
-﻿using System.Threading.Tasks;
-using Core.Common.CreateViewModels;
+﻿using System;
+using System.Threading.Tasks;
 using Core.Common.ViewModels;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Core.ApplicationManagement.Services.ManufacturerService
 {
     public interface IManufacturerService
     {
-        Task Create(CreateManufacturerViewModel viewModel);
+        Task Create(ManufacturerViewModel viewModel);
 
         Task<ManufacturerViewModel[]> GetAll();
+        
+        Task Remove(Guid categoryId);
+       
+        Task Edit(ManufacturerViewModel model);
+        
+        Task<ManufacturerViewModel> GetManufacturerViewModel(Guid manufacturerId);
     }
 }

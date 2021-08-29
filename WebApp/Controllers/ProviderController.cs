@@ -4,31 +4,37 @@ using System.Threading.Tasks;
 using Core.ApplicationManagement.Services.ProviderService;
 using Core.Common.CreateViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace WebApp.Controllers
 {
     public class ProviderController : Controller
     {
         private readonly IProviderService _provider;
+        private readonly ILogger<ProviderController> _logger;
 
-        public ProviderController(IProviderService provider)
+        public ProviderController(
+            IProviderService provider,
+            ILogger<ProviderController> logger)
         {
             _provider = provider;
+            _logger = logger;
         }
 
         [HttpGet]
         public IActionResult CreateRequest()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            
-            return View(new CreateProviderViewModel
+
+            return View(new CreateProviderRequestViewModel
             {
                 UserId = userId
             });
         }
 
         [HttpPost]
-        public async Task<IActionResult> ApproveRequest(Guid requestId)
+        public async Task<IActionResult> ApproveRequest(string requestId)
         {
             await _provider.ApproveProviderRequest(requestId);
 
@@ -36,7 +42,7 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeclineRequest(Guid requestId)
+        public async Task<IActionResult> DeclineRequest(string requestId)
         {
             await _provider.DeclineProviderRequest(requestId);
 
@@ -44,7 +50,7 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddRequest(CreateProviderViewModel create)
+        public async Task<IActionResult> AddRequest(CreateProviderRequestViewModel create)
         {
             if (!ModelState.IsValid)
             {
@@ -55,19 +61,22 @@ namespace WebApp.Controllers
             {
                 await _provider.CreateRequest(create);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Console.WriteLine(e);
-                return RedirectToAction("Index", "Profile");
+                ModelState.AddModelError(string.Empty, exception.Message);
+                
+                Log.Error(exception.Message, exception);
+
+                return View("CreateRequest",create);
             }
-            
+
             return RedirectToAction("Index", "Profile");
         }
 
         [ActionName("view-requests")]
-        public async Task <IActionResult> ProviderRequests()
+        public async Task<IActionResult> ProviderRequests()
         {
-            return View(await _provider.GetAll());
+            return View(await _provider.GetProviderRequests());
         }
     }
 }

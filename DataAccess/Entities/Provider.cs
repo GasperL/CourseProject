@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace DataAccess.Entities
 {
@@ -9,9 +9,11 @@ namespace DataAccess.Entities
         [Required]
         public string Name { get; set; }
 
+        public ProviderRequest ProviderRequest { get; set; }
+        
+        public string ProviderRequestId { get; set; }
+
         [MaxLength(1200)]
         public string Description { get; set; }
-
-        public bool IsApproved { get; set; }
     }
 }

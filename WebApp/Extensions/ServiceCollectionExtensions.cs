@@ -4,10 +4,10 @@ using Core.ApplicationManagement.Services.ProductGroupService;
 using Core.ApplicationManagement.Services.ProductService;
 using Core.ApplicationManagement.Services.ProviderService;
 using Core.ApplicationManagement.Services.UserService;
+using Core.Mappings;
 using DataAccess;
 using DataAccess.Entities;
 using DataAccess.Entities.Common.Repositories.GenericRepository;
-using DataAccess.Entities.Common.Repositories.ProductRepository;
 using DataAccess.Entities.Common.Repositories.UserRepository;
 using DataAccess.Infrastructure.UnitOfWork;
 using Microsoft.AspNetCore.Hosting;
@@ -29,6 +29,11 @@ namespace WebApp.Extensions
             }
         }
 
+        public static void RegisterAutoMapper(this IServiceCollection services)
+        {
+            services.AddAutoMapper(typeof(UserMappingProfile).Assembly);
+        }
+
         public static void RegisterDependencies(this IServiceCollection services, IConfiguration configuration)
         {   
             services.AddTransient<IProductService, ProductService>();
@@ -41,7 +46,6 @@ namespace WebApp.Extensions
 
         public static void RegisterEntityFramework(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();

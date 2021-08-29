@@ -1,0 +1,36 @@
+﻿@model Core.Common.ViewModels.ProductViewModel
+
+@if (@Model.Price == @Model.DiscountPrice)
+{
+    <div class="row col-md-2 mx-2">
+        <div class="container">
+            <div class="card">
+                <img class="card-img-top" src="@Model.PhotoBase64" alt="..."/>
+                <div class="card-body">
+                    <div class="text-center">
+                        <h5 class="fw-bolder">@Model.ProductName</h5>
+                        $@Model.Price.ToString("0.##")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row col-md-2">
+        <div class="container">
+            <div class="card">
+                <img class="card-img-top" src="@Model.PhotoBase64" alt="..."/>
+                <div class="badge discount-badge bg-dark text-white position-absolute">Скидка</div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <h5 class="fw-bolder">@Model.ProductName</h5>
+                        <span class="text-muted text-decoration-line-through">$@Model.Price.ToString("0.##")</span>
+                        $@Model.DiscountPrice.ToString("0.##")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

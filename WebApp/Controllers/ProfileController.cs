@@ -1,4 +1,6 @@
-﻿using System.Security.Claims;
+﻿#nullable enable
+using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Core.ApplicationManagement.Services.UserService;
 using Microsoft.AspNetCore.Mvc;
@@ -15,12 +17,19 @@ namespace WebApp.Controllers
             _userAccountService = userAccountService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? user)
         {
-            var userId =  User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var user = await _userAccountService.Get(userId);
+            if (user == null)
+            {
+                var userId =  User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var myProfile = await _userAccountService.Get(userId);
             
-            return View(user);
+                return View(myProfile);
+            }
+            
+            var userUrl = await _userAccountService.Get(user);
+            
+            return View(userUrl);
         }
     }
 }

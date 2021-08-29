@@ -1,27 +1,11 @@
-﻿@using Core.Common.ViewModels
-@using DataAccess.Entities
+﻿@using WebApp.Views.Utils
 @model Core.Common.ViewModels.ProviderRequestViewModel[]
 
-@{
-    var count = 0;
-
-    static string StatusColor(ProviderRequestViewModel item)
-    {
-        return item.Status switch
-        {
-            ProviderRequestStatusEnum.Requested => "status-requested",
-            ProviderRequestStatusEnum.Approved => "status-approved",
-            ProviderRequestStatusEnum.Declined => "status-declined",
-            _ => null
-            };
-    }
-}
-
-<div class="container-x2 rounded bg-light">
-    <div class="table-responsive">
-        <div class="table-wrapper">
-            <div class="table-title">
-                <div class="row">
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 table-responsive bg-light rounded mx-auto">
+            <div class="table-title py-2">
+                <div class="row py-2">
                     <div class="col-sm-4">
                     </div>
                     <div class="col-sm-4">
@@ -39,13 +23,12 @@
                     </div>
                 </div>
             </div>
-            
-            <table  id="person_listing" class="table table-hover table-bordered">
+
+            <table id="person_listing" class="table table-hover table-bordered">
                 <thead>
                 <tr>
                     <th>#<i class="fa fa-sort"></i></th>
                     <th class="text-center">Пользователь №<i class="fa fa-sort"></i></th>
-                    <th class="text-center">Производитель №<i class="fa fa-sort"></i></th>
                     <th class="text-center">Производитель<i class="fa fa-sort"></i></th>
                     <th class="text-center">Описание<i class="fa fa-sort"></i></th>
                     <th class="text-center">Статус<i class="fa fa-sort"></i></th>
@@ -54,42 +37,27 @@
                 </thead>
                 <tbody>
                 @{
+                    var count = 0;
                     foreach (var item in @Model)
                     {
                         count++;
-                        var statusColor = StatusColor(item);
-
                         <tr>
                             <td>@count</td>
-                            <td class="text-center" >@item.UserId[..8]</td>
-                            <td class="text-center">@item.ProviderId.ToString()[..8]</td>
+                            <td class="text-center">@item.Id[..8]</td>
                             <td class="text-center">@item.Name</td>
                             <td class="text-center">
-                                <button href="" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn view-description far fa-eye">  </button>
+                                <button href="" data-bs-toggle="modal" data-bs-target="#description-modal" class="btn view-description far fa-eye"> </button>
                             </td>
-                            <td  class="@statusColor text-center" id="status-request2">@item.Status</td>
+                            <td class="@UiHelper.GetStatusColor(item) text-center" id="status-request2">@item.Status</td>
                             <td>
-                                <form method="post" asp-route-requestId="@item.Id" type="hidden">
-                                <button  asp-action="ApproveRequest" asp-route-requestId="@item.Id" type="submit" class="btn accept-request fas fa-check" title="Принять" data-toggle="tooltip">   </button>
-                                    <button  asp-action="DeclineRequest" asp-route-requestId="@item.Id" class="btn reject-request fas fa-times" type="submit" title="Отклонить" data-toggle="tooltip"> </button>
-                                    <button class="btn request-view fas fa-binoculars" type="submit" title="Подробнее" data-toggle="tooltip"> </button>
+                                <form method="post" asp-route-requestId="@item.Id">
+                                    <button asp-action="ApproveRequest" asp-route-requestId="@item.Id" type="submit" class="btn accept-request fas fa-check" title="Принять" data-toggle="tooltip"> </button>
+                                    <button asp-action="DeclineRequest" asp-route-requestId="@item.Id" class="btn reject-request fas fa-times" type="submit" title="Отклонить" data-toggle="tooltip"> </button>
+                                    <button asp-controller="Profile" asp-action="Index" asp-route-user="@item.Id" class="btn request-view fas fa-binoculars" type="submit" title="Профиль пользователя" data-toggle="tooltip"></button>
                                 </form>
                             </td>
                         </tr>
-
-                        <div class="modal" id="exampleModal" tabindex="-1">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Описание поставщика</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>@item.Description</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @await Html.PartialAsync("_ModalViewDescription", @item);
                     }
                 }
                 </tbody>
@@ -98,13 +66,6 @@
     </div>
 </div>
 
-
-<div class="modal-dialog modal-dialog-centered">
-
-</div>
-
-<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-</div>
 
 @section Scripts
 {

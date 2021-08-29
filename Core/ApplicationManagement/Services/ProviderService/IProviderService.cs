@@ -7,14 +7,12 @@ namespace Core.ApplicationManagement.Services.ProviderService
 {
     public interface IProviderService
     {
-        Task<ProviderRequestViewModel> GetRequestModel(Guid id);
+        Task CreateRequest(CreateProviderRequestViewModel requestViewModel);
 
-        Task CreateRequest(CreateProviderViewModel viewModel);
+        Task ApproveProviderRequest(string requestId);
 
-        Task ApproveProviderRequest(Guid requestId);
+        Task DeclineProviderRequest(string requestId);
 
-        Task DeclineProviderRequest(Guid requestId);
-
-        Task<ProviderRequestViewModel[]> GetAll();
+        Task<ProviderRequestViewModel[]> GetProviderRequests();
     }
 }

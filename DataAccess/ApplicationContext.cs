@@ -1,8 +1,6 @@
 ﻿using DataAccess.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace DataAccess
 {
@@ -21,6 +19,9 @@ namespace DataAccess
         public DbSet<ProductGroup> ProductGroup { get; set; }
 
         public DbSet<Category> ProductCategory { get; set; }
+        
+        public DbSet<ProductPhoto> ProductPhotos { get; set; }
+
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
@@ -65,15 +66,20 @@ namespace DataAccess
                 .WithMany()
                 .HasForeignKey(x => x.ManufacturerId);
 
-            builder.Entity<ProviderRequest>()
-                .HasOne(x => x.User)
-                .WithMany()
-                .HasForeignKey(x => x.UserId);
+            builder.Entity<Product>()
+                .HasMany(x => x.Photos)
+                .WithOne(x => x.Product)
+                .HasForeignKey(x => x.ProductId);
 
-            builder.Entity<ProviderRequest>()
-                .HasOne(x => x.Provider)
+            builder.Entity<Provider>()
+                .HasOne(x => x.ProviderRequest)
                 .WithMany()
-                .HasForeignKey(x => x.ProviderId);
+                .HasForeignKey(x => x.ProviderRequestId);
+            
+            builder.Entity<ProviderRequest>()
+                .HasOne<User>()
+                .WithOne()
+                .HasForeignKey<ProviderRequest>();
         }
     }
 }

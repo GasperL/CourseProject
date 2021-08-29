@@ -1,3 +1,19 @@
-﻿<div class="text-center">
-    <h1 class="display-4"></h1>
-</div>
+﻿@model Core.Common.ViewModels.ProductViewModel[]
+
+<link rel="stylesheet" href="~/css/card.css"/>
+<section class="py-5 ">
+    <div class="row">
+        
+        @foreach (var card in @Model)
+        {
+            if (card.DiscountPrice == card.Price)
+            {
+                @await Html.PartialAsync("_ProductCard", @card);
+            }
+            else
+            {
+                 @await Html.PartialAsync("_ProductDiscountCard", @card);
+            }
+        }
+    </div>
+</section>

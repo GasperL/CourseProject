@@ -1,13 +1,13 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"]Shop</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/lib/fontawesome/css/all.css"/>
     <link rel="stylesheet" href="~/css/site.css"/>
     <link rel="stylesheet" href="~/css/search.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -31,22 +31,24 @@
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                 <li>
-                    <a type="button" class="nav-link mx-2 px-2 text-white" asp-controller="Products" asp-action="Index">Товары</a>
+                    <a type="button" class="nav-link mx-2 px-2 text-white" asp-controller="Product" asp-action="Index">Товары</a>
                 </li>
                 <li>
-                    <a type="button" class="nav-link px-2 text-white" asp-controller="Products" asp-action="Index">Группы товаров</a>
+                    <a type="button" class="nav-link px-2 text-white" asp-controller="ProductGroup" asp-action="Index">Группы товаров</a>
                 </li>
                 <li>
-                    <a type="button" class="nav-link px-2 text-white" asp-controller="Products" asp-action="Index">История продаж</a>
+                    <a type="button" class="nav-link px-2 text-white" asp-controller="Product" asp-action="Index">История продаж</a>
                 </li>
             </ul>
 
             <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
                 <div class="d-flex justify-content-center h-100">
-                    
+
                     <div class="searchbar mx-3">
                         <input class="search_input" type="text" name="" placeholder="Search...">
-                        <a href="" class="search_icon"><i class="fas fa-search"></i></a>
+                        <a href="" class="search_icon">
+                            <i class="fas fa-search"></i>
+                        </a>
                     </div>
                 </div>
             </form>
