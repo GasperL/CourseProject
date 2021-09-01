@@ -25,6 +25,14 @@ namespace WebApp.Controllers
             return View(await _product.GetAll());
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Details(Guid productId)
+        {
+            var model = await _product.GetProductViewModel(productId);
+            
+            return PartialView("_Details", model);
+        }
+
         [HttpPost]
         public async Task<IActionResult> ActivateProduct(Guid productId)
         {
@@ -38,7 +46,7 @@ namespace WebApp.Controllers
         {
             await _product.Deactivate(productId);
 
-            return View("Index");
+            return RedirectToAction("Index");
         }
 
         [HttpGet]

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
-using Core.ApplicationManagement.Services.Utils;
 using Core.Common.CreateViewModels;
 using Core.Common.ViewModels;
 using DataAccess.Entities;
@@ -52,7 +51,6 @@ namespace Core.ApplicationManagement.Services.ProductGroupService
         {
             var group = await _unitOfWork.ProductGroups.GetEntityById(id);
             
-            AssertionsUtils.AssertIsNotNull(group, "Группа не найдена");
            
             return _mapper.Map<ProductGroupViewModel>(group);
         }
@@ -60,8 +58,6 @@ namespace Core.ApplicationManagement.Services.ProductGroupService
         public async Task Edit(ProductGroupViewModel model)
         {
             var group =  await _unitOfWork.ProductGroups.GetEntityById(model.Id);
-
-            AssertionsUtils.AssertIsNotNull(group, "Группа не найдена");
 
             group.Discount = model.Discount;
             group.Name = model.Name;

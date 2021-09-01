@@ -35,18 +35,17 @@ namespace DataAccess.Entities.Common.Repositories.GenericRepository
                 .ToArrayAsync();
         }
 
-        public async Task<TEntity> GetSingleWithFilter(
-            Expression<Func<TEntity, bool>> filter, 
-            Expression<Func<TEntity, bool>> single,
+        public async Task<TResult[]> GetWithInclude<TResult>(
+            Expression<Func<TEntity, TResult>> selector, 
             params Expression<Func<TEntity, object>>[] includeProperties)
         {
             return await
                 Include(includeProperties)
-                    .Where(filter)
-                    .SingleOrDefaultAsync(single);
+                    .Select(selector)
+                    .ToArrayAsync();
         }
-        
-        public async Task<TEntity> GetSingle(
+
+        public async Task<TEntity> GetSingleOrDefault(
             Expression<Func<TEntity, bool>> single,
             params Expression<Func<TEntity, object>>[] includeProperties)
         {
@@ -93,7 +92,9 @@ namespace DataAccess.Entities.Common.Repositories.GenericRepository
         
         public async Task<TEntity> GetEntityById(string entityId)
         {
-            return await _dbSet.FindAsync(entityId).AsTask();
+            var entity = await _dbSet.FindAsync(entityId).AsTask();
+
+            return entity ?? throw new ArgumentNullException("entity not found");
         }
 
         public Task Update(TEntity item)

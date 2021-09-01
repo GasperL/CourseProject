@@ -49,7 +49,7 @@
                                     <div class="col">
                                         <button asp-action="ActivateProduct" asp-route-productId="@item.Id" type="submit" class="activate btn fas fa-check py-3" title="Активировать" data-toggle="tooltip"></button>
                                         <button asp-action="DeactivateProduct" asp-route-productId="@item.Id" type="submit" class="deactivate btn fas fa-times py-3" title="Деактивировать" data-toggle="tooltip"></button>
-                                        <button type="submit" class="view btn fas fa-binoculars py-3" title="Подробней" data-toggle="tooltip"></button>
+                                        <a class="view btn fas fa-binoculars py-3" data-url="Product/Details/?@item.Id" onclick="modals.openModal(this)" data-toggle="modal" title="Подробней"></a> 
                                     </div>
                                 </form>
                             </td>
@@ -59,7 +59,7 @@
                 </tbody>
             </table>
             <div class="row-cols-2 text-center py-2">
-                <a data-url="Product/Create" data-toggle="modal" onclick="modals.openModal(this)" class="btn btn-secondary">Добавить</a>
+                @* <a data-url="Product/Create" data-toggle="modal" onclick="modals.openModal(this)" class="btn btn-secondary">Добавить</a> *@
                 @await Html.PartialAsync("_ProductModal")
             </div>
         </div>

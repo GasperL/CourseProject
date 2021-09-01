@@ -21,13 +21,12 @@ namespace DataAccess.Entities.Common.Repositories.GenericRepository
             Expression<Func<TEntity, bool>> filter,
             Expression<Func<TEntity, TResult>> selector,
             params Expression<Func<TEntity, object>>[] includeProperties);
-
-        Task<TEntity> GetSingleWithFilter(
-            Expression<Func<TEntity, bool>> filter,
-            Expression<Func<TEntity, bool>> single,
+        
+        Task<TResult[]> GetWithInclude<TResult>(
+            Expression<Func<TEntity, TResult>> selector,
             params Expression<Func<TEntity, object>>[] includeProperties);
 
-        Task<TEntity> GetSingle(
+        Task<TEntity> GetSingleOrDefault(
             Expression<Func<TEntity, bool>> single,
             params Expression<Func<TEntity, object>>[] includeProperties);
 

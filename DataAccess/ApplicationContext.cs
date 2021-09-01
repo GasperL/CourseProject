@@ -79,7 +79,7 @@ namespace DataAccess
             builder.Entity<ProviderRequest>()
                 .HasOne<User>()
                 .WithOne()
-                .HasForeignKey<ProviderRequest>();
+                .HasForeignKey<ProviderRequest>(x => x.UserId);
         }
     }
 }

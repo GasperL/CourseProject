@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using Core.ApplicationManagement.Exceptions;
@@ -32,7 +33,7 @@ namespace Core.ApplicationManagement.Services.ProviderService
 
         public async Task CreateRequest(CreateProviderRequestViewModel requestViewModel)
         {
-            var request = await FindProviderRequestByUser(requestViewModel);
+            var request = await GetProviderRequestByUser(requestViewModel);
 
             if (request == null)
             {
@@ -93,9 +94,9 @@ namespace Core.ApplicationManagement.Services.ProviderService
             await _unitOfWork.ProviderRequest.Update(request);
         }
 
-        private async Task<ProviderRequest?> FindProviderRequestByUser(CreateProviderRequestViewModel requestViewModel)
+        private async Task<ProviderRequest?> GetProviderRequestByUser(CreateProviderRequestViewModel requestViewModel)
         {
-            return await _unitOfWork.ProviderRequest.GetSingle(x => requestViewModel.UserId == x.Id);
+            return await _unitOfWork.ProviderRequest.GetSingleOrDefault(x => requestViewModel.UserId == x.Id);
         }
 
         private async Task CreateProviderRequest(CreateProviderRequestViewModel requestViewModel)

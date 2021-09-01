@@ -44,9 +44,8 @@ namespace Core.ApplicationManagement.Services.ProductService
             var selectManufacturer = await GetSelectingManufacturer();
             var selectCategory = await GetSelectingCategory();
 
-            var provider = await _unitOfWork.Provider.GetSingleWithFilter(
-                x => x.ProviderRequestId == userId,
-                s => s.ProviderRequest.Status == ProviderRequestStatus.Approved);
+            var provider = await _unitOfWork.Provider.GetSingleOrDefault(x =>
+                x.ProviderRequestId == userId && x.ProviderRequest.Status == ProviderRequestStatus.Approved);
 
             AssertionsUtils.AssertIsNotNull(provider, "Поставщик не найден");
 
@@ -63,7 +62,6 @@ namespace Core.ApplicationManagement.Services.ProductService
         {
             var product = await _unitOfWork.Products.GetEntityById(productId);
             
-            AssertionsUtils.AssertIsNotNull(product, $"Продукт под id {productId} не найден");
             AssertProductAvailability(product, false);
             
             product.IsAvailable = false;
@@ -75,7 +73,6 @@ namespace Core.ApplicationManagement.Services.ProductService
         {
             var product = await _unitOfWork.Products.GetEntityById(productId);
 
-            AssertionsUtils.AssertIsNotNull(product, $"Продукт под id {productId} не найден");
             AssertProductAvailability(product, true);
             AssertProductAmount(product);
 
@@ -84,27 +81,40 @@ namespace Core.ApplicationManagement.Services.ProductService
             await _unitOfWork.Commit();
         }
 
+        public async Task<ProductViewModel> GetProductViewModel(Guid productId)
+        {
+            var products = await _unitOfWork.Products.GetSingleOrDefault(
+                product => product.Id == productId,
+                p => p.ProductGroup,
+                p => p.Photos,
+                g => g.ProductGroup,
+                m => m.Manufacturer,
+                pr => pr.Provider,
+                c => c.Category);
+            
+            return  _mapper.Map<ProductViewModel>(products);
+        }
+
         public async Task<ProductViewModel[]> GetAvailableProducts()
         {
-            var model =  _mapper.Map<ProductViewModel[]>(await _unitOfWork.Products.GetWithInclude(
-                product => product.IsAvailable,
-                product => product,
+            var product = await _unitOfWork.Products.GetWithInclude(
+                p => p.IsAvailable,
+                p => p,
                 p => p.ProductGroup,
-                p => p.Photos));
+                p => p.Photos);
 
-            return model;
+            return  _mapper.Map<ProductViewModel[]>(product);
         }
         
-        public async Task<ProductViewModel[]> GetAll() 
+        public async Task<ProductViewModel[]> GetAll()
         {
-            var model =  _mapper.Map<ProductViewModel[]>(await _unitOfWork.Products.GetWithInclude(
-                product => true,
+            var products = await _unitOfWork.Products.GetWithInclude(
                 product => product,
                 p => p.ProductGroup,
                 p => p.Photos,
-                g => g.ProductGroup));
-
-            return model;
+                g => g.ProductGroup);
+            
+            return _mapper.Map<ProductViewModel[]>(products);
         }
         
         private async Task<SelectListItem[]> GetSelectingCategory()
@@ -117,8 +127,8 @@ namespace Core.ApplicationManagement.Services.ProductService
         private async Task<SelectListItem[]> GetSelectingManufacturer()
         {
             var manufacturers = await _unitOfWork.Manufacturers.GetAll();
+            
             return _mapper.Map<SelectListItem[]>(manufacturers);
-
         }
 
         private async Task<SelectListItem[]> GetSelectingGroup()
@@ -148,11 +158,11 @@ namespace Core.ApplicationManagement.Services.ProductService
             }
         }
 
-        private static void AssertProductAvailability(Product product, bool availability)
+        private static void AssertProductAvailability(Product product, bool shouldProductBeAvailable)
         {
-            var textError = availability == true ? "доступен" : "недоступен";
+            var textError = shouldProductBeAvailable == true ? "доступен" : "недоступен";
             
-            if (product.IsAvailable == availability)
+            if (product.IsAvailable == shouldProductBeAvailable)
             {
                 ThrowProductActivateException(product, $"Товар уже {textError} для покупки.");
             }

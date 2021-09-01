@@ -1,4 +1,6 @@
-﻿a.navbar-brand {
+﻿@import url('https://fonts.googleapis.com/css?family=Roboto:300');
+
+a.navbar-brand {
     white-space: normal;
     text-align: center;
     word-break: break-all;
@@ -55,8 +57,9 @@ html {
 }
 
 body {
-    margin-bottom: 60px;
-    background: #09335a; 
+    margin-bottom: 40px;
+    background: #09335a;
+    font-family: 'Roboto', sans-serif;
 }
 
 .footer {
@@ -371,14 +374,12 @@ table.table td a.view-description{
 .view
 {
     font-size: 3rem !important;
-    color: blue;
+    color: blue !important;
 }
 
 .view:hover{
     color: blue;
 }
-
-/*fas fa-smile" : "far fa-angry"*/
 
 .smile-smile{
     color: #42a206 !important;
@@ -455,4 +456,19 @@ table.table td a.view-description{
     -webkit-transform: translate(0) !important;
     -moz-transform: translate(0) !important;
     transform: translate(0) !important;
+}
+
+.link-null{
+    text-decoration: none !important;
+}
+
+@media (min-width: 576px){
+    .modal-dialog {
+         max-width: none !important;
+         margin: 1.75rem auto !important; 
+    }
+}
+
+.modal-content{
+    background-color: unset !important;
 }

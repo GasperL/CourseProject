@@ -1,0 +1,25 @@
+﻿@model Core.Common.ViewModels.ProductViewModel
+
+ <aside class="col-sm-5 border-right">
+     <div class="d-flex flex-column justify-content-center">
+         <div class="main_image">
+             <img src="https://i.imgur.com/TAzli1U.jpg" id="main_product_image" width="350" alt="">
+         </div>
+         <div class="thumbnail_images">
+             <ul id="thumbnail">
+                 <li>
+                     <img onclick="changeImage(this)" src="@Model.PhotoBase64" width="70" alt="">
+                 </li>
+                 <li>
+                     <img onclick="changeImage(this)" src="@Model.PhotoBase64" width="70" alt="">
+                 </li>
+                 <li>
+                     <img onclick="changeImage(this)" src="@Model.PhotoBase64" width="70" alt="">
+                 </li>
+                 <li>
+                     <img onclick="changeImage(this)" src="@Model.PhotoBase64" width="70" alt="">
+                 </li>
+             </ul>
+         </div>
+     </div>
+        </aside>

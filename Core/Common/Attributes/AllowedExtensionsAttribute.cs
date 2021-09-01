@@ -23,9 +23,9 @@ namespace Core.Common.Attributes
             }
             
             var extension = Path.GetExtension(file.FileName);
-            var isContains = _extensions.Contains(extension?.ToLower());
+            var isValid = _extensions.Contains(extension?.ToLower());
                 
-            return !isContains ? new ValidationResult(GetErrorMessage()) : ValidationResult.Success;
+            return !isValid ? new ValidationResult(GetErrorMessage()) : ValidationResult.Success;
         }
 
         private string GetErrorMessage()
