@@ -471,4 +471,5 @@ table.table td a.view-description{
 
 .modal-content{
     background-color: unset !important;
+    border: none !important;
 }

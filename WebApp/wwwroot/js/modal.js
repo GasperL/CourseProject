@@ -7,4 +7,4 @@
             modalDiv.modal("show");
         });
     };
-}(window.modals = window.modals ||  {}, jQuery)); 
+}(window.modals = window.modals ||  {}, jQuery));

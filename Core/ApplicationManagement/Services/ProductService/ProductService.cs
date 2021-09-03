@@ -33,8 +33,12 @@ namespace Core.ApplicationManagement.Services.ProductService
             product.Id = id;
             
             await _unitOfWork.Products.Add(product);
-            await AddPhoto(viewModel.Photo, id);
-            
+
+            foreach (var photo in viewModel.Photos)
+            {
+                await AddPhoto(photo, id);
+            }
+
             await _unitOfWork.Commit();
         }
 

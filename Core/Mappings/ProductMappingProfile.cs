@@ -18,7 +18,7 @@ namespace Core.Mappings
                         => opt.MapFrom(product => ProductUtils.CalculateProductDiscountPercentages(product)))
                 .ForMember(dest => dest.PhotoBase64,
                     opt 
-                        => opt.MapFrom(x => FileUtils.GetPhotoBase64(x.Photos.First().Image)));
+                        => opt.MapFrom(x => FileUtils.GetPhotoBase64(x.Photos)));
 
             CreateMap<CreateProductViewModel, Product>()
                 .ForMember(dest => dest.Photos,

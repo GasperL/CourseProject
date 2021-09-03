@@ -6,7 +6,7 @@
     <div class="row col-md-2 mx-2">
         <div class="container">
             <div class="card">
-                <img class="card-img-top" src="@Model.PhotoBase64" alt="..."/>
+                <img class="card-img-top" src="@Model.PhotoBase64.First()" alt="..."/>
                 <div class="card-body">
                     <div class="text-center">
                         <h5 class="fw-bolder">@Model.ProductName</h5>
@@ -23,7 +23,7 @@ else
     <div class="row col-md-2">
         <div class="container">
             <div class="card">
-                <img class="card-img-top" src="@Model.PhotoBase64" alt="..."/>
+                <img class="card-img-top" src="@Model.PhotoBase64.First()" alt="..."/>
                 <div class="badge discount-badge bg-dark text-white position-absolute">Скидка</div>
                 <div class="card-body">
                     <div class="text-center">

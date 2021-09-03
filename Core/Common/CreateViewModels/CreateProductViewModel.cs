@@ -38,6 +38,6 @@ namespace Core.Common.CreateViewModels
         [Required]
         [AllowedExtensions(new []{".jpg", ".png"})]
         [MaxFileSize(AttributeConstants.MaxFileSize)]
-        public IFormFile Photo { get; set; }
+        public IFormFileCollection Photos { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DataAccess.Entities;
 
 namespace Core.Common.ViewModels
@@ -25,6 +26,6 @@ namespace Core.Common.ViewModels
         
         public decimal DiscountPrice { get; set; }
         
-        public string PhotoBase64 { get; set; }
+        public ICollection<string> PhotoBase64 { get; set; }
     }
 }

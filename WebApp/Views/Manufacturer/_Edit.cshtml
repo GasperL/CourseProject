@@ -2,35 +2,41 @@
 
 <div class="animate__animated animate__fadeInDown fade">
     <div class="modal-content">
-        <div class="modal-header">
-            <div class="container">
-                <h5 class="modal-title text-center">Редактирование</h5>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5 bg-light rounded mx-auto">
+                    <div class="modal-header">
+                        <div class="container">
+                            <h5 class="modal-title text-center">Редактирование</h5>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
 
-        <div class="row-cols-1 py-3">
-            <div class="container">
-                <div class="row">
-                    <form method="post" type="hidden" asp-action="Add">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <input asp-for="Id" value="@Model.Id" type="hidden">
-                        <div class="col-sm-9 mx-auto">
-                            <div class="container">
-                                <div class="mb-3">
-                                    <input type="text" asp-for="Name" value="@Model.Name" class="form-control" placeholder="Имя группы">
-                                </div>
-                            </div>
-                            <div class="container my-1">
-                                <div class="row-cols-1 py-2">
-                                    <button asp-action="Edit" type="submit" class="btn btn-primary">Изменить</button>
-                                </div>
-                                <div class="row-cols-1 py-2">
-                                    <button type="button" class="close btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Закрыть</button>
-                                </div>
+                    <div class="row-cols-1 py-3">
+                        <div class="container">
+                            <div class="row">
+                                <form method="post" type="hidden" asp-action="Add">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <input asp-for="Id" value="@Model.Id" type="hidden">
+                                    <div class="col-sm-9 mx-auto">
+                                        <div class="container">
+                                            <div class="mb-3">
+                                                <input type="text" asp-for="Name" value="@Model.Name" class="form-control" placeholder="Имя группы">
+                                            </div>
+                                        </div>
+                                        <div class="container my-1">
+                                            <div class="row-cols-1 py-2">
+                                                <button asp-action="Edit" type="submit" class="btn btn-primary">Изменить</button>
+                                            </div>
+                                            <div class="row-cols-1 py-2">
+                                                <button type="button" class="close btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Закрыть</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
