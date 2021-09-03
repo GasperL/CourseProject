@@ -2,6 +2,7 @@
 @model Core.Common.ViewModels.ProductViewModel[]
 
 <link rel="stylesheet" href="~/css/card.css"/>
+<link rel="stylesheet" href="~/css/details.css"/>
 
 <div class="container">
     <div class="row">
@@ -23,6 +24,7 @@
             </div>
 
             <table id="person_listing" class="table table-hover table-bordered">
+                <div asp-validation-summary="ModelOnly" class="text-danger "></div>
                 <thead>
                 <tr>
                     <th class="text-center">Продукт</th>
@@ -49,7 +51,7 @@
                                     <div class="col">
                                         <button asp-action="ActivateProduct" asp-route-productId="@item.Id" type="submit" class="activate btn fas fa-check py-3" title="Активировать" data-toggle="tooltip"></button>
                                         <button asp-action="DeactivateProduct" asp-route-productId="@item.Id" type="submit" class="deactivate btn fas fa-times py-3" title="Деактивировать" data-toggle="tooltip"></button>
-                                        <a class="view btn fas fa-binoculars py-3" data-url="Product/Details/?@item.Id" onclick="modals.openModal(this)" data-toggle="modal" title="Подробней"></a> 
+                                        <a class="view btn fas fa-binoculars py-3" data-url="Product/Details/?productId=@item.Id" onclick="modals.openModal(this)" data-toggle="modal" title="Подробней"></a>
                                     </div>
                                 </form>
                             </td>
@@ -59,7 +61,7 @@
                 </tbody>
             </table>
             <div class="row-cols-2 text-center py-2">
-                @* <a data-url="Product/Create" data-toggle="modal" onclick="modals.openModal(this)" class="btn btn-secondary">Добавить</a> *@
+                <a data-url="Product/Create" data-toggle="modal" onclick="modals.openModal(this)" class="btn btn-secondary">Добавить</a>
                 @await Html.PartialAsync("_ProductModal")
             </div>
         </div>
@@ -69,6 +71,10 @@
 
 @section Scripts
 {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    
     <script src="~/lib/DataTables/DataTables-1.10.25/js/jquery.dataTables.min.js"></script>
     <script src="~/js/modal.js"></script>
     <script src="~/lib/DataTables/DataTables-1.10.25/js/dataTables.bootstrap5.min.js"></script>

@@ -1,6 +1,6 @@
 ﻿@model Core.Common.ViewModels.ProductViewModel
 
-<div class=" row col-md-3">
+<div class="row col-md-3">
     <div class="mb-5">
         <div class="card">
             <div class="badge discount-badge bg-dark text-white position-absolute">Скидка</div>
@@ -12,10 +12,12 @@
                     $@Model.DiscountPrice.ToString("0.##")
                 </div>
             </div>
-            <!-- Product actions-->
             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                <div class="text-center">
-                    <a class="btn btn-outline-dark mt-auto" href="#">в корзину</a>
+                <div class="container">
+                    <a class="btn btn-outline-dark mt-auto my-2 mx-auto" href="#">в корзину</a>
+                    <a class="btn btn-outline-dark mt-auto my-2 mx-auto" data-url="Product/Details/?productId=@Model.Id" onclick="modals.openModal(this)">
+                        подробнее
+                    </a>
                 </div>
             </div>
         </div>
