@@ -7,7 +7,7 @@
     <div class="row">
         @foreach (var card in @Model)
         {
-            if (card.DiscountPrice == card.Price)
+            if (card.DiscountPrice == 0)
             {
                 @await Html.PartialAsync("_ProductCard", @card)
             }

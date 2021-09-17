@@ -14,10 +14,17 @@
             </div>
             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                 <div class="container">
-                    <a class="btn btn-outline-dark mt-auto my-2 mx-auto" href="#">в корзину</a>
-                    <a class="btn btn-outline-dark mt-auto my-2 mx-auto" data-url="Product/Details/?productId=@Model.Id" onclick="modals.openModal(this)">
-                        подробнее
-                    </a>
+                    <form method="post">
+                        <a class="btn btn-outline-dark mt-auto my-2 mx-auto"
+                           asp-controller="Cart"
+                           asp-action="Add"
+                           asp-route-productId="@Model.Id">
+                            в корзину
+                        </a>
+                        <a class="btn btn-outline-dark mt-auto my-2 mx-auto" data-url="Product/Details/?productId=@Model.Id" onclick="modals.openModal(this)" data-toggle="modal">
+                            подробнее
+                        </a>
+                    </form>
                 </div>
             </div>
         </div>

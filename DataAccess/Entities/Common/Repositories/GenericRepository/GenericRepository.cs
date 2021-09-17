@@ -3,6 +3,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace DataAccess.Entities.Common.Repositories.GenericRepository
 {
@@ -17,9 +18,10 @@ namespace DataAccess.Entities.Common.Repositories.GenericRepository
             _dbSet = context.Set<TEntity>();
         }
 
-        public async Task Add(TEntity entity)
+        public async Task<TEntity> Add(TEntity entity)
         {
-            await _dbSet.AddAsync(entity);
+           var entry = await _dbSet.AddAsync(entity);
+           return entry.Entity;
         }
 
         public async Task Delete(Guid entityId)
@@ -53,7 +55,7 @@ namespace DataAccess.Entities.Common.Repositories.GenericRepository
                 Include(includeProperties)
                     .SingleOrDefaultAsync(single);
         }
-
+        
         public async Task<TEntity[]> GetAll(Expression<Func<TEntity, bool>> filter)
         {
             return await _dbSet
@@ -89,7 +91,15 @@ namespace DataAccess.Entities.Common.Repositories.GenericRepository
         {
             return await _dbSet.FindAsync(entityId).AsTask();
         }
-        
+
+        public Task<TEntity[]> GetWithIncludable(
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include)
+        {
+            var query = _dbSet.AsNoTracking();
+            query = include(query);
+            return query.ToArrayAsync();
+        }
+
         public async Task<TEntity> GetEntityById(string entityId)
         {
             var entity = await _dbSet.FindAsync(entityId).AsTask();
@@ -100,6 +110,7 @@ namespace DataAccess.Entities.Common.Repositories.GenericRepository
         public Task Update(TEntity item)
         {
             _dbSet.Update(item);
+            
             return Task.CompletedTask;
         }
 

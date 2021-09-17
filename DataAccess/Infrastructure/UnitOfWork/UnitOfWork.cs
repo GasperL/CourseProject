@@ -11,13 +11,17 @@ namespace DataAccess.Infrastructure.UnitOfWork
        
         public IUserRepository Users { get; }
 
+        public IGenericRepository<UserOrder> UserOrders { get; }
+        
+        public IGenericRepository<OrderItem> OrderItems { get; }
+        
         public IGenericRepository<ProductPhoto> ProductPhotos { get;}
 
         public IGenericRepository<Category> Categories { get; }
         
-        public IGenericRepository<Provider> Provider { get; }
+        public IGenericRepository<Provider> Providers { get; }
         
-        public IGenericRepository<ProviderRequest> ProviderRequest { get; }
+        public IGenericRepository<ProviderRequest> ProviderRequests { get; }
 
         public IGenericRepository<Manufacturer> Manufacturers { get; }
 
@@ -34,7 +38,9 @@ namespace DataAccess.Infrastructure.UnitOfWork
             IGenericRepository<Manufacturer> manufacturers, 
             IGenericRepository<ProviderRequest> providerRequest, 
             IGenericRepository<Provider> provider, 
-            IGenericRepository<ProductPhoto> files)
+            IGenericRepository<ProductPhoto> files, 
+            IGenericRepository<UserOrder> userOrder, 
+            IGenericRepository<OrderItem> orderItems)
         {
             _context = context;
             Products = products;
@@ -42,9 +48,11 @@ namespace DataAccess.Infrastructure.UnitOfWork
             Categories = category;
             ProductGroups = productGroups;
             Manufacturers = manufacturers;
-            ProviderRequest = providerRequest;
-            Provider = provider;
+            ProviderRequests = providerRequest;
+            Providers = provider;
             ProductPhotos = files;
+            UserOrders = userOrder;
+            OrderItems = orderItems;
         }
 
         public async Task Commit()

@@ -1,9 +1,20 @@
-﻿using DataAccess.Entities;
+﻿using System.Collections.Generic;
+using DataAccess.Entities;
 
 namespace Core.Common.ViewModels
 {
     public class CartViewModel
     {
-        public Product Product { get; set; }
+        public ICollection<OrderItemViewModel> Product { get; set; }
+
+        public decimal TotalPrice { get; set; }
+        
+        public decimal InitialPrice { get; set; }
+        
+        public decimal DiscountAmount { get; set; }
+        
+        public decimal BonusPointsDiscount { get; set; }
+        
+        public int BonusPoints { get; set; }
     }
 }

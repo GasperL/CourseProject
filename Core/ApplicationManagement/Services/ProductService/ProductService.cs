@@ -48,7 +48,7 @@ namespace Core.ApplicationManagement.Services.ProductService
             var selectManufacturer = await GetSelectingManufacturer();
             var selectCategory = await GetSelectingCategory();
 
-            var provider = await _unitOfWork.Provider.GetSingleOrDefault(x =>
+            var provider = await _unitOfWork.Providers.GetSingleOrDefault(x =>
                 x.ProviderRequestId == userId && x.ProviderRequest.Status == ProviderRequestStatus.Approved);
 
             AssertionsUtils.AssertIsNotNull(provider, "Поставщик не найден");

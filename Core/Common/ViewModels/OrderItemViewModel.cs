@@ -1,10 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using DataAccess.Entities;
 
-namespace DataAccess.Entities
+namespace Core.Common.ViewModels
 {
-    public class OrderItem : BaseEntity
+    public class OrderItemViewModel
     {
         public Guid UserOrderId { get; set; }
         

@@ -21,7 +21,7 @@ namespace WebApp.Controllers
         [HttpGet]
         public IActionResult CreateRequest()
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             return View(new CreateProviderRequestViewModel
             {

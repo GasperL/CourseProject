@@ -25,7 +25,7 @@ namespace Core.ApplicationManagement.Services.ProviderService
 
         public async Task<ProviderRequestViewModel[]> GetProviderRequests()
         {
-            var requests = await _unitOfWork.ProviderRequest
+            var requests = await _unitOfWork.ProviderRequests
                 .GetAll(x => x.Status == ProviderRequestStatus.Requested);
             
             return _mapper.Map<ProviderRequestViewModel[]>(requests);
@@ -68,17 +68,17 @@ namespace Core.ApplicationManagement.Services.ProviderService
 
         public async Task ApproveProviderRequest(string requestId)
         {
-            var request = await _unitOfWork.ProviderRequest.GetEntityById(requestId);
+            var request = await _unitOfWork.ProviderRequests.GetEntityById(requestId);
             AssertRequestStatus(request);
 
-            await _unitOfWork.Provider.Add(_mapper.Map<Provider>(request));
+            await _unitOfWork.Providers.Add(_mapper.Map<Provider>(request));
             await ChangeStatus(request, ProviderRequestStatus.Approved);
             await _unitOfWork.Commit();
         }
 
         public async Task DeclineProviderRequest(string requestId)
         {
-            var request = await _unitOfWork.ProviderRequest.GetEntityById(requestId);
+            var request = await _unitOfWork.ProviderRequests.GetEntityById(requestId);
 
              AssertRequestStatus(request);
 
@@ -91,12 +91,12 @@ namespace Core.ApplicationManagement.Services.ProviderService
         {
             request.Status = status;
             
-            await _unitOfWork.ProviderRequest.Update(request);
+            await _unitOfWork.ProviderRequests.Update(request);
         }
 
         private async Task<ProviderRequest?> GetProviderRequestByUser(CreateProviderRequestViewModel requestViewModel)
         {
-            return await _unitOfWork.ProviderRequest.GetSingleOrDefault(x => requestViewModel.UserId == x.Id);
+            return await _unitOfWork.ProviderRequests.GetSingleOrDefault(x => requestViewModel.UserId == x.Id);
         }
 
         private async Task CreateProviderRequest(CreateProviderRequestViewModel requestViewModel)
@@ -104,18 +104,18 @@ namespace Core.ApplicationManagement.Services.ProviderService
             var request = _mapper.Map<ProviderRequest>(requestViewModel);
             request.Status = ProviderRequestStatus.Requested;
             
-            await _unitOfWork.ProviderRequest.Add(request);
+            await _unitOfWork.ProviderRequests.Add(request);
         }
 
         private async Task UpdateProviderRequest(CreateProviderRequestViewModel currentRequest, string id)
         {
-            var request = await _unitOfWork.ProviderRequest.GetEntityById(id);
+            var request = await _unitOfWork.ProviderRequests.GetEntityById(id);
 
             request.Status = ProviderRequestStatus.Requested;
             request.Description = currentRequest.Description;
             request.Name = currentRequest.Name;
             
-            await _unitOfWork.ProviderRequest.Update(request);
+            await _unitOfWork.ProviderRequests.Update(request);
         }
     }
 }
