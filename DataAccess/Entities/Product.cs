@@ -38,7 +38,7 @@ namespace DataAccess.Entities
         [Column(TypeName = "decimal(18,4)")]
         [Required]
         public decimal Price { get; set; }
-
+        
         public ICollection<ProductPhoto> Photos { get; set; }
     }
 }

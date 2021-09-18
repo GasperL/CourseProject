@@ -24,7 +24,7 @@ namespace Core.ApplicationManagement.Services.Utils
             return  bonusPoints * (decimal)0.25;
         }
         
-        public static int EarnBonusPoints(decimal totalPurchasePrice)
+        public static int CalculateBonusPoints(decimal totalPurchasePrice)
         {
             return (int) Math.Round(totalPurchasePrice / 10);
         }

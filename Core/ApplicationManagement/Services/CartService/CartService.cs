@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Core.ApplicationManagement.Services.Utils;
 using Core.Common.ViewModels;
-using Core.Common.ViewModels.MainEntityViewModels;
 using DataAccess.Entities;
 using DataAccess.Infrastructure.UnitOfWork;
 
@@ -31,15 +31,15 @@ namespace Core.ApplicationManagement.Services.CartService
                 userOrder => new
                 {
                     userOrder.TotalPrice,
+                    userOrder.User.BonusPoints,
                     OrderItemIds = userOrder.OrderItems.Select(oi => new
                     {
-                        oi.Price,
+                        oi.Product.Price,
                         oi.Amount,
-                        oi.Name,
                         ProductId = oi.Product.Id,
                         oi.Product.ProductName,
                         ProductDiscount = oi.Product.ProductGroup.Discount,
-                        ProductPhotos = oi.Product.Photos,
+                        oi.Product.Photos,
                         ProductPrice = oi.Product.Price,
                         oi.UserOrderId,
                     }),
@@ -56,19 +56,15 @@ namespace Core.ApplicationManagement.Services.CartService
                     Price = x.Price
                 }).ToArray();
 
-            var userTotalOrderPrice = currentUserOrder.TotalPrice;
-
-            var user = await _unitOfWork.Users.FindUserById(userId);
-
             var initialPrice = currentUserOrder.OrderItemIds.Sum(oi => oi.Amount * oi.Price);
 
             var totalDiscount = CalculateTotalDiscount(orderItems);
 
-            var bonusPointsDiscount = ProductUtils.CalculateDiscountBonusPoints(user.BonusPoints);
+            var bonusPointsDiscount = ProductUtils.CalculateDiscountBonusPoints(currentUserOrder.BonusPoints);
 
-            var totalPrice = userTotalOrderPrice - totalDiscount - bonusPointsDiscount;
+            var totalPrice = currentUserOrder.TotalPrice - totalDiscount - bonusPointsDiscount;
                 
-            var bonusPoints = ProductUtils.EarnBonusPoints(totalPrice);
+            var bonusPoints = ProductUtils.CalculateBonusPoints(totalPrice);
 
             return new CartViewModel
             {
@@ -97,23 +93,21 @@ namespace Core.ApplicationManagement.Services.CartService
                 {
                     UserId = userId,
                     Id = userOrderId,
-
-                    OrderItems = new List<OrderItem>()
+                    OrderItems = new Collection<OrderItem>()
                     {
                         new OrderItem
                         {
                             Id = Guid.NewGuid(),
-                            UserOrderId = userOrderId,
-                            ProductId = product.Id,
                             Amount = 1,
-                            Name = product.ProductName,
-                            Price = product.Price
+                            ProductId = productId,
+                            UserOrderId = userOrderId
                         }
                     },
                     TotalPrice = product.Price
                 });
             }
-            else
+
+            if (order != null)
             {
                 order.OrderItems.Add(new OrderItem
                 {
@@ -121,17 +115,12 @@ namespace Core.ApplicationManagement.Services.CartService
                     UserOrderId = order.Id,
                     ProductId = product.Id,
                     Amount = 1,
-                    Name = product.ProductName,
-                    Price = product.Price
                 });
 
                 order.TotalPrice += product.Price;
-                
-                await _unitOfWork.OrderItems.Update(order.OrderItems.Last());
-
                 await _unitOfWork.UserOrder.Update(order);
             }
-
+            
             await _unitOfWork.Commit();
         }
 

@@ -14,14 +14,6 @@ namespace DataAccess.Entities
         
         public Product Product { get; set; }
 
-        [MaxLength(20)]
-        [Required]
-        public string Name { get; set; }
-        
         public int Amount { get; set; }
-
-        [Column(TypeName = "decimal(18,4)")]
-        [Required]
-        public decimal Price { get; set; }
     }
 }

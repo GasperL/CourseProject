@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using Core.ApplicationManagement.Services.Utils;
 using Core.Common.CreateViewModels;
 using Core.Common.ViewModels.MainEntityViewModels;
@@ -16,7 +17,7 @@ namespace Core.Mappings
                         => opt.MapFrom(product => ProductUtils.CalculateProductDiscountPercentages(product.Price, product.ProductGroup.Discount)))
                 .ForMember(dest => dest.PhotoBase64,
                     opt 
-                        => opt.MapFrom(x => FileUtils.GetPhotoBase64(x.Photos)));
+                        => opt.MapFrom(x => FileUtils.GetPhotoBase64(x.Photos.Select(f => f.Image))));
 
             CreateMap<CreateProductViewModel, Product>()
                 .ForMember(dest => dest.Photos,

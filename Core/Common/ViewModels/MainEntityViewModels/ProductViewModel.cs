@@ -25,7 +25,7 @@ namespace Core.Common.ViewModels.MainEntityViewModels
         public decimal Price { get; set; }
         
         public decimal DiscountPrice { get; set; }
-        
+
         public ICollection<string> PhotoBase64 { get; set; }
     }
 }
