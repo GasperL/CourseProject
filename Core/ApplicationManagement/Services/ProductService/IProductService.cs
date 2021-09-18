@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Core.Common.CreateViewModels;
-using Core.Common.ViewModels;
+using Core.Common.ViewModels.MainEntityViewModels;
 
 namespace Core.ApplicationManagement.Services.ProductService
 {

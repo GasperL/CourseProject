@@ -11,7 +11,7 @@ namespace DataAccess.Infrastructure.UnitOfWork
        
         public IUserRepository Users { get; }
 
-        public IGenericRepository<UserOrder> UserOrders { get; }
+        public IGenericRepository<UserOrder> UserOrder { get; }
         
         public IGenericRepository<OrderItem> OrderItems { get; }
         
@@ -51,7 +51,7 @@ namespace DataAccess.Infrastructure.UnitOfWork
             ProviderRequests = providerRequest;
             Providers = provider;
             ProductPhotos = files;
-            UserOrders = userOrder;
+            UserOrder = userOrder;
             OrderItems = orderItems;
         }
 

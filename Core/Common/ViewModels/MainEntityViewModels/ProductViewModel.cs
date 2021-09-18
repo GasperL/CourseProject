@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using DataAccess.Entities;
 
-namespace Core.Common.ViewModels
+namespace Core.Common.ViewModels.MainEntityViewModels
 {
     public class ProductViewModel
     {

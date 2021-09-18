@@ -24,6 +24,11 @@ namespace DataAccess.Entities.Common.Repositories.GenericRepository
             Expression<Func<TEntity, TResult>> selector,
             params Expression<Func<TEntity, object>>[] includeProperties);
         
+        Task<TResult> GetSingleWithInclude<TResult>(
+            Expression<Func<TEntity, bool>> filter,
+            Expression<Func<TEntity, TResult>> selector,
+            params Expression<Func<TEntity, object>>[] includeProperties);
+        
         Task<TResult[]> GetWithInclude<TResult>(
             Expression<Func<TEntity, TResult>> selector,
             params Expression<Func<TEntity, object>>[] includeProperties);

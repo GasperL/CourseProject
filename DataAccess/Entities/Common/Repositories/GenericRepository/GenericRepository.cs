@@ -37,6 +37,18 @@ namespace DataAccess.Entities.Common.Repositories.GenericRepository
                 .ToArrayAsync();
         }
 
+        public async Task<TResult> GetSingleWithInclude<TResult>(
+            Expression<Func<TEntity, bool>> filter, 
+            Expression<Func<TEntity, TResult>> selector, 
+            params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            return await
+                Include(includeProperties)
+                    .Where(filter)
+                    .Select(selector)
+                    .SingleOrDefaultAsync();
+        }
+
         public async Task<TResult[]> GetWithInclude<TResult>(
             Expression<Func<TEntity, TResult>> selector, 
             params Expression<Func<TEntity, object>>[] includeProperties)

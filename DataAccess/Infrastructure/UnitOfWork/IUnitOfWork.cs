@@ -13,7 +13,7 @@ namespace DataAccess.Infrastructure.UnitOfWork
 
         IGenericRepository<Category> Categories { get; }
         
-        IGenericRepository<UserOrder> UserOrders { get; }
+        IGenericRepository<UserOrder> UserOrder { get; }
         
         IGenericRepository<OrderItem> OrderItems { get; }
         

@@ -4,7 +4,7 @@ using AutoMapper;
 using Core.ApplicationManagement.Exceptions;
 using Core.ApplicationManagement.Services.Utils;
 using Core.Common.CreateViewModels;
-using Core.Common.ViewModels;
+using Core.Common.ViewModels.MainEntityViewModels;
 using DataAccess.Entities;
 using DataAccess.Infrastructure.UnitOfWork;
 using Microsoft.AspNetCore.Http;

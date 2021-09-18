@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Core.ApplicationManagement.Services.Utils;
 using Core.Common.ViewModels;
+using Core.Common.ViewModels.MainEntityViewModels;
 using DataAccess.Entities;
 using DataAccess.Infrastructure.UnitOfWork;
-using Microsoft.EntityFrameworkCore;
 
 namespace Core.ApplicationManagement.Services.CartService
 {
@@ -26,44 +26,53 @@ namespace Core.ApplicationManagement.Services.CartService
 
         public async Task<CartViewModel> GetCart(string userId)
         {
-            var userOrder = await _unitOfWork.UserOrders.GetWithIncludable(
-                include => include
-                    .Where(x => x.UserId == userId)
-                    .Include(orderProduct => orderProduct.OrderItems)
-                    .ThenInclude(product => product.Product)
-                    .ThenInclude(productPhotos => productPhotos.Photos)
-                    .Include(orderProductGroup => orderProductGroup.OrderItems)
-                    .ThenInclude(product => product.Product)
-                    .ThenInclude(group => group.ProductGroup));
+            var currentUserOrder = await _unitOfWork.UserOrder.GetSingleWithInclude(
+                userOrder => userOrder.UserId == userId && userOrder.Status == OrderStatus.InCart, 
+                userOrder => new
+                {
+                    userOrder.TotalPrice,
+                    OrderItemIds = userOrder.OrderItems.Select(oi => new
+                    {
+                        oi.Price,
+                        oi.Amount,
+                        oi.Name,
+                        ProductId = oi.Product.Id,
+                        oi.Product.ProductName,
+                        ProductDiscount = oi.Product.ProductGroup.Discount,
+                        ProductPhotos = oi.Product.Photos,
+                        ProductPrice = oi.Product.Price,
+                        oi.UserOrderId,
+                    }),
+                });
+            
+            var orderItems = 
+                currentUserOrder.OrderItemIds.Select(x =>  new OrderItemViewModel
+                {
+                    DiscountPercentage = x.ProductDiscount,
+                    ProductId = x.ProductId,
+                    UserOrderId = x.UserOrderId,
+                    ProductName = x.ProductName,
+                    Amount = x.Amount,
+                    Price = x.Price
+                }).ToArray();
 
-            var orderItems = userOrder
-                .Select(o => o.OrderItems.First())
-                .ToArray();
-
-            var userTotalOrderPrice = userOrder.Select(x => x.TotalPrice).First();
+            var userTotalOrderPrice = currentUserOrder.TotalPrice;
 
             var user = await _unitOfWork.Users.FindUserById(userId);
 
-            var initialPrice = orderItems
-                .Select(x => x.Product)
-                .Sum(product => orderItems.Sum(x => x.Amount) * product.Price);
+            var initialPrice = currentUserOrder.OrderItemIds.Sum(oi => oi.Amount * oi.Price);
 
             var totalDiscount = CalculateTotalDiscount(orderItems);
 
-            var bonusPointsDiscount = ProductUtils.CalculateBonusPoints(user.BonusPoints);
-
-            var bonusPoints = userOrder
-                .Select(x => x.OrderItems
-                    .Sum(s => s.Amount))
-                .Sum();
+            var bonusPointsDiscount = ProductUtils.CalculateDiscountBonusPoints(user.BonusPoints);
 
             var totalPrice = userTotalOrderPrice - totalDiscount - bonusPointsDiscount;
-
-            var orderItemViewModel = _mapper.Map<OrderItemViewModel[]>(orderItems);
+                
+            var bonusPoints = ProductUtils.EarnBonusPoints(totalPrice);
 
             return new CartViewModel
             {
-                Product = orderItemViewModel,
+                OrderItems = orderItems,
                 TotalPrice = totalPrice,
                 InitialPrice = initialPrice,
                 DiscountAmount = totalDiscount,
@@ -74,7 +83,7 @@ namespace Core.ApplicationManagement.Services.CartService
 
         public async Task Add(Guid productId, string userId)
         {
-            var order = await _unitOfWork.UserOrders
+            var order = await _unitOfWork.UserOrder
                 .GetSingleOrDefault(x => x.UserId == userId,
                     i => i.OrderItems);
 
@@ -84,7 +93,7 @@ namespace Core.ApplicationManagement.Services.CartService
             {
                 var userOrderId = Guid.NewGuid();
 
-                await _unitOfWork.UserOrders.Add(new UserOrder
+                await _unitOfWork.UserOrder.Add(new UserOrder
                 {
                     UserId = userId,
                     Id = userOrderId,
@@ -118,24 +127,22 @@ namespace Core.ApplicationManagement.Services.CartService
 
                 order.TotalPrice += product.Price;
                 
-                foreach (var item in order.OrderItems)
-                {
-                    await _unitOfWork.OrderItems.Update(item);
-                }
+                await _unitOfWork.OrderItems.Update(order.OrderItems.Last());
 
-                await _unitOfWork.UserOrders.Update(order);
+                await _unitOfWork.UserOrder.Update(order);
             }
 
             await _unitOfWork.Commit();
         }
 
-        private decimal CalculateTotalDiscount(OrderItem[] orderItems)
+        private decimal CalculateTotalDiscount(OrderItemViewModel[] orderItems)
         {
             decimal discount = 0;
 
             foreach (var item in orderItems)
             {
-                var discounts = ProductUtils.CalculateProductDiscountPercentages(item.Product);
+                var discounts = ProductUtils.CalculateProductDiscountPercentages(
+                    item.Price, item.DiscountPercentage);
 
                 if (discounts == 0)
                 {
@@ -143,7 +150,8 @@ namespace Core.ApplicationManagement.Services.CartService
                 }
                 else
                 {
-                    discount += item.Price - ProductUtils.CalculateProductDiscountPercentages(item.Product);
+                    discount += item.Price - ProductUtils.CalculateProductDiscountPercentages(
+                        item.Price, item.DiscountPercentage);
                 }
             }
 

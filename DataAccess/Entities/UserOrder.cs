@@ -7,7 +7,7 @@ namespace DataAccess.Entities
     public class UserOrder : BaseEntity
     {
         public ICollection<OrderItem> OrderItems { get; set; }
-
+        
         public User User { get; set; }
         
         public string UserId { get; set; }
@@ -15,5 +15,7 @@ namespace DataAccess.Entities
         [Column(TypeName = "decimal(18,4)")]
         [Required]
         public decimal TotalPrice { get; set; }
+
+        public OrderStatus Status { get; set; }       
     }
 }

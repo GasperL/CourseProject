@@ -5,7 +5,7 @@ namespace Core.Common.ViewModels
 {
     public class CartViewModel
     {
-        public ICollection<OrderItemViewModel> Product { get; set; }
+        public ICollection<OrderItemViewModel> OrderItems { get; set; }
 
         public decimal TotalPrice { get; set; }
         

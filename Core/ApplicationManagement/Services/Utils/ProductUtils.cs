@@ -1,19 +1,20 @@
-﻿using DataAccess.Entities;
+﻿using System;
+using DataAccess.Entities;
 
 namespace Core.ApplicationManagement.Services.Utils
 {
     public static class ProductUtils
     {
-        public static decimal CalculateProductDiscountPercentages(Product product)
+        public static decimal CalculateProductDiscountPercentages(decimal productPrice, double discountPercentage)
         {
-            var discount = product.Price - ((product.Price * (decimal) product.ProductGroup.Discount) / 100);
+            var discount = productPrice - ((productPrice * (decimal) discountPercentage) / 100);
 
-            var ret = product.Price == discount ? 0 : discount;
+            var ret = productPrice == discount ? 0 : discount;
             
             return ret;
         }
         
-        public static decimal CalculateBonusPoints(int bonusPoints)
+        public static decimal CalculateDiscountBonusPoints(int bonusPoints)
         {
             if (bonusPoints > 50)
             {
@@ -21,6 +22,11 @@ namespace Core.ApplicationManagement.Services.Utils
             }
             
             return  bonusPoints * (decimal)0.25;
+        }
+        
+        public static int EarnBonusPoints(decimal totalPurchasePrice)
+        {
+            return (int) Math.Round(totalPurchasePrice / 10);
         }
     }
 }
