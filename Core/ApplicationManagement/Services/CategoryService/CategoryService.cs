@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
-using Core.ApplicationManagement.Services.Utils;
 using Core.Common.ViewModels;
 using DataAccess.Entities;
 using DataAccess.Infrastructure.UnitOfWork;
@@ -48,7 +47,6 @@ namespace Core.ApplicationManagement.Services.CategoryService
         {
             var category = await _unitOfWork.Categories.GetEntityById(id);
             
-            AssertionsUtils.AssertIsNotNull(category, "Категория не найдена");
            
             return _mapper.Map<CategoryViewModel>(category);
         }
@@ -57,7 +55,6 @@ namespace Core.ApplicationManagement.Services.CategoryService
         {
             var category =  await _unitOfWork.Categories.GetEntityById(model.Id);
 
-            AssertionsUtils.AssertIsNotNull(category, "Категория не найдена");
 
             category.Name = model.Name;
             

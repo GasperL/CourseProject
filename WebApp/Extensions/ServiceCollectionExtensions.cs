@@ -1,3 +1,4 @@
+using Core.ApplicationManagement.Services.CartService;
 using Core.ApplicationManagement.Services.CategoryService;
 using Core.ApplicationManagement.Services.ManufacturerService;
 using Core.ApplicationManagement.Services.ProductGroupService;
@@ -37,6 +38,7 @@ namespace WebApp.Extensions
         public static void RegisterDependencies(this IServiceCollection services, IConfiguration configuration)
         {   
             services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<ICartService, CartService>();
             services.AddTransient<IUserAccountService, UserAccountService>();
             services.AddTransient<IProductGroupService, ProductGroupService>();
             services.AddTransient<ICategoryService, CategoryService>();

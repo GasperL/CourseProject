@@ -1,0 +1,20 @@
+﻿@model Core.Common.ViewModels.MainEntityViewModels.ProductViewModel
+
+
+ <aside class="col-sm-5 border-right">
+     <div class="d-flex flex-column justify-content-center">
+         <div class="main_image">
+             <img src="@Model.PhotoBase64.First()" id="main_product_image" width="350" alt="">
+         </div>
+         <div class="thumbnail_images">
+             <ul id="thumbnail">
+                @foreach (var photo in @Model.PhotoBase64)
+                {
+                    <li>
+                        <img onclick="changeImage(this)" src="@photo" width="70" alt="">
+                    </li>
+                }
+             </ul>
+         </div>
+     </div>
+        </aside>

@@ -1,19 +1,27 @@
-﻿@model Core.Common.ViewModels.ProductViewModel[]
+﻿@model Core.Common.ViewModels.MainEntityViewModels.ProductViewModel[]
 
+
+<link rel="stylesheet" href="~/css/details.css"/>
 <link rel="stylesheet" href="~/css/card.css"/>
+
 <section class="py-5 ">
     <div class="row">
-        
         @foreach (var card in @Model)
         {
-            if (card.DiscountPrice == card.Price)
+            if (card.DiscountPrice == 0)
             {
-                @await Html.PartialAsync("_ProductCard", @card);
+                @await Html.PartialAsync("_ProductCard", @card)
             }
             else
             {
-                 @await Html.PartialAsync("_ProductDiscountCard", @card);
+                @await Html.PartialAsync("_ProductDiscountCard", @card)
             }
+            @await Html.PartialAsync("_ProductModal")
         }
     </div>
 </section>
+
+@section Scripts
+{
+    <script src="~/js/modal.js"></script>
+}

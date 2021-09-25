@@ -24,10 +24,23 @@ namespace WebApp.Controllers
         {
             return View(await _product.GetAll());
         }
+        
+        [HttpGet]
+        public async Task<IActionResult> Details(Guid productId)
+        {
+            var model = await _product.GetProductViewModel(productId);
+            
+            return PartialView("_Details", model);
+        }
 
         [HttpPost]
         public async Task<IActionResult> ActivateProduct(Guid productId)
         {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Index",ModelState.Values);
+            }
+            
             await _product.Activate(productId);
             
             return RedirectToAction("Index");
@@ -36,9 +49,14 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> DeactivateProduct(Guid productId)
         {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Index",ModelState.Values);
+            }
+            
             await _product.Deactivate(productId);
 
-            return View("Index");
+            return RedirectToAction("Index");
         }
 
         [HttpGet]

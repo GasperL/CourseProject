@@ -4,11 +4,11 @@ namespace Core.ApplicationManagement.Services.Utils
 {
     public static class AssertionsUtils
     {
-        public static void AssertIsNotNull<T>(T type, string message)
+        public static void AssertIsNotNull(object instance, string message)
         {
-            if (type == null)
+            if (instance == null)
             {
-                throw new NullReferenceException(message);
+                throw new ArgumentNullException (message);
             }
         }
     }

@@ -1,0 +1,37 @@
+﻿@model Core.Common.ViewModels.CartViewModel
+
+<link rel="stylesheet" href="~/css/cart.css"/>
+
+
+<section class="shopping-cart dark">
+    <div class="content">
+        <div class="row">
+            <div class="col-md-12 col-lg-8">
+                <div class="items">
+                    @foreach (var item in @Model.OrderItems)
+                    {
+                        @await Html.PartialAsync("_Product", @item)
+                    }
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-4">
+                <div class="summary">
+                    <h3>К оплате</h3>
+                    <div class="summary-item">
+                        <span class="text">Первоначальная стоимость</span><span class="price">$@Model.InitialPrice</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="text">Скидка</span><span class="price">$@Model.DiscountAmount</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="text">Скидка за бонусные баллы</span><span class="price">$@Model.BonusPointsDiscount</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="text">Итого</span><span class="price">$@Model.TotalPrice</span>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-lg btn-block">Перейти к оформлению</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

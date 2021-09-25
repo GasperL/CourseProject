@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Core.Common.ViewModels;
-using CreateProductViewModel = Core.Common.CreateViewModels.CreateProductViewModel;
+using Core.Common.CreateViewModels;
+using Core.Common.ViewModels.MainEntityViewModels;
 
 namespace Core.ApplicationManagement.Services.ProductService
 {
@@ -18,5 +18,7 @@ namespace Core.ApplicationManagement.Services.ProductService
         Task Deactivate(Guid productId);
         
         Task Activate(Guid productId);
+        
+        Task<ProductViewModel> GetProductViewModel(Guid productId);
     }
 }

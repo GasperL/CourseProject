@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
-using Core.ApplicationManagement.Services.Utils;
 using Core.Common.ViewModels;
 using DataAccess.Entities;
 using DataAccess.Infrastructure.UnitOfWork;
@@ -48,8 +47,6 @@ namespace Core.ApplicationManagement.Services.ManufacturerService
         {
             var manufacturer =  await _unitOfWork.Manufacturers.GetEntityById(model.Id);
 
-            AssertionsUtils.AssertIsNotNull(manufacturer, "Производитель не найден");
-            
             manufacturer.Name = model.Name;
 
             await _unitOfWork.Manufacturers.Update(manufacturer);
@@ -60,8 +57,6 @@ namespace Core.ApplicationManagement.Services.ManufacturerService
         public async Task<ManufacturerViewModel> GetManufacturerViewModel(Guid manufacturerId)
         {
             var manufacturer = await _unitOfWork.Manufacturers.GetEntityById(manufacturerId);
-            
-            AssertionsUtils.AssertIsNotNull(manufacturer, "Производитель не найден");
             
             return _mapper.Map<ManufacturerViewModel>(manufacturer);
         }

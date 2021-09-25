@@ -8,6 +8,8 @@ namespace DataAccess.Entities
     {
         public new string Id { get; set; }
         
+        public string UserId { get; set; }
+        
         [MaxLength(20)]
         [Required]
         public string Name { get; set; }

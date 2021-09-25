@@ -1,10 +1,10 @@
-﻿@model Core.Common.ViewModels.ProductViewModel
+﻿@model Core.Common.ViewModels.MainEntityViewModels.ProductViewModel
 
-<div class=" row col-md-3">
+<div class="row col-md-3">
     <div class="mb-5">
         <div class="card">
             <div class="badge discount-badge bg-dark text-white position-absolute">Скидка</div>
-            <img class="card-img-top" src="@Model.PhotoBase64" alt=".."/>
+            <img class="card-img-top" src="@Model.PhotoBase64.First()" alt=".."/>
             <div class="card-body p-4">
                 <div class="text-center">
                     <h5 class="fw-bolder">@Model.ProductName</h5>
@@ -12,10 +12,19 @@
                     $@Model.DiscountPrice.ToString("0.##")
                 </div>
             </div>
-            <!-- Product actions-->
             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                <div class="text-center">
-                    <a class="btn btn-outline-dark mt-auto" href="#">в корзину</a>
+                <div class="container">
+                    <form method="post">
+                        <a class="btn btn-outline-dark mt-auto my-2 mx-auto"
+                           asp-controller="Cart"
+                           asp-action="Add"
+                           asp-route-productId="@Model.Id">
+                            в корзину
+                        </a>
+                        <a class="btn btn-outline-dark mt-auto my-2 mx-auto" data-url="Product/Details/?productId=@Model.Id" onclick="modals.openModal(this)" data-toggle="modal">
+                            подробнее
+                        </a>
+                    </form>
                 </div>
             </div>
         </div>

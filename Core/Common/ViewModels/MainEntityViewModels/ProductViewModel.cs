@@ -1,8 +1,8 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 using DataAccess.Entities;
 
-namespace Core.Common.ViewModels
+namespace Core.Common.ViewModels.MainEntityViewModels
 {
     public class ProductViewModel
     {
@@ -25,7 +25,7 @@ namespace Core.Common.ViewModels
         public decimal Price { get; set; }
         
         public decimal DiscountPrice { get; set; }
-        
-        public string PhotoBase64 { get; set; }
+
+        public ICollection<string> PhotoBase64 { get; set; }
     }
 }

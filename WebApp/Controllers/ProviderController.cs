@@ -12,20 +12,16 @@ namespace WebApp.Controllers
     public class ProviderController : Controller
     {
         private readonly IProviderService _provider;
-        private readonly ILogger<ProviderController> _logger;
 
-        public ProviderController(
-            IProviderService provider,
-            ILogger<ProviderController> logger)
+        public ProviderController(IProviderService provider)
         {
             _provider = provider;
-            _logger = logger;
         }
 
         [HttpGet]
         public IActionResult CreateRequest()
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             return View(new CreateProviderRequestViewModel
             {

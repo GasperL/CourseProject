@@ -3,6 +3,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace DataAccess.Entities.Common.Repositories.GenericRepository
 {
@@ -17,9 +18,10 @@ namespace DataAccess.Entities.Common.Repositories.GenericRepository
             _dbSet = context.Set<TEntity>();
         }
 
-        public async Task Add(TEntity entity)
+        public async Task<TEntity> Add(TEntity entity)
         {
-            await _dbSet.AddAsync(entity);
+           var entry = await _dbSet.AddAsync(entity);
+           return entry.Entity;
         }
 
         public async Task Delete(Guid entityId)
@@ -35,18 +37,29 @@ namespace DataAccess.Entities.Common.Repositories.GenericRepository
                 .ToArrayAsync();
         }
 
-        public async Task<TEntity> GetSingleWithFilter(
+        public async Task<TResult> GetSingleWithInclude<TResult>(
             Expression<Func<TEntity, bool>> filter, 
-            Expression<Func<TEntity, bool>> single,
+            Expression<Func<TEntity, TResult>> selector, 
             params Expression<Func<TEntity, object>>[] includeProperties)
         {
             return await
                 Include(includeProperties)
                     .Where(filter)
-                    .SingleOrDefaultAsync(single);
+                    .Select(selector)
+                    .SingleOrDefaultAsync();
         }
-        
-        public async Task<TEntity> GetSingle(
+
+        public async Task<TResult[]> GetWithInclude<TResult>(
+            Expression<Func<TEntity, TResult>> selector, 
+            params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            return await
+                Include(includeProperties)
+                    .Select(selector)
+                    .ToArrayAsync();
+        }
+
+        public async Task<TEntity> GetSingleOrDefault(
             Expression<Func<TEntity, bool>> single,
             params Expression<Func<TEntity, object>>[] includeProperties)
         {
@@ -54,7 +67,7 @@ namespace DataAccess.Entities.Common.Repositories.GenericRepository
                 Include(includeProperties)
                     .SingleOrDefaultAsync(single);
         }
-
+        
         public async Task<TEntity[]> GetAll(Expression<Func<TEntity, bool>> filter)
         {
             return await _dbSet
@@ -90,15 +103,26 @@ namespace DataAccess.Entities.Common.Repositories.GenericRepository
         {
             return await _dbSet.FindAsync(entityId).AsTask();
         }
-        
+
+        public Task<TEntity[]> GetWithIncludable(
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include)
+        {
+            var query = _dbSet.AsNoTracking();
+            query = include(query);
+            return query.ToArrayAsync();
+        }
+
         public async Task<TEntity> GetEntityById(string entityId)
         {
-            return await _dbSet.FindAsync(entityId).AsTask();
+            var entity = await _dbSet.FindAsync(entityId).AsTask();
+
+            return entity ?? throw new ArgumentNullException("entity not found");
         }
 
         public Task Update(TEntity item)
         {
             _dbSet.Update(item);
+            
             return Task.CompletedTask;
         }
 

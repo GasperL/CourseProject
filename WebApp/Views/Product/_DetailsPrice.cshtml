@@ -1,0 +1,23 @@
+﻿@model Core.Common.ViewModels.MainEntityViewModels.ProductViewModel
+
+
+<p class="price-detail-wrap">
+@if (@Model.Amount > 4)
+{
+    <div class="badge discount-badge bg-dark text-white my-3">
+        <h5>Осталось @Model.Amount штук</h5>
+    </div>
+}
+@if (@Model.Price == @Model.DiscountPrice)
+{
+    <h3>
+        $@Model.Price.ToString("0.##")
+    </h3>
+}
+else
+{
+    <div>
+        <h3 class="text-muted text-decoration-line-through">$@Model.Price.ToString("0.##")</h3>
+        <h2 class="font-color-red py-2">$@Model.DiscountPrice.ToString("0.##")</h2>
+    </div>
+}

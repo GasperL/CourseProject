@@ -5,7 +5,7 @@ $(document).ready(function () {
         "paging": true,
         "pagingType": "numbers",
         "lengthChange": false,
-        "pageLength": 2,
+        "pageLength": 5,
         "language": {
             "lengthMenu": "Display _MENU_ records per page",
             "zeroRecords": "Ничего не найдено",
@@ -46,4 +46,10 @@ function dynamicValue(input, card) {
             $(card).text(node.val().toString())
         }
     });
+}
+
+function changeImage(element) {
+
+    const main_prodcut_image = document.getElementById('main_product_image');
+    main_prodcut_image.src = element.src;
 }
