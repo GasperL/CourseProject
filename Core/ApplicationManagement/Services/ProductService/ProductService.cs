@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Core.ApplicationManagement.Exceptions;
@@ -27,19 +28,15 @@ namespace Core.ApplicationManagement.Services.ProductService
 
         public async Task Add(CreateProductViewModel viewModel)
         {
-            var id = Guid.NewGuid();
-
             var product = _mapper.Map<Product>(viewModel);
-            product.Id = id;
+            
+            product.Id = Guid.NewGuid();
             
             await _unitOfWork.Products.Add(product);
+            
+            await AddProductMainPhotos(viewModel, product);
 
-            foreach (var photo in viewModel.Photos)
-            {
-                await AddPhoto(photo, id);
-            }
-
-            await _unitOfWork.Commit();
+            await AddProductCoverPhoto(product);
         }
 
         public async Task<CreateProductViewModel> GetCreateProductViewModel(string userId)
@@ -48,11 +45,14 @@ namespace Core.ApplicationManagement.Services.ProductService
             var selectManufacturer = await GetSelectingManufacturer();
             var selectCategory = await GetSelectingCategory();
 
-            var provider = await _unitOfWork.Providers.GetSingleOrDefault(x =>
-                x.ProviderRequestId == userId && x.ProviderRequest.Status == ProviderRequestStatus.Approved);
+            var provider = await _unitOfWork.Providers.GetSingle(
+                isTracking: false,
+                filter: x =>
+                x.ProviderRequestId == userId && x.ProviderRequest.Status == ProviderRequestStatus.Approved,
+                selector: sel => sel);
 
             AssertionsUtils.AssertIsNotNull(provider, "Поставщик не найден");
-
+            
             return new CreateProductViewModel
             {
                 ProviderId = provider.Id,
@@ -87,70 +87,101 @@ namespace Core.ApplicationManagement.Services.ProductService
 
         public async Task<ProductViewModel> GetProductViewModel(Guid productId)
         {
-            var products = await _unitOfWork.Products.GetSingleOrDefault(
-                product => product.Id == productId,
-                p => p.ProductGroup,
+            var product = await _unitOfWork.Products.GetSingle(
+                isTracking: false,
+                selector: p => p,
+                filter: prod => prod.Id == productId,
                 p => p.Photos,
                 g => g.ProductGroup,
                 m => m.Manufacturer,
                 pr => pr.Provider,
-                c => c.Category);
+                c => c.Category,
+                co => co.CoverPhoto);
             
-            return  _mapper.Map<ProductViewModel>(products);
+            return _mapper.Map<ProductViewModel>(product);
         }
 
         public async Task<ProductViewModel[]> GetAvailableProducts()
         {
-            var product = await _unitOfWork.Products.GetWithInclude(
-                p => p.IsAvailable,
-                p => p,
+            var product = await _unitOfWork.Products.GetList(
+                isTracking: false,
+                selector: prod => prod,
+                filter: p => p.IsAvailable,
                 p => p.ProductGroup,
-                p => p.Photos);
+                p => p.Photos,
+                cf => cf.CoverPhoto);
 
             return  _mapper.Map<ProductViewModel[]>(product);
         }
         
         public async Task<ProductViewModel[]> GetAll()
         {
-            var products = await _unitOfWork.Products.GetWithInclude(
-                product => product,
-                p => p.ProductGroup,
-                p => p.Photos,
-                g => g.ProductGroup);
+            var products = await _unitOfWork.Products.GetList(
+                isTracking: false,
+                selector: s => s,
+                filter: null,
+                p => p.Photos, 
+                g => g.ProductGroup,
+                cf => cf.CoverPhoto);
             
             return _mapper.Map<ProductViewModel[]>(products);
         }
         
         private async Task<SelectListItem[]> GetSelectingCategory()
         {
-            var categories = await _unitOfWork.Categories.GetAll();
+            var categories = await _unitOfWork.Categories.GetList(
+                isTracking: false, 
+                selector: sel => sel);
 
             return _mapper.Map<SelectListItem[]>(categories);
         }
 
         private async Task<SelectListItem[]> GetSelectingManufacturer()
         {
-            var manufacturers = await _unitOfWork.Manufacturers.GetAll();
+            var manufacturers = await _unitOfWork.Manufacturers.GetList(
+                isTracking: false,
+                selector: s => s);
             
             return _mapper.Map<SelectListItem[]>(manufacturers);
         }
 
         private async Task<SelectListItem[]> GetSelectingGroup()
         {
-            var groups = await _unitOfWork.ProductGroups.GetAll();
+            var groups = await _unitOfWork.ProductGroups.GetList(
+                isTracking: false,
+                selector: s => s);
+                
             return _mapper.Map<SelectListItem[]>(groups);
         }
-
-        private async Task AddPhoto(IFormFile file, Guid productId)
+        
+        private async Task AddProductMainPhotos(CreateProductViewModel viewModel, Product product)
         {
-            var id = Guid.NewGuid();
-            var fileBytes = FileUtils.GetFileBytes(file);
+            foreach (var photo in viewModel.Photos)
+            {
+                await AddPhoto(photo, product);
+            }
 
+            await _unitOfWork.Commit();
+        }
+        
+        private async Task AddProductCoverPhoto(Product product)
+        {
+            product.CoverPhotoId = product.Photos.First().Id;
+
+            await _unitOfWork.Products.Update(product);
+            
+            await _unitOfWork.Commit();
+        }
+
+        private async Task AddPhoto(IFormFile file, Product product)
+        {
+            var fileBytes = FileUtils.GetFileBytes(file);
+            
             await _unitOfWork.ProductPhotos.Add(new ProductPhoto
             {
-                Id = id,
+                Id = Guid.NewGuid(),
                 Image = fileBytes,
-                ProductId = productId
+                ProductId = product.Id
             });
         }
 
@@ -164,7 +195,7 @@ namespace Core.ApplicationManagement.Services.ProductService
 
         private static void AssertProductAvailability(Product product, bool shouldProductBeAvailable)
         {
-            var textError = shouldProductBeAvailable == true ? "доступен" : "недоступен";
+            var textError = shouldProductBeAvailable ? "доступен" : "недоступен";
             
             if (product.IsAvailable == shouldProductBeAvailable)
             {

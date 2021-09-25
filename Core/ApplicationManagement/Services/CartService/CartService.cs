@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#nullable enable
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,7 +17,7 @@ namespace Core.ApplicationManagement.Services.CartService
         private readonly IMapper _mapper;
 
         public CartService(
-            IUnitOfWork unitOfWork,
+            IUnitOfWork unitOfWork, 
             IMapper mapper)
         {
             _unitOfWork = unitOfWork;
@@ -26,9 +26,10 @@ namespace Core.ApplicationManagement.Services.CartService
 
         public async Task<CartViewModel> GetCart(string userId)
         {
-            var currentUserOrder = await _unitOfWork.UserOrder.GetSingleWithInclude(
-                userOrder => userOrder.UserId == userId && userOrder.Status == OrderStatus.InCart, 
-                userOrder => new
+            var currentUserOrder = await _unitOfWork.UserOrder.GetSingle(
+                isTracking: false, 
+                filter: userOrder => userOrder.UserId == userId && userOrder.Status == OrderStatus.InCart,
+                selector: userOrder => new
                 {
                     userOrder.TotalPrice,
                     userOrder.User.BonusPoints,
@@ -38,17 +39,16 @@ namespace Core.ApplicationManagement.Services.CartService
                         oi.Amount,
                         ProductId = oi.Product.Id,
                         oi.Product.ProductName,
-                        ProductDiscount = oi.Product.ProductGroup.Discount,
+                        DiscountPercentage = oi.Product.ProductGroup.Discount,
                         oi.Product.Photos,
                         ProductPrice = oi.Product.Price,
                         oi.UserOrderId,
                     }),
                 });
-            
-            var orderItems = 
-                currentUserOrder.OrderItemIds.Select(x =>  new OrderItemViewModel
+    
+            var orderItems = currentUserOrder.OrderItemIds.Select(x =>  new OrderItemViewModel
                 {
-                    DiscountPercentage = x.ProductDiscount,
+                    DiscountPercentage = x.DiscountPercentage,
                     ProductId = x.ProductId,
                     UserOrderId = x.UserOrderId,
                     ProductName = x.ProductName,
@@ -57,13 +57,10 @@ namespace Core.ApplicationManagement.Services.CartService
                 }).ToArray();
 
             var initialPrice = currentUserOrder.OrderItemIds.Sum(oi => oi.Amount * oi.Price);
-
-            var totalDiscount = CalculateTotalDiscount(orderItems);
-
+            var totalDiscount = orderItems.Sum(x =>
+                ProductUtils.CalculateProductDiscountPercentages(x.Price, x.DiscountPercentage));
             var bonusPointsDiscount = ProductUtils.CalculateDiscountBonusPoints(currentUserOrder.BonusPoints);
-
             var totalPrice = currentUserOrder.TotalPrice - totalDiscount - bonusPointsDiscount;
-                
             var bonusPoints = ProductUtils.CalculateBonusPoints(totalPrice);
 
             return new CartViewModel
@@ -79,39 +76,23 @@ namespace Core.ApplicationManagement.Services.CartService
 
         public async Task Add(Guid productId, string userId)
         {
-            var order = await _unitOfWork.UserOrder
-                .GetSingleOrDefault(x => x.UserId == userId,
-                    i => i.OrderItems);
-
+            var order = await GetOrder(userId);
+            
             var product = await _unitOfWork.Products.GetEntityById(productId);
 
-            if (order == null)
-            {
-                var userOrderId = Guid.NewGuid();
+            await CreateNewOrderIfOrderNull(productId, userId, order, product);
 
-                await _unitOfWork.UserOrder.Add(new UserOrder
-                {
-                    UserId = userId,
-                    Id = userOrderId,
-                    OrderItems = new Collection<OrderItem>()
-                    {
-                        new OrderItem
-                        {
-                            Id = Guid.NewGuid(),
-                            Amount = 1,
-                            ProductId = productId,
-                            UserOrderId = userOrderId
-                        }
-                    },
-                    TotalPrice = product.Price
-                });
-            }
+            await AddNewOrderItemIfOrderNotNull(order, product);
+            
+            await _unitOfWork.Commit();
+        }
 
+        private async Task AddNewOrderItemIfOrderNotNull(UserOrder? order, Product product)
+        {
             if (order != null)
             {
                 order.OrderItems.Add(new OrderItem
                 {
-                    Id = Guid.NewGuid(),
                     UserOrderId = order.Id,
                     ProductId = product.Id,
                     Amount = 1,
@@ -120,31 +101,44 @@ namespace Core.ApplicationManagement.Services.CartService
                 order.TotalPrice += product.Price;
                 await _unitOfWork.UserOrder.Update(order);
             }
-            
-            await _unitOfWork.Commit();
         }
 
-        private decimal CalculateTotalDiscount(OrderItemViewModel[] orderItems)
+        private async Task CreateNewOrderIfOrderNull(
+            Guid productId, 
+            string userId, 
+            UserOrder? order, 
+            Product product)
         {
-            decimal discount = 0;
-
-            foreach (var item in orderItems)
+            if (order == null)
             {
-                var discounts = ProductUtils.CalculateProductDiscountPercentages(
-                    item.Price, item.DiscountPercentage);
-
-                if (discounts == 0)
+                await _unitOfWork.UserOrder.Add(new UserOrder
                 {
-                    discount += 0;
-                }
-                else
-                {
-                    discount += item.Price - ProductUtils.CalculateProductDiscountPercentages(
-                        item.Price, item.DiscountPercentage);
-                }
+                    UserId = userId,
+                    Id = Guid.NewGuid(),
+                    OrderItems = new Collection<OrderItem>()
+                    {
+                        new OrderItem
+                        {
+                            Id = Guid.NewGuid(),
+                            Amount = 1,
+                            ProductId = productId,
+                            UserOrderId = Guid.NewGuid()
+                        }
+                    },
+                    TotalPrice = product.Price
+                });
             }
+        }
 
-            return discount;
+        private async Task<UserOrder?> GetOrder(string userId)
+        {
+            var order = await _unitOfWork.UserOrder
+                .GetSingleOrDefault(
+                    isTracking: true,
+                    filter: x => x.UserId == userId,
+                    selector: s => s,
+                    includeProperties: i => i.OrderItems);
+            return order;
         }
     }
 }

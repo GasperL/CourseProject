@@ -33,7 +33,9 @@ namespace Core.ApplicationManagement.Services.CategoryService
 
         public async Task<CategoryViewModel[]> GetAll()
         {
-            var categories = await _unitOfWork.Categories.GetAll();
+            var categories = await _unitOfWork.Categories.GetList(
+                isTracking: false, 
+                selector: x => x);
             return _mapper.Map<CategoryViewModel[]>(categories);
         }
 
@@ -46,7 +48,6 @@ namespace Core.ApplicationManagement.Services.CategoryService
         public async Task<CategoryViewModel> GetCategoryViewModel(Guid id)
         {
             var category = await _unitOfWork.Categories.GetEntityById(id);
-            
            
             return _mapper.Map<CategoryViewModel>(category);
         }

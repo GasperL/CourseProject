@@ -8,7 +8,7 @@ namespace Core.Common.ViewModels
         public ICollection<OrderItemViewModel> OrderItems { get; set; }
 
         public decimal TotalPrice { get; set; }
-        
+
         public decimal InitialPrice { get; set; }
         
         public decimal DiscountAmount { get; set; }

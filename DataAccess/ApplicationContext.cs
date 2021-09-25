@@ -45,7 +45,7 @@ namespace DataAccess
                 .HasOne(x => x.Product)
                 .WithMany()
                 .HasForeignKey(x => x.ProductId);
-
+            
             builder.Entity<Product>()
                 .HasOne(x => x.Category)
                 .WithMany()
@@ -66,6 +66,12 @@ namespace DataAccess
                 .WithMany()
                 .HasForeignKey(x => x.ManufacturerId);
 
+            builder.Entity<Product>()
+                .HasOne(x => x.CoverPhoto)
+                .WithMany()
+                .HasForeignKey(x => x.CoverPhotoId)
+                .OnDelete(DeleteBehavior.NoAction);
+            
             builder.Entity<Product>()
                 .HasMany(x => x.Photos)
                 .WithOne(x => x.Product)
