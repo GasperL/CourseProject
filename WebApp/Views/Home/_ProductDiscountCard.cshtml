@@ -1,4 +1,5 @@
-﻿@model Core.Common.ViewModels.MainEntityViewModels.ProductViewModel
+﻿@using WebApp.Views.Utils
+@model Core.Common.ViewModels.MainEntityViewModels.ProductViewModel
 
 <div class="row col-md-3">
     <div class="mb-5">
@@ -8,7 +9,7 @@
             <div class="card-body p-4">
                 <div class="text-center">
                     <h5 class="fw-bolder">@Model.ProductName</h5>
-                    <span class="text-muted text-decoration-line-through">$@Model.Price.ToString("0.##")</span>
+                    <span class="text-muted text-decoration-line-through">$@UiHelper.GetNormalizePriceString(Model.Price)</span>
                     $@Model.DiscountPrice.ToString("0.##")
                 </div>
             </div>
