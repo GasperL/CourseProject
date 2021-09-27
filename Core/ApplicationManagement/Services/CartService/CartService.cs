@@ -28,55 +28,41 @@ namespace Core.ApplicationManagement.Services.CartService
 
         public async Task<CartViewModel?> GetCart(string userId)
         {
-            var currentUserOrder = await _unitOfWork.UserOrder.GetSingle(
+            var orderId = await _unitOfWork.UserOrder.GetSingle(
                 isTracking: false,
                 filter: userOrder => userOrder.UserId == userId && userOrder.Status == OrderStatus.InCart,
-                selector: userOrder => new
-                {
-                    userOrder.User.BonusPoints,
-                    OrderItemIds = userOrder.OrderItems.Select(oi => new
+                selector: order => order.Id);
+
+            var viewModels = (await _unitOfWork.OrderItems.GetList(
+                    isTracking: false,
+                    filter: item => item.Id == orderId,
+                    selector: oi => new OrderItemViewModel
                     {
-                        OrderItemId = oi.Id,
-                        oi.Product.Price,
-                        oi.Amount,
+                        Id = oi.Id,
+                        Amount = oi.Amount,
+                        Price = oi.Product.Price,
+                        UserOrderId = oi.UserOrderId,
                         ProductId = oi.Product.Id,
                         DiscountPercentage = oi.Product.ProductGroup.Discount,
-                        oi.Product.Photos,
-                        ProductPrice = oi.Product.Price,
-                        oi.UserOrderId,
-                        oi.Product.CoverPhoto,
+                        // сохранить на вьюшку byte[] данные кавер фото и после загрузки из бд конвертнуть в base64
+                        CoverPhotoBase64 = FileUtils.GetPhotoBase64(oi.Product.CoverPhoto.Image),
                         ProviderName = oi.Product.Provider.Name,
-                        oi.Product.ProductName,
+                        ProductName = oi.Product.ProductName,
                         CategoryName = oi.Product.Category.Name,
                         ManufacturerName = oi.Product.Manufacturer.Name,
-                        DiscountPrice = ProductUtils.CalculateProductDiscountPercentages(oi.Product.Price,
-                            oi.Product.ProductGroup.Discount)
-                    }),
-                });
+                        // посчитать после выгрузки данных
+                        DiscountPrice = 0
+                    })
+                );
 
-            var orderItems = currentUserOrder.OrderItemIds.Select(x => new OrderItemViewModel
-            {
-                Id = x.OrderItemId,
-                DiscountPercentage = x.DiscountPercentage,
-                ProductId = x.ProductId,
-                UserOrderId = x.UserOrderId,
-                ProductName = x.ProductName,
-                ProviderName = x.ProviderName,
-                ManufacturerName = x.ManufacturerName,
-                CategoryName = x.CategoryName,
-                Amount = x.Amount,
-                Price = x.Price,
-                DiscountPrice = x.DiscountPrice,
-                CoverPhotoBase64 = FileUtils.GetPhotoBase64(x.CoverPhoto.Image),
-            }).ToArray();
-
-            var initialPrice = currentUserOrder.OrderItemIds.Sum(oi =>oi.Price * oi.Amount);
+            var initialPrice = viewModels.Sum(oi => oi.Price * oi.Amount);
             
-            var totalDiscount =  orderItems
+            var totalDiscount =  viewModels
                 .Where(x => x.DiscountPercentage > 0)
                 .Sum(x => 
                 (x.Price - ProductUtils.CalculateProductDiscountPercentages(x.Price, x.DiscountPercentage)) * x.Amount);
-            
+
+            // IUserAccountService - добавь метод GetUserData, куда положи кол-во бонус поинтов и расширяй по необходимости
             var bonusPointsDiscount = ProductUtils.CalculateDiscountBonusPoints(currentUserOrder.BonusPoints);
             
             var price = initialPrice - totalDiscount - bonusPointsDiscount;
@@ -85,7 +71,7 @@ namespace Core.ApplicationManagement.Services.CartService
 
             return new CartViewModel
             {
-                OrderItems = orderItems,
+                OrderItems = viewModels,
                 TotalPrice = price,
                 InitialPrice = initialPrice,
                 DiscountAmount = totalDiscount,
