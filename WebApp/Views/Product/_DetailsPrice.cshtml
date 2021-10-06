@@ -1,4 +1,5 @@
-﻿@model Core.Common.ViewModels.MainEntityViewModels.ProductViewModel
+﻿@using WebApp.Views.Utils
+@model Core.Common.ViewModels.MainEntityViewModels.ProductViewModel
 
 
 <p class="price-detail-wrap">
@@ -11,13 +12,13 @@
 @if (@Model.Price == @Model.DiscountPrice)
 {
     <h3>
-        $@Model.Price.ToString("0.##")
+        $@UiHelper.GetNormalizePriceString(@Model.Price)
     </h3>
 }
 else
 {
     <div>
-        <h3 class="text-muted text-decoration-line-through">$@Model.Price.ToString("0.##")</h3>
-        <h2 class="font-color-red py-2">$@Model.DiscountPrice.ToString("0.##")</h2>
+        <h3 class="text-muted text-decoration-line-through">$@UiHelper.GetNormalizePriceString(Model.Price)</h3>
+        <h2 class="font-color-red py-2">$@UiHelper.GetNormalizePriceString(@Model.DiscountPrice)</h2>
     </div>
 }

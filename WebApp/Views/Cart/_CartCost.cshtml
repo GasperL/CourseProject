@@ -1,0 +1,42 @@
+﻿@using WebApp.Views.Utils
+@model Core.Common.ViewModels.CartViewModel
+
+
+<aside class="col-lg-3">
+    <div class="card">
+        <div class="card-body">
+            <dl class="dlist-align">
+                <dt>Первоначальная стоимость::</dt>
+                <dd class="text-right ml-3">$@UiHelper.GetNormalizePriceString(Model.InitialPrice)</dd>
+            </dl>
+            <dl class="dlist-align">
+                <dt>Скидка:</dt>
+                <dd class="text-right text-danger ml-3">- $@UiHelper.GetNormalizePriceString(Model.DiscountAmount)</dd>
+            </dl>
+            @if (@Model.BonusPointsDiscount == 0)
+            {
+                <dl class="dlist-align">
+                    <dt>Скадка за бонусные баллы:</dt>
+                    <dd class="text-right text-danger ml-3">- $0</dd>
+                </dl>
+            }
+            else
+            {
+                <dl class="dlist-align">
+                    <dt>Скадка за бонусные баллы:</dt>
+                    <dd class="text-right text-danger ml-3">- $@UiHelper.GetNormalizePriceString(Model.BonusPointsDiscount)</dd>
+                </dl>
+            }
+            <dl class="dlist-align">
+                <dt>Итого:</dt>
+                <dd class="text-right text-dark b ml-3">
+                    <strong>$@UiHelper.GetNormalizePriceString(@Model.TotalPrice)</strong>
+                </dd>
+            </dl>
+            <hr>
+            <a href="#" class="btn btn-out btn-primary btn-square btn-main" data-abc="true">
+                Совершить покупку
+            </a>
+        </div>
+    </div>
+</aside>

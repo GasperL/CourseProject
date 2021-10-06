@@ -8,6 +8,7 @@ namespace Core.Common.ViewModels.MainEntityViewModels
     {
         public Guid Id { get; set; }
         
+        // todo create view models
         public Category Category { get; set; }
 
         public ProductGroup ProductGroup { get; set; }
@@ -25,7 +26,9 @@ namespace Core.Common.ViewModels.MainEntityViewModels
         public decimal Price { get; set; }
         
         public decimal DiscountPrice { get; set; }
-
+        
         public ICollection<string> PhotoBase64 { get; set; }
+        
+        public string CoverPhotoBase64 { get; set; }
     }
 }

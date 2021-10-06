@@ -4,14 +4,16 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20210922163153_AddProductCoverPhoto")]
+    partial class AddProductCoverPhoto
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,7 +89,7 @@ namespace DataAccess.Migrations
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CoverPhotoId")
+                    b.Property<Guid>("CoverPhotoId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsAvailable")
@@ -294,6 +296,9 @@ namespace DataAccess.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,4)");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
@@ -462,10 +467,11 @@ namespace DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccess.Entities.ProductPhoto", "CoverPhoto")
+                    b.HasOne("DataAccess.Entities.ProductPhoto", null)
                         .WithMany()
                         .HasForeignKey("CoverPhotoId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("DataAccess.Entities.Manufacturer", "Manufacturer")
                         .WithMany()
@@ -486,8 +492,6 @@ namespace DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-
-                    b.Navigation("CoverPhoto");
 
                     b.Navigation("Manufacturer");
 

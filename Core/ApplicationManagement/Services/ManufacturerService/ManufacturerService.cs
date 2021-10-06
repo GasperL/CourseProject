@@ -33,7 +33,10 @@ namespace Core.ApplicationManagement.Services.ManufacturerService
 
         public async Task<ManufacturerViewModel[]> GetAll()
         {
-            var manufacturers = await _unitOfWork.Manufacturers.GetAll();
+            var manufacturers = await _unitOfWork.Manufacturers.GetList(
+                isTracking: false, 
+                selector: s => s);
+            
             return _mapper.Map<ManufacturerViewModel[]>(manufacturers);
         }
 

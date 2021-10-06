@@ -5,13 +5,13 @@ namespace Core.ApplicationManagement.Services.Utils
 {
     public static class ProductUtils
     {
-        public static decimal CalculateProductDiscountPercentages(decimal productPrice, double discountPercentage)
+        public static decimal CalculateProductDiscountPercentages(
+            decimal productPrice, 
+            double discountPercentage)
         {
             var discount = productPrice - ((productPrice * (decimal) discountPercentage) / 100);
-
-            var ret = productPrice == discount ? 0 : discount;
             
-            return ret;
+            return productPrice == discount ? 0 : discount;
         }
         
         public static decimal CalculateDiscountBonusPoints(int bonusPoints)

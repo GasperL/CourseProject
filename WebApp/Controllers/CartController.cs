@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Core.ApplicationManagement.Services.CartService;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace WebApp.Controllers
 {
@@ -17,9 +18,16 @@ namespace WebApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;            
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             
-            return View(await _cart.GetCart(userId));
+            var order = await _cart.GetCart(userId);
+
+            if (order == null)
+            {
+                RedirectToAction("Index", "Home");
+            }
+            
+            return View(order);
         }
 
         public async Task<IActionResult> Add(Guid productId)
@@ -28,6 +36,23 @@ namespace WebApp.Controllers
             
             await _cart.Add(productId, userId);
 
+            return NoContent();
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> Remove(Guid orderItemId)
+        {
+            try
+            {
+                await _cart.Remove(orderItemId);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                
+                return NoContent();
+            }
+           
             return RedirectToAction("Index");
         }
         

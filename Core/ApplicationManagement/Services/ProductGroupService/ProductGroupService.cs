@@ -37,7 +37,10 @@ namespace Core.ApplicationManagement.Services.ProductGroupService
 
         public async Task<ProductGroupViewModel[]> GetAll()
         {
-            var productGroups = await _unitOfWork.ProductGroups.GetAll();
+            var productGroups = await _unitOfWork.ProductGroups.GetList(
+                    isTracking: false, 
+                    selector: s => s);
+            
             return _mapper.Map<ProductGroupViewModel[]>(productGroups);
         }
         
