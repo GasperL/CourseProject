@@ -27,7 +27,7 @@ namespace WebApp
             services.RegisterAutoMapper();
             services.AddControllersWithViews();
             services.AddRazorPages()
-                .AddRazorRuntimeCompilation();
+            .AddRazorRuntimeCompilation();
         }
 
         public void Configure(

@@ -5,3 +5,6 @@ riderModule.iml
 /_ReSharper.Caches/
 .idea
 Logs/
+**/wwwroot/node_modules
+**/wwwroot/package-lock.json
+**/wwwroot/package.json
