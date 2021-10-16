@@ -1,17 +1,16 @@
 ﻿using System.Linq;
 using AutoMapper;
+using Core.ApplicationManagement.Dtos;
 using Core.ApplicationManagement.Services.Utils;
-using Core.Common.CreateViewModels;
-using Core.Common.ViewModels.MainEntityViewModels;
 using DataAccess.Entities;
 
 namespace Core.Mappings
 {
-    public class ProductMappingProfile : Profile
+    public class ProductApiDtoMappingProfile : Profile
     {
-        public ProductMappingProfile()
+        public ProductApiDtoMappingProfile()
         {
-            CreateMap<Product, ProductViewModel>()
+            CreateMap<Product, ProductDto>()
                 .ForMember(dest => dest.Price,
                     opt
                         => opt.MapFrom(x => x.Price))
@@ -38,10 +37,6 @@ namespace Core.Mappings
                 .ForMember(dest => dest.DiscountPercentages,
                     opt
                         => opt.MapFrom(m => m.ProductGroup.Discount));
-
-            CreateMap<CreateProductViewModel, Product>()
-                .ForMember(dest => dest.Photos,
-                    opt => opt.Ignore());
         }
     }
 }

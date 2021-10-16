@@ -25,6 +25,17 @@ namespace WebApp
             services.RegisterDependencies(Configuration);
             services.EnableRuntimeCompilation(WebHostEnvironment);
             services.RegisterAutoMapper();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: WebApplicationConstants.Cors.PolicyName,
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+            });
+
             services.AddControllersWithViews();
             services.AddRazorPages()
             .AddRazorRuntimeCompilation();
@@ -46,9 +57,8 @@ namespace WebApp
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-            
+            app.UseCors(WebApplicationConstants.Cors.PolicyName);
             app.UseAuthentication();
             app.UseAuthorization();
 

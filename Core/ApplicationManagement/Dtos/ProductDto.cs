@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Core.Common.ViewModels.MainEntityViewModels
+namespace Core.ApplicationManagement.Dtos
 {
-    public class ProductViewModel
+    public class ProductDto
     {
         public Guid Id { get; set; }
         

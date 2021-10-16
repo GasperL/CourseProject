@@ -1,3 +1,4 @@
+using Core.ApplicationManagement.Services.ApiServices;
 using Core.ApplicationManagement.Services.CartService;
 using Core.ApplicationManagement.Services.CategoryService;
 using Core.ApplicationManagement.Services.ManufacturerService;
@@ -41,6 +42,7 @@ namespace WebApp.Extensions
             services.AddTransient<ICartService, CartService>();
             services.AddTransient<IUserAccountService, UserAccountService>();
             services.AddTransient<IProductGroupService, ProductGroupService>();
+            services.AddTransient<IProductApiService, ProductApiService>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IManufacturerService, ManufacturerService>();
             services.AddTransient<IProviderService, ProviderService>();
