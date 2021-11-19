@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -9,21 +10,22 @@ namespace WebApp
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
+        public Startup(IConfiguration configuration, IWebHostEnvironment hostEnvironment)
         {
             Configuration = configuration;
-            WebHostEnvironment = webHostEnvironment;
+            HostEnvironment = hostEnvironment;
             
         }
 
-        public IWebHostEnvironment WebHostEnvironment { get; }
+        public IWebHostEnvironment HostEnvironment { get; }
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.RegisterEntityFramework(Configuration);
             services.RegisterDependencies(Configuration);
-            services.EnableRuntimeCompilation(WebHostEnvironment);
+            services.RegisterApiServicesDependencies(Configuration);
+            services.EnableRuntimeCompilation(HostEnvironment);
             services.RegisterAutoMapper();
             services.AddCors(options =>
             {
@@ -34,6 +36,12 @@ namespace WebApp
                             .AllowAnyHeader()
                             .AllowAnyMethod();
                     });
+            });
+
+            services.AddSpaStaticFiles(configuration =>
+            {
+                var buildPath = HostEnvironment.IsProduction() ? "/dist" : string.Empty;
+                configuration.RootPath = $"{HostEnvironment.WebRootPath}/angular{buildPath}";
             });
 
             services.AddControllersWithViews();
@@ -68,6 +76,8 @@ namespace WebApp
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+            
+            app.UseAngular(HostEnvironment);
         }
     }
 }

@@ -42,10 +42,15 @@ namespace WebApp.Extensions
             services.AddTransient<ICartService, CartService>();
             services.AddTransient<IUserAccountService, UserAccountService>();
             services.AddTransient<IProductGroupService, ProductGroupService>();
-            services.AddTransient<IProductApiService, ProductApiService>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IManufacturerService, ManufacturerService>();
             services.AddTransient<IProviderService, ProviderService>();
+        }
+        
+        public static void RegisterApiServicesDependencies(this IServiceCollection services, IConfiguration configuration)
+        {   
+            services.AddTransient<IProductApiService, ProductApiService>();
+            services.AddTransient<ICategoriesApiService, CategoriesApiService>();
         }
 
         public static void RegisterEntityFramework(this IServiceCollection services, IConfiguration configuration)
