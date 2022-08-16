@@ -87,6 +87,9 @@ namespace DataAccess.Migrations
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("CoverPhotoId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
 
@@ -110,6 +113,8 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("CoverPhotoId");
 
                     b.HasIndex("ManufacturerId");
 
@@ -289,9 +294,6 @@ namespace DataAccess.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("decimal(18,4)");
-
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
@@ -460,6 +462,11 @@ namespace DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DataAccess.Entities.ProductPhoto", "CoverPhoto")
+                        .WithMany()
+                        .HasForeignKey("CoverPhotoId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("DataAccess.Entities.Manufacturer", "Manufacturer")
                         .WithMany()
                         .HasForeignKey("ManufacturerId")
@@ -479,6 +486,8 @@ namespace DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+
+                    b.Navigation("CoverPhoto");
 
                     b.Navigation("Manufacturer");
 

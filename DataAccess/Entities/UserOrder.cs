@@ -12,10 +12,6 @@ namespace DataAccess.Entities
         
         public string UserId { get; set; }
         
-        [Column(TypeName = "decimal(18,4)")]
-        [Required]
-        public decimal TotalPrice { get; set; }
-
         public OrderStatus Status { get; set; }       
     }
 }

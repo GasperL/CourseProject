@@ -1,14 +1,16 @@
-﻿@model Core.Common.ViewModels.MainEntityViewModels.ProductViewModel
+﻿@using WebApp.Views.Utils
+@model Core.Common.ViewModels.MainEntityViewModels.ProductViewModel
 
-<div class="row col-md-3">
+
+<div class="row col-sm-3">
     <div class="mb-5">
         <div class="card">
             <div class="badge discount-badge bg-dark text-white position-absolute">Скидка</div>
-            <img class="card-img-top" src="@Model.PhotoBase64.First()" alt=".."/>
+            <img class="card-img-top" src="@Model.CoverPhotoBase64" alt=".."/>
             <div class="card-body p-4">
                 <div class="text-center">
                     <h5 class="fw-bolder">@Model.ProductName</h5>
-                    <span class="text-muted text-decoration-line-through">$@Model.Price.ToString("0.##")</span>
+                    <span class="text-muted text-decoration-line-through">$@UiHelper.GetNormalizePriceString(Model.Price)</span>
                     $@Model.DiscountPrice.ToString("0.##")
                 </div>
             </div>

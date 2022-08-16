@@ -15,5 +15,10 @@
         {
             public const string PublicStaticImagesPath = "images";
         }
+        
+        public static class Cors
+        {
+            public const string PolicyName = "ClientAppPolicy";
+        }
     }
 }

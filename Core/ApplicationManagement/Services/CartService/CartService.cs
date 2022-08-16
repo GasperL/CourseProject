@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#nullable enable
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Core.ApplicationManagement.Services.Utils;
 using Core.Common.ViewModels;
 using DataAccess.Entities;
@@ -14,62 +13,80 @@ namespace Core.ApplicationManagement.Services.CartService
     public class CartService : ICartService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
 
-        public CartService(
-            IUnitOfWork unitOfWork,
-            IMapper mapper)
+        public CartService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _mapper = mapper;
+        }
+        
+        public async Task Remove(Guid orderItemId)
+        {
+             await _unitOfWork.OrderItems.Delete(orderItemId);
+
+             await _unitOfWork.Commit();
         }
 
-        public async Task<CartViewModel> GetCart(string userId)
+        public async Task<CartViewModel?> GetCart(string userId)
         {
-            var currentUserOrder = await _unitOfWork.UserOrder.GetSingleWithInclude(
-                userOrder => userOrder.UserId == userId && userOrder.Status == OrderStatus.InCart, 
-                userOrder => new
+            var currentUserOrder = await _unitOfWork.UserOrder.GetSingle(
+                isTracking: false,
+                filter: userOrder => userOrder.UserId == userId && userOrder.Status == OrderStatus.InCart,
+                selector: userOrder => new
                 {
-                    userOrder.TotalPrice,
                     userOrder.User.BonusPoints,
                     OrderItemIds = userOrder.OrderItems.Select(oi => new
                     {
+                        OrderItemId = oi.Id,
                         oi.Product.Price,
                         oi.Amount,
                         ProductId = oi.Product.Id,
-                        oi.Product.ProductName,
-                        ProductDiscount = oi.Product.ProductGroup.Discount,
+                        DiscountPercentage = oi.Product.ProductGroup.Discount,
                         oi.Product.Photos,
                         ProductPrice = oi.Product.Price,
                         oi.UserOrderId,
+                        oi.Product.CoverPhoto,
+                        ProviderName = oi.Product.Provider.Name,
+                        oi.Product.ProductName,
+                        CategoryName = oi.Product.Category.Name,
+                        ManufacturerName = oi.Product.Manufacturer.Name,
+                        DiscountPrice = ProductUtils.CalculateProductDiscountPercentages(oi.Product.Price,
+                            oi.Product.ProductGroup.Discount)
                     }),
                 });
+
+            var orderItems = currentUserOrder.OrderItemIds.Select(x => new OrderItemViewModel
+            {
+                Id = x.OrderItemId,
+                DiscountPercentage = x.DiscountPercentage,
+                ProductId = x.ProductId,
+                UserOrderId = x.UserOrderId,
+                ProductName = x.ProductName,
+                ProviderName = x.ProviderName,
+                ManufacturerName = x.ManufacturerName,
+                CategoryName = x.CategoryName,
+                Amount = x.Amount,
+                Price = x.Price,
+                DiscountPrice = x.DiscountPrice,
+                CoverPhotoBase64 = FileUtils.GetPhotoBase64(x.CoverPhoto.Image),
+            }).ToArray();
+
+            var initialPrice = currentUserOrder.OrderItemIds.Sum(oi =>oi.Price * oi.Amount);
             
-            var orderItems = 
-                currentUserOrder.OrderItemIds.Select(x =>  new OrderItemViewModel
-                {
-                    DiscountPercentage = x.ProductDiscount,
-                    ProductId = x.ProductId,
-                    UserOrderId = x.UserOrderId,
-                    ProductName = x.ProductName,
-                    Amount = x.Amount,
-                    Price = x.Price
-                }).ToArray();
-
-            var initialPrice = currentUserOrder.OrderItemIds.Sum(oi => oi.Amount * oi.Price);
-
-            var totalDiscount = CalculateTotalDiscount(orderItems);
-
+            var totalDiscount =  orderItems
+                .Where(x => x.DiscountPercentage > 0)
+                .Sum(x => 
+                (x.Price - ProductUtils.CalculateProductDiscountPercentages(x.Price, x.DiscountPercentage)) * x.Amount);
+            
             var bonusPointsDiscount = ProductUtils.CalculateDiscountBonusPoints(currentUserOrder.BonusPoints);
-
-            var totalPrice = currentUserOrder.TotalPrice - totalDiscount - bonusPointsDiscount;
-                
-            var bonusPoints = ProductUtils.CalculateBonusPoints(totalPrice);
+            
+            var price = initialPrice - totalDiscount - bonusPointsDiscount;
+            
+            var bonusPoints = ProductUtils.CalculateBonusPoints(initialPrice);
 
             return new CartViewModel
             {
                 OrderItems = orderItems,
-                TotalPrice = totalPrice,
+                TotalPrice = price,
                 InitialPrice = initialPrice,
                 DiscountAmount = totalDiscount,
                 BonusPointsDiscount = bonusPointsDiscount,
@@ -79,20 +96,52 @@ namespace Core.ApplicationManagement.Services.CartService
 
         public async Task Add(Guid productId, string userId)
         {
-            var order = await _unitOfWork.UserOrder
-                .GetSingleOrDefault(x => x.UserId == userId,
-                    i => i.OrderItems);
+            var order = await GetOrder(userId);
 
             var product = await _unitOfWork.Products.GetEntityById(productId);
 
+            await CreateNewOrderIfNull(productId, userId, order);
+
+            await AddNewOrderItemIfNotNull(order, product);
+
+            await _unitOfWork.Commit();
+        }
+
+        private async Task AddNewOrderItemIfNotNull(UserOrder? order, Product product)
+        {
+            if (order != null)
+            {
+                var orderItem = order.OrderItems.SingleOrDefault(x => x.ProductId == product.Id);
+
+                if (orderItem == null)
+                {
+                    order!.OrderItems.Add(new OrderItem
+                    {
+                        UserOrderId = order.Id,
+                        ProductId = product.Id,
+                        Amount = 1,
+                    });
+                }
+                else
+                {
+                    orderItem.Amount += 1;
+                }
+
+                await _unitOfWork.UserOrder.Update(order);
+            }
+        }
+        
+        private async Task CreateNewOrderIfNull(
+            Guid productId,
+            string userId,
+            UserOrder? order)
+        {
             if (order == null)
             {
-                var userOrderId = Guid.NewGuid();
-
                 await _unitOfWork.UserOrder.Add(new UserOrder
                 {
                     UserId = userId,
-                    Id = userOrderId,
+                    Id = Guid.NewGuid(),
                     OrderItems = new Collection<OrderItem>()
                     {
                         new OrderItem
@@ -100,51 +149,22 @@ namespace Core.ApplicationManagement.Services.CartService
                             Id = Guid.NewGuid(),
                             Amount = 1,
                             ProductId = productId,
-                            UserOrderId = userOrderId
+                            UserOrderId = Guid.NewGuid()
                         }
                     },
-                    TotalPrice = product.Price
                 });
             }
-
-            if (order != null)
-            {
-                order.OrderItems.Add(new OrderItem
-                {
-                    Id = Guid.NewGuid(),
-                    UserOrderId = order.Id,
-                    ProductId = product.Id,
-                    Amount = 1,
-                });
-
-                order.TotalPrice += product.Price;
-                await _unitOfWork.UserOrder.Update(order);
-            }
-            
-            await _unitOfWork.Commit();
         }
 
-        private decimal CalculateTotalDiscount(OrderItemViewModel[] orderItems)
+        private async Task<UserOrder?> GetOrder(string userId)
         {
-            decimal discount = 0;
-
-            foreach (var item in orderItems)
-            {
-                var discounts = ProductUtils.CalculateProductDiscountPercentages(
-                    item.Price, item.DiscountPercentage);
-
-                if (discounts == 0)
-                {
-                    discount += 0;
-                }
-                else
-                {
-                    discount += item.Price - ProductUtils.CalculateProductDiscountPercentages(
-                        item.Price, item.DiscountPercentage);
-                }
-            }
-
-            return discount;
+            var order = await _unitOfWork.UserOrder
+                .GetSingleOrDefault(
+                    isTracking: true,
+                    filter: x => x.UserId == userId,
+                    selector: s => s,
+                    includeProperties: i => i.OrderItems);
+            return order;
         }
     }
 }

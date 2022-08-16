@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using DataAccess.Entities;
 
 namespace Core.Common.ViewModels.MainEntityViewModels
 {
@@ -8,13 +7,15 @@ namespace Core.Common.ViewModels.MainEntityViewModels
     {
         public Guid Id { get; set; }
         
-        public Category Category { get; set; }
+        public string CategoryName { get; set; }
 
-        public ProductGroup ProductGroup { get; set; }
+        public string ProductGroupName { get; set; }
         
-        public Manufacturer Manufacturer { get; set; }
-
-        public Provider Provider { get; set; }
+        public double DiscountPercentages { get; set; }
+        
+        public string ManufacturerName { get; set; }
+        
+        public string ProviderName { get; set; }
 
         public bool IsAvailable { get; set; }
 
@@ -25,7 +26,9 @@ namespace Core.Common.ViewModels.MainEntityViewModels
         public decimal Price { get; set; }
         
         public decimal DiscountPrice { get; set; }
-
+        
         public ICollection<string> PhotoBase64 { get; set; }
+
+        public string CoverPhotoBase64 { get; set; }
     }
 }

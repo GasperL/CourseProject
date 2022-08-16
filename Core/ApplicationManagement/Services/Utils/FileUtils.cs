@@ -10,7 +10,7 @@ namespace Core.ApplicationManagement.Services.Utils
     {
         public static ICollection<string> GetPhotoBase64(IEnumerable<byte[]> photos)
         {
-            ICollection<string> base64Photo = new List<string>();
+            var base64Photo = new List<string>();
 
             foreach (var photo in photos)
             {

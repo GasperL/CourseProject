@@ -16,6 +16,11 @@ namespace WebApp.Views.Utils
             };
         }
         
+        public static string GetNormalizePriceString(decimal price)
+        {
+            return price.ToString("#.#");
+        }
+        
         public static string GetAvailabilitySmile(bool availability)
         {
             return availability == true ? "smile-smile fas fa-smile" : "smile-angry far fa-angry";
