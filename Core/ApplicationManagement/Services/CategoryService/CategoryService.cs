@@ -36,6 +36,7 @@ namespace Core.ApplicationManagement.Services.CategoryService
             var categories = await _unitOfWork.Categories.GetList(
                 isTracking: false, 
                 selector: x => x);
+            
             return _mapper.Map<CategoryViewModel[]>(categories);
         }
 

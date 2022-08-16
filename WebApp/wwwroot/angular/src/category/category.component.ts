@@ -10,6 +10,7 @@ import { CategoryService } from './category-service';
 
 export class CategoryComponent {
   public categories: CategoryDto[] = [];
+  public title = "category";
 
   constructor(private service: CategoryService) { }
 

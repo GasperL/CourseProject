@@ -23,11 +23,9 @@ namespace Core.ApplicationManagement.Services.ProductGroupService
 
         public async Task Create(CreateProductGroupViewModel options)
         {
-            var id = Guid.NewGuid();
-            
             await _unitOfWork.ProductGroups.Add(new ProductGroup
             {
-                Id = id,
+                Id = Guid.NewGuid(),
                 Name = options.Name,
                 Discount = options.Discount
             });
@@ -53,8 +51,7 @@ namespace Core.ApplicationManagement.Services.ProductGroupService
         public async Task<ProductGroupViewModel> GetProductGroupViewModel(Guid id)
         {
             var group = await _unitOfWork.ProductGroups.GetEntityById(id);
-            
-           
+                
             return _mapper.Map<ProductGroupViewModel>(group);
         }
       

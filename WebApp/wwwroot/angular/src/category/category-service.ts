@@ -12,6 +12,6 @@ export class CategoryService {
     }
 
     public getCategories(): Observable<CategoryDto[]> {
-        return this.httpClient.get<CategoryDto[]>("/api/accountsApi");
+        return this.httpClient.get<CategoryDto[]>("/api/categoriesApi");
     }
 }
